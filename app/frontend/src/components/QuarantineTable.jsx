@@ -1,0 +1,105 @@
+import { useNavigate } from 'react-router-dom';
+import SpamScoreBadge from './SpamScoreBadge';
+
+function formatTime(unixSeconds) {
+  return new Date(unixSeconds * 1000).toLocaleString('tr-TR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+export default function QuarantineTable({
+  mails,
+  selectedIds,
+  selectionMode,
+  onToggleSelect,
+  onToggleSelectAll,
+  onDeliver,
+  onBlockRequest,
+}) {
+  const navigate = useNavigate();
+  const allSelected = mails.length > 0 && mails.every((m) => selectedIds.has(m.id));
+
+  return (
+    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+      <table className="w-full min-w-[720px] text-sm">
+        <thead>
+          <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
+            {selectionMode && (
+              <th className="w-10 px-3 py-2">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={onToggleSelectAll}
+                  className="size-4 accent-blue-600"
+                />
+              </th>
+            )}
+            <th className="px-3 py-2 font-medium">Gönderen</th>
+            <th className="px-3 py-2 font-medium">Konu</th>
+            <th className="px-3 py-2 font-medium">Alıcı</th>
+            <th className="px-3 py-2 font-medium">Tarih</th>
+            <th className="px-3 py-2 font-medium">Skor</th>
+            <th className="px-3 py-2 font-medium text-right">Aksiyon</th>
+          </tr>
+        </thead>
+        <tbody>
+          {mails.map((mail) => (
+            <tr
+              key={mail.id}
+              onClick={() => navigate(`/quarantine/${encodeURIComponent(mail.id)}`)}
+              className="cursor-pointer border-b border-zinc-100 last:border-0 hover:bg-zinc-50 dark:border-zinc-900 dark:hover:bg-zinc-900/50"
+            >
+              {selectionMode && (
+                <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(mail.id)}
+                    onChange={() => onToggleSelect(mail.id)}
+                    className="size-4 accent-blue-600"
+                  />
+                </td>
+              )}
+              <td className="max-w-[200px] truncate px-3 py-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                {mail.sender || mail.from}
+              </td>
+              <td className="max-w-[280px] truncate px-3 py-2 text-zinc-900 dark:text-zinc-100">
+                {mail.subject || '(konu yok)'}
+              </td>
+              <td className="max-w-[200px] truncate px-3 py-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+                {mail.receiver}
+              </td>
+              <td className="whitespace-nowrap px-3 py-2 text-zinc-500 dark:text-zinc-500">
+                {formatTime(mail.time)}
+              </td>
+              <td className="px-3 py-2">
+                <SpamScoreBadge score={mail.spamlevel} />
+              </td>
+              <td className="px-3 py-2 text-right" onClick={(e) => e.stopPropagation()}>
+                <div className="inline-flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => onDeliver(mail.id)}
+                    className="rounded px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
+                  >
+                    Deliver
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onBlockRequest(mail.id)}
+                    className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-500/10 dark:text-red-400"
+                  >
+                    Block
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

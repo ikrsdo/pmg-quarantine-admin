@@ -1,0 +1,31 @@
+version: "3.9"
+
+# NOTE: no reverse proxy / tunnel service is defined here - this compose
+# file only runs the app itself. See README.md > "Exposing the app
+# publicly" for how to wire it up to a reverse proxy or tunnel.
+
+services:
+  app:
+    build:
+      context: ./app
+    container_name: pmg-quarantine-admin
+    restart: unless-stopped
+    env_file:
+      - .env
+    # Published to the host so a reverse proxy / tunnel elsewhere on your
+    # network can reach it. To restrict this to a specific interface,
+    # replace "3000:3000" with "<host-ip>:3000:3000".
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - pmg-admin-net
+
+networks:
+  pmg-admin-net:
+    driver: bridge

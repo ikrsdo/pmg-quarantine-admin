@@ -1,0 +1,23 @@
+{
+  "name": "pmg-quarantine-admin-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nock": "^13.5.6",
+    "supertest": "^7.0.0"
+  }
+}

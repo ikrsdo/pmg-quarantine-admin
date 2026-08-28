@@ -1,0 +1,6 @@
+**/node_modules
+frontend/dist
+backend/test
+backend/coverage
+**/*.log
+.DS_Store
