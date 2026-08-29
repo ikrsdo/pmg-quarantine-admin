@@ -30,7 +30,7 @@ export default function AppShell({ children }) {
 
   return (
     <div className="h-screen overflow-hidden bg-white dark:bg-zinc-950 lg:flex">
-      <aside className="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:overflow-y-auto lg:border-r lg:border-zinc-200 lg:px-3 lg:py-4 lg:dark:border-zinc-800">
+      <aside className="hidden lg:flex lg:w-72 lg:shrink-0 lg:flex-col lg:overflow-y-auto lg:border-r lg:border-zinc-200 lg:px-3 lg:py-4 lg:dark:border-zinc-800">
         <div className="px-2">
           <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
             PMG Quarantine Admin
