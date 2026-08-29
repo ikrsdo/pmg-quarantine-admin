@@ -45,7 +45,7 @@ function createApp() {
     res.on('finish', () => {
       // eslint-disable-next-line no-console
       console.log('[debug] finished:', req.method, req.originalUrl, 'status=' + res.statusCode);
-      if (req.path === '/api/login') {
+      if (req.originalUrl === '/api/login') {
         // eslint-disable-next-line no-console
         console.log('[debug] sessionID:', req.sessionID);
         // eslint-disable-next-line no-console
