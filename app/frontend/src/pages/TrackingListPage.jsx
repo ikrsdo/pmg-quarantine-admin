@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal, ArrowUp, ArrowDown, ChevronsUpDown } from 'lucide-react';
 import { fetchTrackingList } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
@@ -73,6 +73,7 @@ function defaultFilters() {
 export default function TrackingListPage() {
   const { handleUnauthorized } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState(defaultFilters);
@@ -183,7 +184,11 @@ export default function TrackingListPage() {
                     {filtered.map((m) => (
                       <tr
                         key={m.id}
-                        onClick={() => navigate(`/tracking/${encodeURIComponent(m.id)}`)}
+                        onClick={() =>
+                          navigate(`/tracking/${encodeURIComponent(m.id)}`, {
+                            state: { backgroundLocation: location },
+                          })
+                        }
                         className="cursor-pointer border-b border-zinc-100 odd:bg-white even:bg-zinc-50 hover:bg-blue-50 dark:border-zinc-900 dark:odd:bg-zinc-950 dark:even:bg-zinc-900/40 dark:hover:bg-zinc-800"
                       >
                         <td className="max-w-[16rem] truncate py-2 pr-3 font-mono text-xs text-zinc-900 dark:text-zinc-100">

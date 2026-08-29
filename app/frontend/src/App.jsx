@@ -27,13 +27,13 @@ function ProtectedRoute({ children }) {
 
 export default function App() {
   const location = useLocation();
-  // When a quarantine row is clicked (desktop table only, see
-  // QuarantineTable.jsx), navigation carries the list's own location as
-  // `backgroundLocation` in state. The Routes below then render the list
-  // underneath, unchanged, while a second Routes block (further down)
-  // renders the detail page as an overlay/drawer on top of it. A direct
-  // link or a page refresh has no such state, so it falls through to the
-  // normal full-page detail route instead.
+  // When a quarantine or tracking row is clicked (desktop table only, see
+  // QuarantineTable.jsx / TrackingListPage.jsx), navigation carries the
+  // list's own location as `backgroundLocation` in state. The Routes below
+  // then render the list underneath, unchanged, while a second Routes block
+  // (further down) renders the detail page as an overlay/drawer on top of
+  // it. A direct link or a page refresh has no such state, so it falls
+  // through to the normal full-page detail route instead.
   const backgroundLocation = location.state?.backgroundLocation;
 
   return (
@@ -82,6 +82,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <QuarantineDetailPage overlay />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tracking/:id"
+            element={
+              <ProtectedRoute>
+                <TrackingDetailPage overlay />
               </ProtectedRoute>
             }
           />
