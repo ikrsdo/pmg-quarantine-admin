@@ -31,6 +31,21 @@ function createApp() {
     }),
   );
 
+  // TEMP DEBUG - remove after diagnosing missing Set-Cookie on /api/login
+  app.use((req, res, next) => {
+    res.on('finish', () => {
+      if (req.path === '/api/login') {
+        // eslint-disable-next-line no-console
+        console.log('[debug] sessionID:', req.sessionID);
+        // eslint-disable-next-line no-console
+        console.log('[debug] session:', req.session);
+        // eslint-disable-next-line no-console
+        console.log('[debug] response headers:', res.getHeaders());
+      }
+    });
+    next();
+  });
+
   app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
   app.use('/api', authRoutes);
   app.use('/api/quarantine', quarantineRoutes);
