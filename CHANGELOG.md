@@ -7,6 +7,15 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ## [Unreleased]
 
+### Fixed
+
+- Quarantine detail's Preview tab showed the raw, still MIME-encoded
+  message source (quoted-printable text, unrendered HTML/CSS) instead
+  of the message as an email client would show it. Now fetched from
+  PMG's own sanitized HTML rendering endpoint (`/api2/htmlmail/...`)
+  and rendered in a sandboxed iframe; the raw source is no longer
+  shown anywhere in the UI.
+
 ### Changed
 
 - The Quarantine and Tracking Center filter modals, and the Quarantine

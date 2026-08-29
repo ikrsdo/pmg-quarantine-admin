@@ -39,6 +39,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/:id/preview', async (req, res) => {
+  try {
+    const html = await pmgClient.getQuarantineHtmlPreview(req.session, req.params.id);
+    res.type('html').send(html);
+  } catch (err) {
+    handlePmgError(err, res);
+  }
+});
+
 router.post('/:id/action', async (req, res) => {
   try {
     const { action } = req.body || {};

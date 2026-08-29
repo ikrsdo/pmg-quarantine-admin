@@ -19,6 +19,18 @@ const client = axios.create({
   validateStatus: () => true, // we inspect status ourselves everywhere
 });
 
+// PMG serves a pre-sanitized HTML rendering of a quarantined mail from a
+// separate formatter (`/api2/htmlmail/...` instead of `/api2/json/...`),
+// used for the Preview tab instead of the raw MIME source. It returns HTML
+// text directly, not a JSON envelope - see CLAUDE.md "PMG API Notes".
+const htmlmailClient = axios.create({
+  baseURL: `${config.pmg.baseUrl}/api2/htmlmail`,
+  httpsAgent,
+  timeout: 15000,
+  validateStatus: () => true,
+  responseType: 'text',
+});
+
 class PmgApiError extends Error {
   constructor(status, body) {
     super(`PMG API error (${status})`);
@@ -85,6 +97,17 @@ async function getQuarantineContent(session, id) {
     throw new PmgApiError(res.status, res.data);
   }
   return res.data?.data;
+}
+
+async function getQuarantineHtmlPreview(session, id) {
+  const res = await htmlmailClient.get('/quarantine/content', {
+    headers: authHeaders(session),
+    params: { id },
+  });
+  if (res.status !== 200) {
+    throw new PmgApiError(res.status, res.data);
+  }
+  return res.data;
 }
 
 // Node name isn't in config - PMG's own API requires it as a path segment
@@ -181,6 +204,7 @@ module.exports = {
   login,
   getQuarantineList,
   getQuarantineContent,
+  getQuarantineHtmlPreview,
   quarantineAction,
   getTrackingList,
   getTrackingDetail,

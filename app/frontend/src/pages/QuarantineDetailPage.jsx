@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Send, ShieldCheck, Ban } from 'lucide-react';
-import { fetchQuarantineDetail, performQuarantineAction } from '../api/quarantine';
+import {
+  fetchQuarantineDetail,
+  fetchQuarantinePreviewHtml,
+  performQuarantineAction,
+} from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import SpamScoreBadge from '../components/SpamScoreBadge';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -65,8 +69,18 @@ function SpamInfoBreakdown({ spaminfo }) {
   );
 }
 
-function ContentTabs({ mail }) {
+function ContentTabs({ id, mail }) {
   const [tab, setTab] = useState('preview');
+
+  const {
+    data: previewHtml,
+    isLoading: previewLoading,
+    isError: previewError,
+  } = useQuery({
+    queryKey: ['quarantine', 'preview', id],
+    queryFn: () => fetchQuarantinePreviewHtml(id),
+    enabled: tab === 'preview',
+  });
 
   return (
     <div>
@@ -89,11 +103,34 @@ function ContentTabs({ mail }) {
           </button>
         ))}
       </div>
-      <div className="max-h-[60vh] overflow-auto rounded-b-lg bg-zinc-50 p-3 dark:bg-zinc-900">
-        <pre className="whitespace-pre-wrap break-all font-mono text-xs text-zinc-700 dark:text-zinc-300">
-          {tab === 'preview' ? mail.content || '(no content)' : mail.header || '(no headers)'}
-        </pre>
-      </div>
+      {tab === 'preview' ? (
+        <div className="h-[60vh] overflow-hidden rounded-b-lg border border-t-0 border-zinc-200 dark:border-zinc-800">
+          {previewLoading && (
+            <div className="flex h-full items-center justify-center text-sm text-zinc-500 dark:text-zinc-500">
+              Loading preview...
+            </div>
+          )}
+          {previewError && (
+            <div className="flex h-full items-center justify-center text-sm text-red-500">
+              Failed to load preview.
+            </div>
+          )}
+          {!previewLoading && !previewError && (
+            <iframe
+              title="Message preview"
+              srcDoc={previewHtml || '<p>(no content)</p>'}
+              sandbox=""
+              className="h-full w-full bg-white"
+            />
+          )}
+        </div>
+      ) : (
+        <div className="max-h-[60vh] overflow-auto rounded-b-lg bg-zinc-50 p-3 dark:bg-zinc-900">
+          <pre className="whitespace-pre-wrap break-all font-mono text-xs text-zinc-700 dark:text-zinc-300">
+            {mail.header || '(no headers)'}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }
@@ -221,7 +258,7 @@ export default function QuarantineDetailPage() {
             </div>
 
             <div className="min-w-0 flex-1">
-              <ContentTabs mail={mail} />
+              <ContentTabs id={id} mail={mail} />
             </div>
           </div>
         )}
