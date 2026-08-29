@@ -95,8 +95,8 @@ export default function TrackingDetailPage({ overlay = false }) {
         <div className={`flex flex-col gap-6 ${overlay ? '' : 'lg:flex-row lg:items-start'}`}>
           <div className={`flex flex-col gap-4 ${overlay ? '' : 'lg:w-96 lg:shrink-0'}`}>
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-              <div className="mb-3 flex items-center justify-between">
-                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Status</p>
+              <div className="mb-3 flex items-center justify-between border-b border-zinc-200 pb-2 dark:border-zinc-800">
+                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Status</p>
                 <div className="flex items-center gap-1.5">
                   {entry.dstatus && <TrackingStatusBadge status={entry.dstatus} />}
                   {entry.rstatus && entry.rstatus !== entry.dstatus && (

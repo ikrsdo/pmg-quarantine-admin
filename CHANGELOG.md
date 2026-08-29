@@ -34,6 +34,16 @@ project is in `0.x`, minor bumps may still include breaking changes.
   Greylisted, or a generic Log fallback) with a plain-language summary,
   and can be expanded to see the original syslog line. A "Show raw
   log" toggle switches back to the previous plain-text view.
+- The "Status" and "Message Events" section headings in the Tracking
+  Center drawer, and the "Spam Score" and "Spam Test Details" section
+  headings in the Quarantine drawer, are now bold with a divider line
+  instead of small muted text, so they read as section headings at a
+  glance.
+- The Tracking Center drawer's "Show raw log" toggle is now styled as
+  an actual button (was a text link), and sits next to a new "Copy
+  log" button that copies the full raw syslog to the clipboard.
+- The Quarantine drawer's Headers tab now has a "Copy" button that
+  copies the raw message headers to the clipboard.
 
 ## [0.2.0] - 2026-08-29
 

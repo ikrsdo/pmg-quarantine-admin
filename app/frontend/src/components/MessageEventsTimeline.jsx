@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { parseTrackingLogEvents, EVENT_CATEGORY_COLOR } from '../utils/trackingLogEvents';
+import CopyButton from './CopyButton';
 
 function EventRow({ event }) {
   const [expanded, setExpanded] = useState(false);
@@ -36,18 +37,25 @@ function EventRow({ event }) {
 export default function MessageEventsTimeline({ logs }) {
   const [structured, setStructured] = useState(true);
   const events = parseTrackingLogEvents(logs);
+  const hasLogs = logs && logs.length > 0;
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
-        <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Message Events</p>
-        <button
-          type="button"
-          onClick={() => setStructured((v) => !v)}
-          className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400"
-        >
-          {structured ? 'Show raw log' : 'Show structured view'}
-        </button>
+      <div className="mb-3 flex items-center justify-between border-b border-zinc-200 pb-2 dark:border-zinc-800">
+        <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Message Events</p>
+        {hasLogs && (
+          <div className="flex items-center gap-2">
+            <CopyButton text={logs.join('\n')} label="Copy log" />
+            <button
+              type="button"
+              onClick={() => setStructured((v) => !v)}
+              className="inline-flex items-center gap-1 rounded-md border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+            >
+              {structured ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+              {structured ? 'Show raw log' : 'Show structured view'}
+            </button>
+          </div>
+        )}
       </div>
 
       {!logs || logs.length === 0 ? (

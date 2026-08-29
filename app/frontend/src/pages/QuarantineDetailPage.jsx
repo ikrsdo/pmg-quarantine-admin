@@ -10,6 +10,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import SpamScoreBadge from '../components/SpamScoreBadge';
 import ConfirmDialog from '../components/ConfirmDialog';
+import CopyButton from '../components/CopyButton';
 import { SkeletonCard } from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 
@@ -125,10 +126,15 @@ function ContentTabs({ id, mail }) {
           )}
         </div>
       ) : (
-        <div className="max-h-[60vh] overflow-auto rounded-b-lg bg-zinc-50 p-3 dark:bg-zinc-900">
-          <pre className="whitespace-pre-wrap break-all font-mono text-xs text-zinc-700 dark:text-zinc-300">
-            {mail.header || '(no headers)'}
-          </pre>
+        <div className="rounded-b-lg border border-t-0 border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center justify-end border-b border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-800 dark:bg-zinc-900">
+            <CopyButton text={mail.header || ''} label="Copy" />
+          </div>
+          <div className="max-h-[60vh] overflow-auto bg-zinc-50 p-3 dark:bg-zinc-900">
+            <pre className="whitespace-pre-wrap break-all font-mono text-xs text-zinc-700 dark:text-zinc-300">
+              {mail.header || '(no headers)'}
+            </pre>
+          </div>
         </div>
       )}
     </div>
@@ -253,8 +259,8 @@ export default function QuarantineDetailPage({ overlay = false }) {
         <div className={`flex flex-col gap-6 ${overlay ? '' : 'lg:flex-row lg:items-start'}`}>
           <div className={`flex flex-col gap-4 ${overlay ? '' : 'lg:w-80 lg:shrink-0'}`}>
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-              <div className="mb-3 flex items-center justify-between">
-                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Spam Score</p>
+              <div className="mb-3 flex items-center justify-between border-b border-zinc-200 pb-2 dark:border-zinc-800">
+                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Spam Score</p>
                 <SpamScoreBadge score={mail.spamlevel} />
               </div>
               <div className="flex flex-col gap-3">
@@ -267,7 +273,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
             </div>
 
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-              <p className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-500">
+              <p className="mb-3 border-b border-zinc-200 pb-2 text-sm font-semibold text-zinc-900 dark:border-zinc-800 dark:text-zinc-100">
                 Spam Test Details
               </p>
               <SpamInfoBreakdown spaminfo={mail.spaminfo} />
