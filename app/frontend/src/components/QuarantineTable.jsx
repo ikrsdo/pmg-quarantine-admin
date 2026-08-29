@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import SpamScoreBadge from './SpamScoreBadge';
 
 function formatTime(unixSeconds) {
-  return new Date(unixSeconds * 1000).toLocaleString('tr-TR', {
+  return new Date(unixSeconds * 1000).toLocaleString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: '2-digit',
@@ -38,12 +38,12 @@ export default function QuarantineTable({
                 />
               </th>
             )}
-            <th className="px-3 py-2 font-medium">Gönderen</th>
-            <th className="px-3 py-2 font-medium">Konu</th>
-            <th className="px-3 py-2 font-medium">Alıcı</th>
-            <th className="px-3 py-2 font-medium">Tarih</th>
-            <th className="px-3 py-2 font-medium">Skor</th>
-            <th className="px-3 py-2 font-medium text-right">Aksiyon</th>
+            <th className="px-3 py-2 font-medium">From</th>
+            <th className="px-3 py-2 font-medium">Subject</th>
+            <th className="px-3 py-2 font-medium">Recipient</th>
+            <th className="px-3 py-2 font-medium">Date</th>
+            <th className="px-3 py-2 font-medium">Score</th>
+            <th className="px-3 py-2 font-medium text-right">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -67,7 +67,7 @@ export default function QuarantineTable({
                 {mail.sender || mail.from}
               </td>
               <td className="max-w-[280px] truncate px-3 py-2 text-zinc-900 dark:text-zinc-100">
-                {mail.subject || '(konu yok)'}
+                {mail.subject || '(no subject)'}
               </td>
               <td className="max-w-[200px] truncate px-3 py-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
                 {mail.receiver}

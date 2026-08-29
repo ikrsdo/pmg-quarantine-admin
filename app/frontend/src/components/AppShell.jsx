@@ -48,7 +48,7 @@ export default function AppShell({ children }) {
               onClick={logout}
               className="rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
             >
-              Çıkış
+              Log out
             </button>
           </div>
         </div>
@@ -67,7 +67,7 @@ export default function AppShell({ children }) {
               onClick={logout}
               className="rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
             >
-              Çıkış
+              Log out
             </button>
           </div>
         </header>

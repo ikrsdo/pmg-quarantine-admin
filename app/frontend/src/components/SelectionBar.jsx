@@ -1,14 +1,14 @@
 export default function SelectionBar({ count, onDeliver, onBlockRequest, onClear }) {
   return (
     <div className="sticky bottom-0 z-10 flex items-center justify-between gap-3 border-t border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
-      <span className="text-sm text-zinc-600 dark:text-zinc-400">{count} mesaj seçildi</span>
+      <span className="text-sm text-zinc-600 dark:text-zinc-400">{count} messages selected</span>
       <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={onClear}
           className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
         >
-          Temizle
+          Clear
         </button>
         <button
           type="button"

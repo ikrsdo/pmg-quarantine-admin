@@ -10,7 +10,7 @@ import EmptyState from '../components/EmptyState';
 
 function formatTime(unixSeconds) {
   if (!unixSeconds) return '';
-  return new Date(unixSeconds * 1000).toLocaleString('tr-TR', {
+  return new Date(unixSeconds * 1000).toLocaleString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -38,7 +38,7 @@ function MetaRow({ label, value }) {
 
 function SpamInfoBreakdown({ spaminfo }) {
   if (!spaminfo || spaminfo.length === 0) {
-    return <p className="text-sm text-zinc-500 dark:text-zinc-500">Eşleşen spam testi yok.</p>;
+    return <p className="text-sm text-zinc-500 dark:text-zinc-500">No matching spam tests.</p>;
   }
   return (
     <ul className="flex flex-col gap-2">
@@ -71,7 +71,7 @@ function ContentTabs({ mail }) {
     <div>
       <div className="flex gap-1 border-b border-zinc-200 dark:border-zinc-800">
         {[
-          { id: 'preview', label: 'Önizleme' },
+          { id: 'preview', label: 'Preview' },
           { id: 'headers', label: 'Headers' },
         ].map((t) => (
           <button
@@ -90,7 +90,7 @@ function ContentTabs({ mail }) {
       </div>
       <div className="max-h-[60vh] overflow-auto rounded-b-lg bg-zinc-50 p-3 dark:bg-zinc-900">
         <pre className="whitespace-pre-wrap break-all font-mono text-xs text-zinc-700 dark:text-zinc-300">
-          {tab === 'preview' ? mail.content || '(içerik yok)' : mail.header || '(header yok)'}
+          {tab === 'preview' ? mail.content || '(no content)' : mail.header || '(no headers)'}
         </pre>
       </div>
     </div>
@@ -170,10 +170,10 @@ export default function QuarantineDetailPage() {
           onClick={() => navigate('/quarantine')}
           className="rounded-md px-2 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
         >
-          ← Geri
+          ← Back
         </button>
         <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-          {mail?.subject || 'Mesaj Detayı'}
+          {mail?.subject || 'Message details'}
         </p>
         <div className="ml-auto hidden lg:block">{actionButtons}</div>
       </header>
@@ -187,7 +187,7 @@ export default function QuarantineDetailPage() {
         )}
 
         {!isLoading && !mail && (
-          <EmptyState title="Mesaj bulunamadı" description="Bu mesaj artık karantinada değil." />
+          <EmptyState title="Message not found" description="This message is no longer in quarantine." />
         )}
 
         {mail && (
@@ -195,21 +195,21 @@ export default function QuarantineDetailPage() {
             <div className="flex flex-col gap-4 lg:w-80 lg:shrink-0">
               <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
                 <div className="mb-3 flex items-center justify-between">
-                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Spam Skoru</p>
+                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Spam Score</p>
                   <SpamScoreBadge score={mail.spamlevel} />
                 </div>
                 <div className="flex flex-col gap-3">
-                  <MetaRow label="Gönderen" value={mail.sender || mail.from} />
-                  <MetaRow label="Zarf Gönderen" value={mail.envelope_sender} />
-                  <MetaRow label="Alıcı" value={mail.receiver} />
-                  <MetaRow label="Tarih" value={formatTime(mail.time)} />
-                  <MetaRow label="Boyut" value={formatBytes(mail.bytes)} />
+                  <MetaRow label="From" value={mail.sender || mail.from} />
+                  <MetaRow label="Envelope Sender" value={mail.envelope_sender} />
+                  <MetaRow label="Recipient" value={mail.receiver} />
+                  <MetaRow label="Date" value={formatTime(mail.time)} />
+                  <MetaRow label="Size" value={formatBytes(mail.bytes)} />
                 </div>
               </div>
 
               <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
                 <p className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-500">
-                  Spam Testi Detayları
+                  Spam Test Details
                 </p>
                 <SpamInfoBreakdown spaminfo={mail.spaminfo} />
               </div>
@@ -230,13 +230,13 @@ export default function QuarantineDetailPage() {
 
       <ConfirmDialog
         open={pendingAction !== null}
-        title={pendingAction === 'deliver' ? 'Bu mesaj teslim edilsin mi?' : 'Bu mesaj engellensin mi?'}
+        title={pendingAction === 'deliver' ? 'Deliver this message?' : 'Block this message?'}
         description={
           pendingAction === 'deliver'
-            ? 'Mesaj alıcının gelen kutusuna teslim edilecek.'
-            : "Gönderen blocklist'e eklenecek ve mesaj silinecek. Bu işlem geri alınamaz."
+            ? 'The message will be delivered to the recipient’s inbox.'
+            : 'The sender will be added to the block list and the message will be deleted. This cannot be undone.'
         }
-        confirmLabel={pendingAction === 'deliver' ? 'Teslim Et' : 'Engelle'}
+        confirmLabel={pendingAction === 'deliver' ? 'Deliver' : 'Block'}
         tone={pendingAction === 'deliver' ? 'primary' : 'danger'}
         onConfirm={confirmAction}
         onCancel={() => setPendingAction(null)}

@@ -7,7 +7,7 @@ export default function ConfirmDialog({
   open,
   title,
   description,
-  confirmLabel = 'Onayla',
+  confirmLabel = 'Confirm',
   tone = 'danger',
   onConfirm,
   onCancel,
@@ -27,7 +27,7 @@ export default function ConfirmDialog({
             onClick={onCancel}
             className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
           >
-            Vazgeç
+            Cancel
           </button>
           <button
             type="button"

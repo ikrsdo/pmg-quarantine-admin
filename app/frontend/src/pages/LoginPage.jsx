@@ -4,9 +4,9 @@ import { useAuth } from '../hooks/useAuth';
 import { ApiError } from '../api/client';
 
 const ERROR_MESSAGES = {
-  invalid_credentials: 'Kullanıcı adı veya şifre hatalı.',
-  pmg_unreachable: 'PMG sunucusuna ulaşılamıyor. Daha sonra tekrar deneyin.',
-  username_and_password_required: 'Kullanıcı adı ve şifre gerekli.',
+  invalid_credentials: 'Incorrect username or password.',
+  pmg_unreachable: 'Could not reach the PMG server. Please try again later.',
+  username_and_password_required: 'Username and password are required.',
 };
 
 export default function LoginPage() {
@@ -29,9 +29,9 @@ export default function LoginPage() {
       navigate(redirectTo, { replace: true });
     } catch (err) {
       if (err instanceof ApiError) {
-        setError(ERROR_MESSAGES[err.body?.error] || 'Giriş başarısız oldu.');
+        setError(ERROR_MESSAGES[err.body?.error] || 'Login failed.');
       } else {
-        setError('Beklenmeyen bir hata oluştu.');
+        setError('An unexpected error occurred.');
       }
     } finally {
       setSubmitting(false);
@@ -45,12 +45,12 @@ export default function LoginPage() {
           PMG Quarantine Admin
         </h1>
         <p className="mb-6 text-center text-sm text-zinc-500 dark:text-zinc-500">
-          Kendi PMG hesabınızla giriş yapın
+          Sign in with your own PMG account
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <label className="flex flex-col gap-1 text-xs text-zinc-500 dark:text-zinc-500">
-            Kullanıcı adı
+            Username
             <input
               type="text"
               autoComplete="username"
@@ -63,7 +63,7 @@ export default function LoginPage() {
           </label>
 
           <label className="flex flex-col gap-1 text-xs text-zinc-500 dark:text-zinc-500">
-            Şifre
+            Password
             <input
               type="password"
               autoComplete="current-password"
@@ -83,7 +83,7 @@ export default function LoginPage() {
             disabled={submitting}
             className="mt-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50"
           >
-            {submitting ? 'Giriş yapılıyor…' : 'Giriş yap'}
+            {submitting ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
       </div>

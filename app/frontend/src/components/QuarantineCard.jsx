@@ -7,7 +7,7 @@ const REVEAL_WIDTH = 96; // px each action panel opens to
 const SWIPE_THRESHOLD = 48; // px of drag before it snaps open
 
 function formatTime(unixSeconds) {
-  return new Date(unixSeconds * 1000).toLocaleString('tr-TR', {
+  return new Date(unixSeconds * 1000).toLocaleString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: '2-digit',
@@ -121,14 +121,14 @@ export default function QuarantineCard({ mail, selected, selectionMode, onToggle
             <SpamScoreBadge score={mail.spamlevel} />
           </div>
           <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-            {mail.subject || '(konu yok)'}
+            {mail.subject || '(no subject)'}
           </p>
           <div className="mt-0.5 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
             <span>{formatTime(mail.time)}</span>
             <span>·</span>
             <span>{formatBytes(mail.bytes)}</span>
             {mail.seen === false && (
-              <span className="ml-auto inline-block size-1.5 rounded-full bg-blue-500" title="Okunmadı" />
+              <span className="ml-auto inline-block size-1.5 rounded-full bg-blue-500" title="Unread" />
             )}
           </div>
         </div>

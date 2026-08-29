@@ -19,9 +19,9 @@ export default function ThemeToggle() {
       type="button"
       onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
       className="rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
-      aria-label="Temayı değiştir"
+      aria-label="Toggle theme"
     >
-      {theme === 'dark' ? 'Açık tema' : 'Koyu tema'}
+      {theme === 'dark' ? 'Light theme' : 'Dark theme'}
     </button>
   );
 }

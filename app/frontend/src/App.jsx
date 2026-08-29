@@ -13,7 +13,7 @@ function ProtectedRoute({ children }) {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white dark:bg-zinc-950">
-        <p className="text-sm text-zinc-500 dark:text-zinc-500">Yükleniyor…</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-500">Loading…</p>
       </div>
     );
   }

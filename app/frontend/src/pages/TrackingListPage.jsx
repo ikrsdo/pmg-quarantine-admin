@@ -16,7 +16,7 @@ function toUnixSeconds(datetimeLocal) {
 
 function formatTime(unixSeconds) {
   if (!unixSeconds) return '';
-  return new Date(unixSeconds * 1000).toLocaleString('tr-TR', {
+  return new Date(unixSeconds * 1000).toLocaleString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -81,7 +81,7 @@ export default function TrackingListPage() {
           type="search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Gönderen veya alıcıda ara…"
+          placeholder="Search sender or recipient…"
           className="min-w-0 flex-1 rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
         />
         <button
@@ -89,7 +89,7 @@ export default function TrackingListPage() {
           onClick={() => setFilterOpen(true)}
           className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
         >
-          Filtrele
+          Filter
         </button>
       </div>
 
@@ -98,8 +98,8 @@ export default function TrackingListPage() {
 
         {!isLoading && filtered.length === 0 && (
           <EmptyState
-            title="Kayıt bulunamadı"
-            description="Filtrelerinize uyan bir mail izleme kaydı yok."
+            title="No entries found"
+            description="No mail tracking entry matches your filters."
           />
         )}
 
@@ -109,11 +109,11 @@ export default function TrackingListPage() {
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-zinc-200 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
-                    <th className="py-2 pr-3 font-medium">Gönderen</th>
-                    <th className="py-2 pr-3 font-medium">Alıcı</th>
-                    <th className="py-2 pr-3 font-medium">Tarih</th>
+                    <th className="py-2 pr-3 font-medium">From</th>
+                    <th className="py-2 pr-3 font-medium">Recipient</th>
+                    <th className="py-2 pr-3 font-medium">Date</th>
                     <th className="py-2 pr-3 font-medium">Relay</th>
-                    <th className="py-2 pr-3 font-medium">Durum</th>
+                    <th className="py-2 pr-3 font-medium">Status</th>
                   </tr>
                 </thead>
                 <tbody>

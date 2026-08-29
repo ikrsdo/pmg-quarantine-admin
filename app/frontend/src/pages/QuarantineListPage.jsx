@@ -96,7 +96,7 @@ export default function QuarantineListPage() {
           type="search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Konu veya gönderende ara…"
+          placeholder="Search subject or sender…"
           className="min-w-0 flex-1 rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
         />
         <button
@@ -104,7 +104,7 @@ export default function QuarantineListPage() {
           onClick={() => setFilterOpen(true)}
           className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
         >
-          Filtrele
+          Filter
         </button>
         <button
           type="button"
@@ -118,7 +118,7 @@ export default function QuarantineListPage() {
               : 'border border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900'
           }`}
         >
-          Seç
+          Select
         </button>
       </div>
 
@@ -127,8 +127,8 @@ export default function QuarantineListPage() {
 
         {!isLoading && filtered.length === 0 && (
           <EmptyState
-            title="Karantina boş"
-            description="Filtrelerinize uyan bir mesaj bulunamadı."
+            title="Quarantine is empty"
+            description="No message matches your filters."
           />
         )}
 
@@ -187,11 +187,11 @@ export default function QuarantineListPage() {
         open={blockTarget !== null}
         title={
           blockTarget === 'bulk'
-            ? `${selectedIds.size} mesaj engellensin mi?`
-            : 'Bu mesaj engellensin mi?'
+            ? `Block ${selectedIds.size} messages?`
+            : 'Block this message?'
         }
-        description="Gönderen blocklist'e eklenecek ve mesaj(lar) silinecek. Bu işlem geri alınamaz."
-        confirmLabel="Engelle"
+        description="The sender will be added to the block list and the message(s) will be deleted. This cannot be undone."
+        confirmLabel="Block"
         onConfirm={confirmBlock}
         onCancel={() => setBlockTarget(null)}
       />
