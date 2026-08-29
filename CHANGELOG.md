@@ -55,6 +55,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
   below their natural text width. Fixed by giving those elements
   `min-w-0` (and `truncate` where missing) so they shrink and ellipsize
   within the viewport instead of pushing it wider.
+- On mobile, focusing any form field (login username/password, search
+  boxes, filter fields) made the page appear to shift/zoom and could
+  cause horizontal overflow. iOS Safari auto-zooms the viewport when a
+  focused input's `font-size` is below 16px; several inputs used
+  `text-sm` (14px). Fixed by forcing `font-size: 16px` on all
+  `input`/`select`/`textarea` elements below the `640px` breakpoint.
 
 ## [0.2.0] - 2026-08-29
 

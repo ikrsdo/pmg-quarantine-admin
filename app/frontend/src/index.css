@@ -9,9 +9,23 @@
 
 html {
   color-scheme: light dark;
+  overflow-x: hidden;
 }
 
 body {
   @apply bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100;
   font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* iOS Safari auto-zooms the viewport when a focused input's font-size is
+   below 16px, which shifts/shrinks the whole layout until the user zooms
+   back out manually. Force 16px on mobile so focusing a field never
+   triggers that zoom. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
