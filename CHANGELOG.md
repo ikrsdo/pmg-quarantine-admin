@@ -9,8 +9,9 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Changed
 
-- The Quarantine and Tracking Center filter modals now close on Escape
-  or on a click outside the modal, not just via the Close button.
+- The Quarantine and Tracking Center filter modals, and the Quarantine
+  "Block" confirmation dialog, now close on Escape or on a click
+  outside the modal, not just via their Close/Cancel button.
 
 ## [0.2.0] - 2026-08-29
 

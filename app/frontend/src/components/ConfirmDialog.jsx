@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 const TONE_STYLES = {
   danger: 'bg-red-600 hover:bg-red-500',
   primary: 'bg-emerald-600 hover:bg-emerald-500',
@@ -12,11 +14,26 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }) {
+  useEffect(() => {
+    if (!open) return;
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') onCancel();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, onCancel]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-sm rounded-lg border border-zinc-200 bg-white p-4 shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-sm rounded-lg border border-zinc-200 bg-white p-4 shadow-lg dark:border-zinc-800 dark:bg-zinc-950"
+        onClick={(e) => e.stopPropagation()}
+      >
         <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{title}</p>
         {description && (
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-500">{description}</p>
