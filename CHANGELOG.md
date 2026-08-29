@@ -7,6 +7,8 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-29
+
 ### Added
 
 - App version number is now shown in the GUI itself (sidebar on
@@ -38,6 +40,8 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - The Quarantine "recipient email" filter is now a dropdown of "All"
   plus the distinct recipient addresses currently in quarantine,
   instead of a free-text field.
+- Desktop sidebar is wider, and the logged-in account name now sits
+  near the top (under the app title) instead of the bottom.
 
 ## [0.1.0] - 2026-08-29
 
