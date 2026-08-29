@@ -28,6 +28,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
   list stays mounted underneath, so filters, sort, and scroll position
   are preserved when it closes. A direct link to a message/entry (or a
   page refresh) still opens the full standalone detail page as before.
+- Tracking Center detail's raw syslog dump is now presented as a
+  "Message Events" timeline: each line is categorized (Received,
+  Queued, Processed, Delivered, Deferred, Bounced, Rejected,
+  Greylisted, or a generic Log fallback) with a plain-language summary,
+  and can be expanded to see the original syslog line. A "Show raw
+  log" toggle switches back to the previous plain-text view.
 
 ## [0.2.0] - 2026-08-29
 

@@ -5,6 +5,7 @@ import { ArrowLeft, X } from 'lucide-react';
 import { fetchTrackingDetail } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
 import TrackingStatusBadge from '../components/TrackingStatusBadge';
+import MessageEventsTimeline from '../components/MessageEventsTimeline';
 import { SkeletonCard } from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 
@@ -117,18 +118,7 @@ export default function TrackingDetailPage({ overlay = false }) {
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="mb-2 text-xs font-medium text-zinc-500 dark:text-zinc-500">
-              Syslog Entries
-            </p>
-            <div className="max-h-[60vh] overflow-auto rounded-lg bg-zinc-50 p-3 dark:bg-zinc-900">
-              {entry.logs && entry.logs.length > 0 ? (
-                <pre className="whitespace-pre-wrap break-all font-mono text-xs text-zinc-700 dark:text-zinc-300">
-                  {entry.logs.join('\n')}
-                </pre>
-              ) : (
-                <p className="text-sm text-zinc-500 dark:text-zinc-500">No log entries.</p>
-              )}
-            </div>
+            <MessageEventsTimeline logs={entry.logs} />
           </div>
         </div>
       )}
