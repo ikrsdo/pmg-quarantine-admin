@@ -12,6 +12,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - App version number is now shown in the GUI itself (sidebar on
   desktop, header on mobile), sourced from `package.json`.
 
+### Changed
+
+- Desktop sidebar, and the search/filter toolbar and table headers on
+  the Quarantine and Tracking Center list pages, now stay fixed in
+  place - only the list/table content scrolls underneath them.
+
 ## [0.1.0] - 2026-08-29
 
 ### Added
