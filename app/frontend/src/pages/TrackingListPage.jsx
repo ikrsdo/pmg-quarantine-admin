@@ -14,12 +14,12 @@ function SortableHeader({ label, sortKey, activeKey, dir, onSort }) {
   const isActive = sortKey === activeKey;
   const Icon = isActive ? (dir === 'asc' ? ArrowUp : ArrowDown) : ChevronsUpDown;
   return (
-    <th className="py-2 pr-3 font-medium">
+    <th className="py-2 pr-3">
       <button
         type="button"
         onClick={() => onSort(sortKey)}
-        className={`inline-flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100 ${
-          isActive ? 'text-zinc-900 dark:text-zinc-100' : ''
+        className={`inline-flex items-center gap-1 hover:text-zinc-950 dark:hover:text-white ${
+          isActive ? 'text-zinc-950 dark:text-white' : ''
         }`}
       >
         {label}
@@ -45,23 +45,33 @@ function formatTime(unixSeconds) {
   });
 }
 
-const EMPTY_FILTERS = {
-  from: '',
-  target: '',
-  xfilter: '',
-  ndr: false,
-  greylist: false,
-  starttimeLocal: '',
-  endtimeLocal: '',
-};
+function toDatetimeLocal(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function defaultFilters() {
+  const now = new Date();
+  const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  return {
+    from: '',
+    target: '',
+    xfilter: '',
+    ndr: false,
+    greylist: false,
+    starttimeLocal: toDatetimeLocal(oneHourAgo),
+    endtimeLocal: toDatetimeLocal(midnight),
+  };
+}
 
 export default function TrackingListPage() {
   const { handleUnauthorized } = useAuth();
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState(EMPTY_FILTERS);
-  const [appliedFilters, setAppliedFilters] = useState(EMPTY_FILTERS);
+  const [filters, setFilters] = useState(defaultFilters);
+  const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortKey, setSortKey] = useState('time');
   const [sortDir, setSortDir] = useState('desc');
@@ -154,13 +164,13 @@ export default function TrackingListPage() {
             <>
               <div className="hidden lg:block">
                 <table className="w-full text-left text-sm">
-                  <thead className="sticky top-0 z-10 bg-white dark:bg-zinc-950">
-                    <tr className="border-b border-zinc-200 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
+                  <thead className="sticky top-0 z-10 bg-zinc-50 dark:bg-zinc-900">
+                    <tr className="border-b-2 border-zinc-300 text-xs font-semibold uppercase tracking-wide text-zinc-700 dark:border-zinc-700 dark:text-zinc-300">
                       <SortableHeader label="From" sortKey="from" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <SortableHeader label="Recipient" sortKey="to" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <SortableHeader label="Date" sortKey="time" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <SortableHeader label="Relay" sortKey="relay" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
-                      <th className="py-2 pr-3 font-medium">Status</th>
+                      <th className="py-2 pr-3">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -168,7 +178,7 @@ export default function TrackingListPage() {
                       <tr
                         key={m.id}
                         onClick={() => navigate(`/tracking/${encodeURIComponent(m.id)}`)}
-                        className="cursor-pointer border-b border-zinc-100 hover:bg-zinc-50 dark:border-zinc-900 dark:hover:bg-zinc-900/50"
+                        className="cursor-pointer border-b border-zinc-100 odd:bg-white even:bg-zinc-50 hover:bg-blue-50 dark:border-zinc-900 dark:odd:bg-zinc-950 dark:even:bg-zinc-900/40 dark:hover:bg-zinc-800"
                       >
                         <td className="max-w-[16rem] truncate py-2 pr-3 font-mono text-xs text-zinc-900 dark:text-zinc-100">
                           {m.from}

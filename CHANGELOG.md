@@ -23,6 +23,13 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - Desktop sidebar, and the search/filter toolbar and table headers on
   the Quarantine and Tracking Center list pages, now stay fixed in
   place - only the list/table content scrolls underneath them.
+- Quarantine and Tracking Center desktop tables now use zebra-striped
+  rows and a more prominent header row (shaded background, bolder
+  uppercase labels, stronger bottom border) for readability.
+- Tracking Center now defaults to PMG's own GUI behavior - from one
+  hour before the page loads through midnight of the current day -
+  instead of PMG's implicit ~24h default when no time range is
+  requested.
 - Quarantine list now defaults to the last 7 days (matching PMG's own
   GUI default) instead of PMG's implicit ~24h default when no time
   range is requested.

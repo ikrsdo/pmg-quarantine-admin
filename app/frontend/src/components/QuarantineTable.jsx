@@ -16,12 +16,12 @@ function SortableHeader({ label, sortKey, activeKey, dir, onSort, className = ''
   const isActive = sortKey === activeKey;
   const Icon = isActive ? (dir === 'asc' ? ArrowUp : ArrowDown) : ChevronsUpDown;
   return (
-    <th className={`px-3 py-2 font-medium ${className}`}>
+    <th className={`px-3 py-2 ${className}`}>
       <button
         type="button"
         onClick={() => onSort(sortKey)}
-        className={`inline-flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100 ${
-          isActive ? 'text-zinc-900 dark:text-zinc-100' : ''
+        className={`inline-flex items-center gap-1 hover:text-zinc-950 dark:hover:text-white ${
+          isActive ? 'text-zinc-950 dark:text-white' : ''
         }`}
       >
         {label}
@@ -49,8 +49,8 @@ export default function QuarantineTable({
   return (
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800">
       <table className="w-full min-w-[720px] text-sm">
-        <thead className="sticky top-0 z-10 bg-white dark:bg-zinc-950">
-          <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
+        <thead className="sticky top-0 z-10 bg-zinc-50 dark:bg-zinc-900">
+          <tr className="border-b-2 border-zinc-300 text-left text-xs font-semibold uppercase tracking-wide text-zinc-700 dark:border-zinc-700 dark:text-zinc-300">
             {selectionMode && (
               <th className="w-10 px-3 py-2">
                 <input
@@ -66,7 +66,7 @@ export default function QuarantineTable({
             <SortableHeader label="Recipient" sortKey="receiver" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <SortableHeader label="Date" sortKey="time" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <SortableHeader label="Score" sortKey="spamlevel" activeKey={sortKey} dir={sortDir} onSort={onSort} />
-            <th className="px-3 py-2 font-medium text-right">Action</th>
+            <th className="px-3 py-2 text-right">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -74,7 +74,7 @@ export default function QuarantineTable({
             <tr
               key={mail.id}
               onClick={() => navigate(`/quarantine/${encodeURIComponent(mail.id)}`)}
-              className="cursor-pointer border-b border-zinc-100 last:border-0 hover:bg-zinc-50 dark:border-zinc-900 dark:hover:bg-zinc-900/50"
+              className="cursor-pointer border-b border-zinc-100 odd:bg-white even:bg-zinc-50 last:border-0 hover:bg-blue-50 dark:border-zinc-900 dark:odd:bg-zinc-950 dark:even:bg-zinc-900/40 dark:hover:bg-zinc-800"
             >
               {selectionMode && (
                 <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
