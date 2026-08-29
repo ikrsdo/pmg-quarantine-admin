@@ -1,15 +1,16 @@
 import { NavLink } from 'react-router-dom';
+import { ShieldAlert, Activity, LogOut } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from '../theme/ThemeToggle';
 import { version } from '../../package.json';
 
 const NAV_ITEMS = [
-  { to: '/quarantine', label: 'Quarantine' },
-  { to: '/tracking', label: 'Tracking Center' },
+  { to: '/quarantine', label: 'Quarantine', icon: ShieldAlert },
+  { to: '/tracking', label: 'Tracking Center', icon: Activity },
 ];
 
 function navLinkClass({ isActive }) {
-  return `rounded-md px-3 py-2 text-sm font-medium ${
+  return `flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${
     isActive
       ? 'bg-blue-600/10 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
       : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900'
@@ -17,7 +18,7 @@ function navLinkClass({ isActive }) {
 }
 
 function mobileNavLinkClass({ isActive }) {
-  return `flex-1 border-b-2 px-3 py-2.5 text-center text-sm font-medium ${
+  return `flex flex-1 items-center justify-center gap-1.5 border-b-2 px-3 py-2.5 text-center text-sm font-medium ${
     isActive
       ? 'border-blue-600 text-blue-600 dark:text-blue-400'
       : 'border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300'
@@ -41,14 +42,16 @@ export default function AppShell({ children }) {
           <button
             type="button"
             onClick={logout}
-            className="rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
+            className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
           >
+            <LogOut className="size-3.5" />
             Log out
           </button>
         </div>
         <nav className="mt-6 flex flex-col gap-1">
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.to} to={item.to} className={navLinkClass}>
+              <item.icon className="size-4" />
               {item.label}
             </NavLink>
           ))}
@@ -79,6 +82,7 @@ export default function AppShell({ children }) {
         <nav className="flex shrink-0 border-b border-zinc-200 dark:border-zinc-800 lg:hidden">
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.to} to={item.to} className={mobileNavLinkClass}>
+              <item.icon className="size-4" />
               {item.label}
             </NavLink>
           ))}

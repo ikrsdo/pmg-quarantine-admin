@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft, Send, ShieldCheck, Ban } from 'lucide-react';
 import { fetchQuarantineDetail, performQuarantineAction } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import SpamScoreBadge from '../components/SpamScoreBadge';
@@ -141,22 +142,25 @@ export default function QuarantineDetailPage() {
       <button
         type="button"
         onClick={() => requestAction('deliver')}
-        className="flex-1 rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500 lg:flex-none"
+        className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500 lg:flex-none"
       >
+        <Send className="size-4" />
         Deliver
       </button>
       <button
         type="button"
         onClick={whitelist}
-        className="flex-1 rounded-md border border-blue-600 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-500/10 dark:text-blue-400 lg:flex-none"
+        className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-blue-600 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-500/10 dark:text-blue-400 lg:flex-none"
       >
+        <ShieldCheck className="size-4" />
         Whitelist
       </button>
       <button
         type="button"
         onClick={() => requestAction('blocklist')}
-        className="flex-1 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500 lg:flex-none"
+        className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500 lg:flex-none"
       >
+        <Ban className="size-4" />
         Block
       </button>
     </div>
@@ -168,9 +172,10 @@ export default function QuarantineDetailPage() {
         <button
           type="button"
           onClick={() => navigate('/quarantine')}
-          className="rounded-md px-2 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
+          className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
         >
-          ← Back
+          <ArrowLeft className="size-4" />
+          Back
         </button>
         <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           {mail?.subject || 'Message details'}

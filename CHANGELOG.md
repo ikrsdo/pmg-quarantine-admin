@@ -11,12 +11,24 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 - App version number is now shown in the GUI itself (sidebar on
   desktop, header on mobile), sourced from `package.json`.
+- Quarantine and Tracking Center desktop tables now have sortable
+  columns (click a header to sort, click again to reverse), matching
+  PMG's own list behavior.
+- Adopted the [Lucide](https://lucide.dev) icon set across the app
+  (navigation, toolbar, action buttons, theme toggle, back links) for
+  a more polished, professional look.
 
 ### Changed
 
 - Desktop sidebar, and the search/filter toolbar and table headers on
   the Quarantine and Tracking Center list pages, now stay fixed in
   place - only the list/table content scrolls underneath them.
+- Quarantine list now defaults to the last 7 days (matching PMG's own
+  GUI default) instead of PMG's implicit ~24h default when no time
+  range is requested.
+- The Quarantine "recipient email" filter is now a dropdown of "All"
+  plus the distinct recipient addresses currently in quarantine,
+  instead of a free-text field.
 
 ## [0.1.0] - 2026-08-29
 

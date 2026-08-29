@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { Search, SlidersHorizontal, ArrowUp, ArrowDown, ChevronsUpDown } from 'lucide-react';
 import { fetchTrackingList } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
 import AppShell from '../components/AppShell';
@@ -8,6 +9,25 @@ import TrackingStatusBadge from '../components/TrackingStatusBadge';
 import TrackingFilterSheet from '../components/TrackingFilterSheet';
 import EmptyState from '../components/EmptyState';
 import { SkeletonList } from '../components/Skeleton';
+
+function SortableHeader({ label, sortKey, activeKey, dir, onSort }) {
+  const isActive = sortKey === activeKey;
+  const Icon = isActive ? (dir === 'asc' ? ArrowUp : ArrowDown) : ChevronsUpDown;
+  return (
+    <th className="py-2 pr-3 font-medium">
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        className={`inline-flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100 ${
+          isActive ? 'text-zinc-900 dark:text-zinc-100' : ''
+        }`}
+      >
+        {label}
+        <Icon className="size-3.5" />
+      </button>
+    </th>
+  );
+}
 
 function toUnixSeconds(datetimeLocal) {
   if (!datetimeLocal) return undefined;
@@ -43,6 +63,8 @@ export default function TrackingListPage() {
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState(EMPTY_FILTERS);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [sortKey, setSortKey] = useState('time');
+  const [sortDir, setSortDir] = useState('desc');
 
   const queryParams = useMemo(
     () => ({
@@ -67,29 +89,53 @@ export default function TrackingListPage() {
   }
 
   const mails = data || [];
-  const filtered = searchTerm
-    ? mails.filter((m) => {
-        const haystack = `${m.from || ''} ${m.to || ''}`.toLowerCase();
-        return haystack.includes(searchTerm.toLowerCase());
-      })
-    : mails;
+
+  const filtered = useMemo(() => {
+    let result = searchTerm
+      ? mails.filter((m) => {
+          const haystack = `${m.from || ''} ${m.to || ''}`.toLowerCase();
+          return haystack.includes(searchTerm.toLowerCase());
+        })
+      : mails;
+    const dir = sortDir === 'asc' ? 1 : -1;
+    return [...result].sort((a, b) => {
+      const av = a[sortKey] ?? '';
+      const bv = b[sortKey] ?? '';
+      if (av < bv) return -1 * dir;
+      if (av > bv) return 1 * dir;
+      return 0;
+    });
+  }, [mails, searchTerm, sortKey, sortDir]);
+
+  function toggleSort(key) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortDir('asc');
+    }
+  }
 
   return (
     <AppShell>
       <div className="flex h-full flex-col overflow-hidden">
         <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-          <input
-            type="search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search sender or recipient…"
-            className="min-w-0 flex-1 rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
-          />
+          <div className="relative min-w-0 flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search sender or recipient…"
+              className="w-full rounded-md border border-zinc-300 bg-transparent py-2 pl-9 pr-3 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
+            />
+          </div>
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+            className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
           >
+            <SlidersHorizontal className="size-4" />
             Filter
           </button>
         </div>
@@ -110,10 +156,10 @@ export default function TrackingListPage() {
                 <table className="w-full text-left text-sm">
                   <thead className="sticky top-0 z-10 bg-white dark:bg-zinc-950">
                     <tr className="border-b border-zinc-200 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
-                      <th className="py-2 pr-3 font-medium">From</th>
-                      <th className="py-2 pr-3 font-medium">Recipient</th>
-                      <th className="py-2 pr-3 font-medium">Date</th>
-                      <th className="py-2 pr-3 font-medium">Relay</th>
+                      <SortableHeader label="From" sortKey="from" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
+                      <SortableHeader label="Recipient" sortKey="to" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
+                      <SortableHeader label="Date" sortKey="time" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
+                      <SortableHeader label="Relay" sortKey="relay" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <th className="py-2 pr-3 font-medium">Status</th>
                     </tr>
                   </thead>

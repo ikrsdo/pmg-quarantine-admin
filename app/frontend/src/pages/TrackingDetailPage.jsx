@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { fetchTrackingDetail } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
 import TrackingStatusBadge from '../components/TrackingStatusBadge';
@@ -54,9 +55,10 @@ export default function TrackingDetailPage() {
         <button
           type="button"
           onClick={() => navigate('/tracking')}
-          className="rounded-md px-2 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
+          className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
         >
-          ← Back
+          <ArrowLeft className="size-4" />
+          Back
         </button>
         <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           Mail Tracking Entry

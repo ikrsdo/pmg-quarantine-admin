@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { ArrowUp, ArrowDown, ChevronsUpDown, Send, Ban } from 'lucide-react';
 import SpamScoreBadge from './SpamScoreBadge';
 
 function formatTime(unixSeconds) {
@@ -11,6 +12,25 @@ function formatTime(unixSeconds) {
   });
 }
 
+function SortableHeader({ label, sortKey, activeKey, dir, onSort, className = '' }) {
+  const isActive = sortKey === activeKey;
+  const Icon = isActive ? (dir === 'asc' ? ArrowUp : ArrowDown) : ChevronsUpDown;
+  return (
+    <th className={`px-3 py-2 font-medium ${className}`}>
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        className={`inline-flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100 ${
+          isActive ? 'text-zinc-900 dark:text-zinc-100' : ''
+        }`}
+      >
+        {label}
+        <Icon className="size-3.5" />
+      </button>
+    </th>
+  );
+}
+
 export default function QuarantineTable({
   mails,
   selectedIds,
@@ -19,6 +39,9 @@ export default function QuarantineTable({
   onToggleSelectAll,
   onDeliver,
   onBlockRequest,
+  sortKey,
+  sortDir,
+  onSort,
 }) {
   const navigate = useNavigate();
   const allSelected = mails.length > 0 && mails.every((m) => selectedIds.has(m.id));
@@ -38,11 +61,11 @@ export default function QuarantineTable({
                 />
               </th>
             )}
-            <th className="px-3 py-2 font-medium">From</th>
-            <th className="px-3 py-2 font-medium">Subject</th>
-            <th className="px-3 py-2 font-medium">Recipient</th>
-            <th className="px-3 py-2 font-medium">Date</th>
-            <th className="px-3 py-2 font-medium">Score</th>
+            <SortableHeader label="From" sortKey="sender" activeKey={sortKey} dir={sortDir} onSort={onSort} />
+            <SortableHeader label="Subject" sortKey="subject" activeKey={sortKey} dir={sortDir} onSort={onSort} />
+            <SortableHeader label="Recipient" sortKey="receiver" activeKey={sortKey} dir={sortDir} onSort={onSort} />
+            <SortableHeader label="Date" sortKey="time" activeKey={sortKey} dir={sortDir} onSort={onSort} />
+            <SortableHeader label="Score" sortKey="spamlevel" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <th className="px-3 py-2 font-medium text-right">Action</th>
           </tr>
         </thead>
@@ -83,15 +106,17 @@ export default function QuarantineTable({
                   <button
                     type="button"
                     onClick={() => onDeliver(mail.id)}
-                    className="rounded px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
+                    className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
                   >
+                    <Send className="size-3.5" />
                     Deliver
                   </button>
                   <button
                     type="button"
                     onClick={() => onBlockRequest(mail.id)}
-                    className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-500/10 dark:text-red-400"
+                    className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-500/10 dark:text-red-400"
                   >
+                    <Ban className="size-3.5" />
                     Block
                   </button>
                 </div>

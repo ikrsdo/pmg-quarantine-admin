@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Sun, Moon } from 'lucide-react';
 
 const STORAGE_KEY = 'pmg-quarantine-admin:theme';
 
@@ -18,9 +19,10 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-      className="rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
+      className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
       aria-label="Toggle theme"
     >
+      {theme === 'dark' ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
       {theme === 'dark' ? 'Light theme' : 'Dark theme'}
     </button>
   );

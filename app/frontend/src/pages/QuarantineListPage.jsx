@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Search, SlidersHorizontal, CheckSquare } from 'lucide-react';
 import { fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import QuarantineCard from '../components/QuarantineCard';
@@ -16,23 +17,33 @@ function toUnixSeconds(datetimeLocal) {
   return Math.floor(new Date(datetimeLocal).getTime() / 1000);
 }
 
-const EMPTY_FILTERS = { pmail: '', starttimeLocal: '', endtimeLocal: '' };
+function toDatetimeLocal(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function defaultFilters() {
+  const now = new Date();
+  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  return { pmail: '', starttimeLocal: toDatetimeLocal(weekAgo), endtimeLocal: toDatetimeLocal(now) };
+}
 
 export default function QuarantineListPage() {
   const { handleUnauthorized } = useAuth();
   const queryClient = useQueryClient();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState(EMPTY_FILTERS);
-  const [appliedFilters, setAppliedFilters] = useState(EMPTY_FILTERS);
+  const [filters, setFilters] = useState(defaultFilters);
+  const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [blockTarget, setBlockTarget] = useState(null); // single id or 'bulk'
+  const [sortKey, setSortKey] = useState('time');
+  const [sortDir, setSortDir] = useState('desc');
 
   const queryParams = useMemo(
     () => ({
-      pmail: appliedFilters.pmail || undefined,
       starttime: toUnixSeconds(appliedFilters.starttimeLocal),
       endtime: toUnixSeconds(appliedFilters.endtimeLocal),
     }),
@@ -58,12 +69,41 @@ export default function QuarantineListPage() {
   }
 
   const mails = data || [];
-  const filtered = searchTerm
-    ? mails.filter((m) => {
+
+  const emailOptions = useMemo(
+    () => Array.from(new Set(mails.map((m) => m.receiver).filter(Boolean))).sort(),
+    [mails],
+  );
+
+  const filtered = useMemo(() => {
+    let result = mails;
+    if (appliedFilters.pmail) {
+      result = result.filter((m) => m.receiver === appliedFilters.pmail);
+    }
+    if (searchTerm) {
+      result = result.filter((m) => {
         const haystack = `${m.subject || ''} ${m.sender || m.from || ''}`.toLowerCase();
         return haystack.includes(searchTerm.toLowerCase());
-      })
-    : mails;
+      });
+    }
+    const dir = sortDir === 'asc' ? 1 : -1;
+    return [...result].sort((a, b) => {
+      const av = a[sortKey] ?? '';
+      const bv = b[sortKey] ?? '';
+      if (av < bv) return -1 * dir;
+      if (av > bv) return 1 * dir;
+      return 0;
+    });
+  }, [mails, appliedFilters.pmail, searchTerm, sortKey, sortDir]);
+
+  function toggleSort(key) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortDir('asc');
+    }
+  }
 
   function toggleSelect(id) {
     setSelectedIds((prev) => {
@@ -93,18 +133,22 @@ export default function QuarantineListPage() {
     <AppShell>
       <div className="flex h-full flex-col overflow-hidden">
         <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-          <input
-            type="search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search subject or sender…"
-            className="min-w-0 flex-1 rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
-          />
+          <div className="relative min-w-0 flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search subject or sender…"
+              className="w-full rounded-md border border-zinc-300 bg-transparent py-2 pl-9 pr-3 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
+            />
+          </div>
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+            className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
           >
+            <SlidersHorizontal className="size-4" />
             Filter
           </button>
           <button
@@ -113,12 +157,13 @@ export default function QuarantineListPage() {
               setSelectionMode((v) => !v);
               setSelectedIds(new Set());
             }}
-            className={`rounded-md px-3 py-2 text-sm font-medium ${
+            className={`inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium ${
               selectionMode
                 ? 'bg-blue-600 text-white'
                 : 'border border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900'
             }`}
           >
+            <CheckSquare className="size-4" />
             Select
           </button>
         </div>
@@ -144,6 +189,9 @@ export default function QuarantineListPage() {
                   onToggleSelectAll={toggleSelectAll}
                   onDeliver={deliver}
                   onBlockRequest={setBlockTarget}
+                  sortKey={sortKey}
+                  sortDir={sortDir}
+                  onSort={toggleSort}
                 />
               </div>
 
@@ -183,6 +231,7 @@ export default function QuarantineListPage() {
           setAppliedFilters(filters);
           setFilterOpen(false);
         }}
+        availableEmails={emailOptions}
       />
 
       <ConfirmDialog
