@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from '../theme/ThemeToggle';
+import { version } from '../../package.json';
 
 const NAV_ITEMS = [
   { to: '/quarantine', label: 'Quarantine' },
@@ -29,9 +30,12 @@ export default function AppShell({ children }) {
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 lg:flex">
       <aside className="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:border-r lg:border-zinc-200 lg:px-3 lg:py-4 lg:dark:border-zinc-800">
-        <p className="px-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-          PMG Quarantine Admin
-        </p>
+        <div className="px-2">
+          <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+            PMG Quarantine Admin
+          </p>
+          <p className="text-[11px] text-zinc-400 dark:text-zinc-600">v{version}</p>
+        </div>
         <nav className="mt-6 flex flex-col gap-1">
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.to} to={item.to} className={navLinkClass}>
@@ -57,7 +61,9 @@ export default function AppShell({ children }) {
       <div className="flex min-h-screen flex-1 flex-col">
         <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95 lg:hidden">
           <div>
-            <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">PMG Quarantine Admin</p>
+            <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              PMG Quarantine Admin <span className="text-zinc-400 dark:text-zinc-600">v{version}</span>
+            </p>
             <p className="text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
           </div>
           <div className="flex items-center gap-2">
