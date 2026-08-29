@@ -24,9 +24,9 @@ export default function QuarantineTable({
   const allSelected = mails.length > 0 && mails.every((m) => selectedIds.has(m.id));
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800">
       <table className="w-full min-w-[720px] text-sm">
-        <thead>
+        <thead className="sticky top-0 z-10 bg-white dark:bg-zinc-950">
           <tr className="border-b border-zinc-200 text-left text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
             {selectionMode && (
               <th className="w-10 px-3 py-2">

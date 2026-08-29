@@ -28,8 +28,8 @@ export default function AppShell({ children }) {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 lg:flex">
-      <aside className="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:border-r lg:border-zinc-200 lg:px-3 lg:py-4 lg:dark:border-zinc-800">
+    <div className="h-screen overflow-hidden bg-white dark:bg-zinc-950 lg:flex">
+      <aside className="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:overflow-y-auto lg:border-r lg:border-zinc-200 lg:px-3 lg:py-4 lg:dark:border-zinc-800">
         <div className="px-2">
           <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
             PMG Quarantine Admin
@@ -56,8 +56,8 @@ export default function AppShell({ children }) {
         <p className="mt-auto truncate px-2 text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
       </aside>
 
-      <div className="flex min-h-screen flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95 lg:hidden">
+      <div className="flex h-screen flex-1 flex-col overflow-hidden">
+        <header className="z-10 flex shrink-0 items-center justify-between gap-3 border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95 lg:hidden">
           <div>
             <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               PMG Quarantine Admin <span className="text-zinc-400 dark:text-zinc-600">v{version}</span>
@@ -76,7 +76,7 @@ export default function AppShell({ children }) {
           </div>
         </header>
 
-        <nav className="flex border-b border-zinc-200 dark:border-zinc-800 lg:hidden">
+        <nav className="flex shrink-0 border-b border-zinc-200 dark:border-zinc-800 lg:hidden">
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.to} to={item.to} className={mobileNavLinkClass}>
               {item.label}
@@ -84,7 +84,7 @@ export default function AppShell({ children }) {
           ))}
         </nav>
 
-        <div className="flex-1">{children}</div>
+        <div className="min-h-0 flex-1">{children}</div>
       </div>
     </div>
   );

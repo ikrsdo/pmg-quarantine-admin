@@ -91,86 +91,88 @@ export default function QuarantineListPage() {
 
   return (
     <AppShell>
-      <div className="flex items-center gap-2 px-4 py-3">
-        <input
-          type="search"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search subject or sender…"
-          className="min-w-0 flex-1 rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
-        />
-        <button
-          type="button"
-          onClick={() => setFilterOpen(true)}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
-        >
-          Filter
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setSelectionMode((v) => !v);
-            setSelectedIds(new Set());
-          }}
-          className={`rounded-md px-3 py-2 text-sm font-medium ${
-            selectionMode
-              ? 'bg-blue-600 text-white'
-              : 'border border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900'
-          }`}
-        >
-          Select
-        </button>
-      </div>
-
-      <main className="px-4 pb-24">
-        {isLoading && <SkeletonList />}
-
-        {!isLoading && filtered.length === 0 && (
-          <EmptyState
-            title="Quarantine is empty"
-            description="No message matches your filters."
+      <div className="flex h-full flex-col overflow-hidden">
+        <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search subject or sender…"
+            className="min-w-0 flex-1 rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
           />
-        )}
+          <button
+            type="button"
+            onClick={() => setFilterOpen(true)}
+            className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+          >
+            Filter
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectionMode((v) => !v);
+              setSelectedIds(new Set());
+            }}
+            className={`rounded-md px-3 py-2 text-sm font-medium ${
+              selectionMode
+                ? 'bg-blue-600 text-white'
+                : 'border border-zinc-300 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900'
+            }`}
+          >
+            Select
+          </button>
+        </div>
 
-        {!isLoading && filtered.length > 0 && (
-          <>
-            <div className="hidden lg:block">
-              <QuarantineTable
-                mails={filtered}
-                selectedIds={selectedIds}
-                selectionMode={selectionMode}
-                onToggleSelect={toggleSelect}
-                onToggleSelectAll={toggleSelectAll}
-                onDeliver={deliver}
-                onBlockRequest={setBlockTarget}
-              />
-            </div>
+        <main className="flex-1 overflow-auto px-4 pb-4">
+          {isLoading && <SkeletonList />}
 
-            <div className="flex flex-col gap-2 lg:hidden">
-              {filtered.map((mail) => (
-                <QuarantineCard
-                  key={mail.id}
-                  mail={mail}
-                  selected={selectedIds.has(mail.id)}
+          {!isLoading && filtered.length === 0 && (
+            <EmptyState
+              title="Quarantine is empty"
+              description="No message matches your filters."
+            />
+          )}
+
+          {!isLoading && filtered.length > 0 && (
+            <>
+              <div className="hidden lg:block">
+                <QuarantineTable
+                  mails={filtered}
+                  selectedIds={selectedIds}
                   selectionMode={selectionMode}
                   onToggleSelect={toggleSelect}
+                  onToggleSelectAll={toggleSelectAll}
                   onDeliver={deliver}
-                  onBlock={() => setBlockTarget(mail.id)}
+                  onBlockRequest={setBlockTarget}
                 />
-              ))}
-            </div>
-          </>
-        )}
-      </main>
+              </div>
 
-      {selectionMode && selectedIds.size > 0 && (
-        <SelectionBar
-          count={selectedIds.size}
-          onDeliver={() => deliver(Array.from(selectedIds))}
-          onBlockRequest={() => setBlockTarget('bulk')}
-          onClear={() => setSelectedIds(new Set())}
-        />
-      )}
+              <div className="flex flex-col gap-2 py-3 lg:hidden">
+                {filtered.map((mail) => (
+                  <QuarantineCard
+                    key={mail.id}
+                    mail={mail}
+                    selected={selectedIds.has(mail.id)}
+                    selectionMode={selectionMode}
+                    onToggleSelect={toggleSelect}
+                    onDeliver={deliver}
+                    onBlock={() => setBlockTarget(mail.id)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </main>
+
+        {selectionMode && selectedIds.size > 0 && (
+          <SelectionBar
+            count={selectedIds.size}
+            onDeliver={() => deliver(Array.from(selectedIds))}
+            onBlockRequest={() => setBlockTarget('bulk')}
+            onClear={() => setSelectedIds(new Set())}
+          />
+        )}
+      </div>
 
       <FilterSheet
         open={filterOpen}
