@@ -21,6 +21,13 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - The Quarantine and Tracking Center filter modals, and the Quarantine
   "Block" confirmation dialog, now close on Escape or on a click
   outside the modal, not just via their Close/Cancel button.
+- On desktop, clicking a message in the Quarantine list now opens its
+  detail view as a right-side drawer over the list (closable via the
+  X button, Escape, or a click outside), instead of navigating away
+  to a full separate page. The list stays mounted underneath, so
+  filters, sort, and scroll position are preserved when it closes. A
+  direct link to a message (or a page refresh) still opens the full
+  standalone detail page as before.
 
 ## [0.2.0] - 2026-08-29
 

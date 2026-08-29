@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Send, ShieldCheck, Ban } from 'lucide-react';
+import { ArrowLeft, Send, ShieldCheck, Ban, X } from 'lucide-react';
 import {
   fetchQuarantineDetail,
   fetchQuarantinePreviewHtml,
@@ -135,12 +135,13 @@ function ContentTabs({ id, mail }) {
   );
 }
 
-export default function QuarantineDetailPage() {
+export default function QuarantineDetailPage({ overlay = false }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { handleUnauthorized } = useAuth();
   const queryClient = useQueryClient();
   const [pendingAction, setPendingAction] = useState(null); // 'deliver' | 'blocklist' | null
+  const [drawerVisible, setDrawerVisible] = useState(!overlay);
 
   const { data: mail, isLoading, isError, error } = useQuery({
     queryKey: ['quarantine', 'detail', id],
@@ -151,10 +152,38 @@ export default function QuarantineDetailPage() {
     mutationFn: (action) => performQuarantineAction(id, action),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['quarantine'] });
-      navigate('/quarantine');
+      close();
     },
     onError: (err) => handleUnauthorized(err),
   });
+
+  function close() {
+    if (overlay) {
+      navigate(-1);
+    } else {
+      navigate('/quarantine');
+    }
+  }
+
+  // Drawer slides in from off-screen on mount, and slides back out before
+  // the route change unmounts it, instead of just popping in/out.
+  useEffect(() => {
+    if (!overlay) return;
+    const raf = requestAnimationFrame(() => setDrawerVisible(true));
+    return () => cancelAnimationFrame(raf);
+  }, [overlay]);
+
+  useEffect(() => {
+    if (!overlay) return;
+    function handleKeyDown(e) {
+      // The confirmation dialog has its own Escape handler that should take
+      // priority - don't also close the whole drawer underneath it.
+      if (e.key === 'Escape' && pendingAction === null) close();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [overlay, pendingAction]);
 
   if (isError && handleUnauthorized(error)) {
     return null;
@@ -174,41 +203,154 @@ export default function QuarantineDetailPage() {
     actionMutation.mutate('whitelist');
   }
 
-  const actionButtons = mail && (
-    <div className="flex items-center gap-2">
-      <button
-        type="button"
-        onClick={() => requestAction('deliver')}
-        className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500 lg:flex-none"
-      >
-        <Send className="size-4" />
-        Deliver
-      </button>
-      <button
-        type="button"
-        onClick={whitelist}
-        className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-blue-600 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-500/10 dark:text-blue-400 lg:flex-none"
-      >
-        <ShieldCheck className="size-4" />
-        Whitelist
-      </button>
-      <button
-        type="button"
-        onClick={() => requestAction('blocklist')}
-        className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500 lg:flex-none"
-      >
-        <Ban className="size-4" />
-        Block
-      </button>
-    </div>
+  function ActionButtons({ wide = false }) {
+    if (!mail) return null;
+    const widthClass = wide ? 'flex-1' : 'flex-1 lg:flex-none';
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => requestAction('deliver')}
+          className={`flex items-center justify-center gap-1.5 rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500 ${widthClass}`}
+        >
+          <Send className="size-4" />
+          Deliver
+        </button>
+        <button
+          type="button"
+          onClick={whitelist}
+          className={`flex items-center justify-center gap-1.5 rounded-md border border-blue-600 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-500/10 dark:text-blue-400 ${widthClass}`}
+        >
+          <ShieldCheck className="size-4" />
+          Whitelist
+        </button>
+        <button
+          type="button"
+          onClick={() => requestAction('blocklist')}
+          className={`flex items-center justify-center gap-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500 ${widthClass}`}
+        >
+          <Ban className="size-4" />
+          Block
+        </button>
+      </div>
+    );
+  }
+
+  const body = (
+    <>
+      {isLoading && (
+        <div className="flex flex-col gap-3">
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+      )}
+
+      {!isLoading && !mail && (
+        <EmptyState title="Message not found" description="This message is no longer in quarantine." />
+      )}
+
+      {mail && (
+        <div className={`flex flex-col gap-6 ${overlay ? '' : 'lg:flex-row lg:items-start'}`}>
+          <div className={`flex flex-col gap-4 ${overlay ? '' : 'lg:w-80 lg:shrink-0'}`}>
+            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Spam Score</p>
+                <SpamScoreBadge score={mail.spamlevel} />
+              </div>
+              <div className="flex flex-col gap-3">
+                <MetaRow label="From" value={mail.sender || mail.from} />
+                <MetaRow label="Envelope Sender" value={mail.envelope_sender} />
+                <MetaRow label="Recipient" value={mail.receiver} />
+                <MetaRow label="Date" value={formatTime(mail.time)} />
+                <MetaRow label="Size" value={formatBytes(mail.bytes)} />
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+              <p className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-500">
+                Spam Test Details
+              </p>
+              <SpamInfoBreakdown spaminfo={mail.spaminfo} />
+            </div>
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <ContentTabs id={id} mail={mail} />
+          </div>
+        </div>
+      )}
+    </>
   );
+
+  const confirmDialog = (
+    <ConfirmDialog
+      open={pendingAction !== null}
+      title={pendingAction === 'deliver' ? 'Deliver this message?' : 'Block this message?'}
+      description={
+        pendingAction === 'deliver'
+          ? 'The message will be delivered to the recipient’s inbox.'
+          : 'The sender will be added to the block list and the message will be deleted. This cannot be undone.'
+      }
+      confirmLabel={pendingAction === 'deliver' ? 'Deliver' : 'Block'}
+      tone={pendingAction === 'deliver' ? 'primary' : 'danger'}
+      onConfirm={confirmAction}
+      onCancel={() => setPendingAction(null)}
+    />
+  );
+
+  if (overlay) {
+    return (
+      <div className="fixed inset-0 z-40">
+        <div
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-200 ${
+            drawerVisible ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={close}
+        />
+        <div
+          className={`absolute inset-y-0 right-0 flex w-full max-w-[720px] flex-col bg-white shadow-2xl transition-transform duration-200 ease-out dark:bg-zinc-950 ${
+            drawerVisible ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <header className="flex items-start justify-between gap-3 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                {mail?.subject || 'Message details'}
+              </p>
+              <p className="mt-0.5 truncate text-xs text-zinc-500 dark:text-zinc-500">
+                {mail?.sender || mail?.from}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Close"
+              className="shrink-0 rounded-md p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-zinc-900 dark:hover:text-zinc-300"
+            >
+              <X className="size-5" />
+            </button>
+          </header>
+
+          {mail && (
+            <div className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+              <ActionButtons wide />
+            </div>
+          )}
+
+          <main className="flex-1 overflow-y-auto p-4">{body}</main>
+        </div>
+
+        {confirmDialog}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950">
       <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
         <button
           type="button"
-          onClick={() => navigate('/quarantine')}
+          onClick={close}
           className="inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
         >
           <ArrowLeft className="size-4" />
@@ -217,72 +359,20 @@ export default function QuarantineDetailPage() {
         <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           {mail?.subject || 'Message details'}
         </p>
-        <div className="ml-auto hidden lg:block">{actionButtons}</div>
+        <div className="ml-auto hidden lg:block">
+          <ActionButtons />
+        </div>
       </header>
 
-      <main className="px-4 pb-28 pt-4 lg:pb-6">
-        {isLoading && (
-          <div className="flex flex-col gap-3">
-            <SkeletonCard />
-            <SkeletonCard />
-          </div>
-        )}
-
-        {!isLoading && !mail && (
-          <EmptyState title="Message not found" description="This message is no longer in quarantine." />
-        )}
-
-        {mail && (
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-            <div className="flex flex-col gap-4 lg:w-80 lg:shrink-0">
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                <div className="mb-3 flex items-center justify-between">
-                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Spam Score</p>
-                  <SpamScoreBadge score={mail.spamlevel} />
-                </div>
-                <div className="flex flex-col gap-3">
-                  <MetaRow label="From" value={mail.sender || mail.from} />
-                  <MetaRow label="Envelope Sender" value={mail.envelope_sender} />
-                  <MetaRow label="Recipient" value={mail.receiver} />
-                  <MetaRow label="Date" value={formatTime(mail.time)} />
-                  <MetaRow label="Size" value={formatBytes(mail.bytes)} />
-                </div>
-              </div>
-
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                <p className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-500">
-                  Spam Test Details
-                </p>
-                <SpamInfoBreakdown spaminfo={mail.spaminfo} />
-              </div>
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <ContentTabs id={id} mail={mail} />
-            </div>
-          </div>
-        )}
-      </main>
+      <main className="px-4 pb-28 pt-4 lg:pb-6">{body}</main>
 
       {mail && (
         <div className="fixed inset-x-0 bottom-0 z-10 border-t border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950 lg:hidden">
-          {actionButtons}
+          <ActionButtons />
         </div>
       )}
 
-      <ConfirmDialog
-        open={pendingAction !== null}
-        title={pendingAction === 'deliver' ? 'Deliver this message?' : 'Block this message?'}
-        description={
-          pendingAction === 'deliver'
-            ? 'The message will be delivered to the recipient’s inbox.'
-            : 'The sender will be added to the block list and the message will be deleted. This cannot be undone.'
-        }
-        confirmLabel={pendingAction === 'deliver' ? 'Deliver' : 'Block'}
-        tone={pendingAction === 'deliver' ? 'primary' : 'danger'}
-        onConfirm={confirmAction}
-        onCancel={() => setPendingAction(null)}
-      />
+      {confirmDialog}
     </div>
   );
 }

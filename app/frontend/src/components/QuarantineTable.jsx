@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUp, ArrowDown, ChevronsUpDown, Send, Ban } from 'lucide-react';
 import SpamScoreBadge from './SpamScoreBadge';
 
@@ -49,6 +49,7 @@ export default function QuarantineTable({
   onSort,
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const allSelected = mails.length > 0 && mails.every((m) => selectedIds.has(m.id));
 
   return (
@@ -79,7 +80,11 @@ export default function QuarantineTable({
           {mails.map((mail) => (
             <tr
               key={mail.id}
-              onClick={() => navigate(`/quarantine/${encodeURIComponent(mail.id)}`)}
+              onClick={() =>
+                navigate(`/quarantine/${encodeURIComponent(mail.id)}`, {
+                  state: { backgroundLocation: location },
+                })
+              }
               className="cursor-pointer border-b border-zinc-100 odd:bg-white even:bg-zinc-50 last:border-0 hover:bg-blue-50 dark:border-zinc-900 dark:odd:bg-zinc-950 dark:even:bg-zinc-900/40 dark:hover:bg-zinc-800"
             >
               {selectionMode && (
