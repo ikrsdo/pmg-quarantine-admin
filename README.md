@@ -1,5 +1,11 @@
 # PMG Quarantine Admin
 
+**Version:** 0.1.0 · [Changelog](CHANGELOG.md)
+
+> **Early development.** This project is under active development -
+> expect breaking changes between versions and rough edges. Not yet
+> recommended for unattended/critical production use.
+
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
 mail/security admins a fast, dense interface for two things PMG's own web
