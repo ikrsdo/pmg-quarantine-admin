@@ -37,6 +37,7 @@ export default function AppShell({ children }) {
           </p>
           <p className="text-[11px] text-zinc-400 dark:text-zinc-600">v{version}</p>
         </div>
+        <p className="mt-3 truncate px-2 text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
         <div className="mt-3 flex items-center gap-2 px-2">
           <ThemeToggle />
           <button
@@ -56,7 +57,6 @@ export default function AppShell({ children }) {
             </NavLink>
           ))}
         </nav>
-        <p className="mt-auto truncate px-2 text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
       </aside>
 
       <div className="flex h-screen flex-1 flex-col overflow-hidden">
