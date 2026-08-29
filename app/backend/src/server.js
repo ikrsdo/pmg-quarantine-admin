@@ -15,6 +15,13 @@ const STATIC_DIR = path.join(__dirname, '../public');
 function createApp() {
   const app = express();
 
+  // TEMP DEBUG - remove after diagnosing missing Set-Cookie on /api/login
+  app.use((req, res, next) => {
+    // eslint-disable-next-line no-console
+    console.log('[debug] TOP incoming request:', req.method, req.originalUrl);
+    next();
+  });
+
   app.use(express.json());
   app.use(
     session({
@@ -33,7 +40,11 @@ function createApp() {
 
   // TEMP DEBUG - remove after diagnosing missing Set-Cookie on /api/login
   app.use((req, res, next) => {
+    // eslint-disable-next-line no-console
+    console.log('[debug] incoming request:', req.method, req.originalUrl);
     res.on('finish', () => {
+      // eslint-disable-next-line no-console
+      console.log('[debug] finished:', req.method, req.originalUrl, 'status=' + res.statusCode);
       if (req.path === '/api/login') {
         // eslint-disable-next-line no-console
         console.log('[debug] sessionID:', req.sessionID);
