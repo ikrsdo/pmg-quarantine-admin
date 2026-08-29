@@ -17,6 +17,8 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - Adopted the [Lucide](https://lucide.dev) icon set across the app
   (navigation, toolbar, action buttons, theme toggle, back links) for
   a more polished, professional look.
+- Quarantine and Tracking Center desktop tables now show each
+  message's size in KB.
 
 ### Changed
 

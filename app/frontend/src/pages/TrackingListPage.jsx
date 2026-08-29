@@ -45,6 +45,11 @@ function formatTime(unixSeconds) {
   });
 }
 
+function formatKB(bytes) {
+  if (!bytes) return '—';
+  return `${(bytes / 1024).toFixed(1)} KB`;
+}
+
 function toDatetimeLocal(date) {
   const pad = (n) => String(n).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -170,6 +175,7 @@ export default function TrackingListPage() {
                       <SortableHeader label="Recipient" sortKey="to" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <SortableHeader label="Date" sortKey="time" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <SortableHeader label="Relay" sortKey="relay" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
+                      <SortableHeader label="Size" sortKey="size" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <th className="py-2 pr-3">Status</th>
                     </tr>
                   </thead>
@@ -191,6 +197,9 @@ export default function TrackingListPage() {
                         </td>
                         <td className="max-w-[10rem] truncate py-2 pr-3 text-xs text-zinc-500 dark:text-zinc-500">
                           {m.relay || '—'}
+                        </td>
+                        <td className="whitespace-nowrap py-2 pr-3 text-xs text-zinc-500 dark:text-zinc-500">
+                          {formatKB(m.size)}
                         </td>
                         <td className="py-2 pr-3">
                           <TrackingStatusBadge status={m.rstatus || m.dstatus} />

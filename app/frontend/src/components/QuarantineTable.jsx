@@ -12,6 +12,11 @@ function formatTime(unixSeconds) {
   });
 }
 
+function formatKB(bytes) {
+  if (!bytes) return '—';
+  return `${(bytes / 1024).toFixed(1)} KB`;
+}
+
 function SortableHeader({ label, sortKey, activeKey, dir, onSort, className = '' }) {
   const isActive = sortKey === activeKey;
   const Icon = isActive ? (dir === 'asc' ? ArrowUp : ArrowDown) : ChevronsUpDown;
@@ -66,6 +71,7 @@ export default function QuarantineTable({
             <SortableHeader label="Recipient" sortKey="receiver" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <SortableHeader label="Date" sortKey="time" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <SortableHeader label="Score" sortKey="spamlevel" activeKey={sortKey} dir={sortDir} onSort={onSort} />
+            <SortableHeader label="Size" sortKey="bytes" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <th className="px-3 py-2 text-right">Action</th>
           </tr>
         </thead>
@@ -100,6 +106,9 @@ export default function QuarantineTable({
               </td>
               <td className="px-3 py-2">
                 <SpamScoreBadge score={mail.spamlevel} />
+              </td>
+              <td className="whitespace-nowrap px-3 py-2 text-zinc-500 dark:text-zinc-500">
+                {formatKB(mail.bytes)}
               </td>
               <td className="px-3 py-2 text-right" onClick={(e) => e.stopPropagation()}>
                 <div className="inline-flex gap-1">
