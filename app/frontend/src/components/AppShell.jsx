@@ -36,6 +36,16 @@ export default function AppShell({ children }) {
           </p>
           <p className="text-[11px] text-zinc-400 dark:text-zinc-600">v{version}</p>
         </div>
+        <div className="mt-3 flex items-center gap-2 px-2">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={logout}
+            className="rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
+          >
+            Log out
+          </button>
+        </div>
         <nav className="mt-6 flex flex-col gap-1">
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.to} to={item.to} className={navLinkClass}>
@@ -43,19 +53,7 @@ export default function AppShell({ children }) {
             </NavLink>
           ))}
         </nav>
-        <div className="mt-auto flex flex-col gap-2 px-2">
-          <p className="truncate text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <button
-              type="button"
-              onClick={logout}
-              className="rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
-            >
-              Log out
-            </button>
-          </div>
-        </div>
+        <p className="mt-auto truncate px-2 text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
       </aside>
 
       <div className="flex min-h-screen flex-1 flex-col">
