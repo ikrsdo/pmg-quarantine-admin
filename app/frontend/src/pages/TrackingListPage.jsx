@@ -224,7 +224,9 @@ export default function TrackingListPage() {
                     className="flex flex-col gap-1.5 rounded-lg border border-zinc-200 p-3 text-left dark:border-zinc-800"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <p className="truncate font-mono text-xs text-zinc-900 dark:text-zinc-100">{m.from}</p>
+                      <p className="min-w-0 flex-1 truncate font-mono text-xs text-zinc-900 dark:text-zinc-100">
+                        {m.from}
+                      </p>
                       <TrackingStatusBadge status={m.rstatus || m.dstatus} />
                     </div>
                     <p className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-500">→ {m.to}</p>

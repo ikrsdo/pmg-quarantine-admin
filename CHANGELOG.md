@@ -45,6 +45,17 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - The Quarantine drawer's Headers tab now has a "Copy" button that
   copies the raw message headers to the clipboard.
 
+### Fixed
+
+- On mobile, the app header (title/version and logged-in username) and
+  the Tracking Center card list could overflow past the right edge of
+  the screen and force horizontal scrolling, when the username or a
+  sender/recipient address was long. Both were flex rows whose text
+  elements were missing `min-w-0`, so they refused to shrink/truncate
+  below their natural text width. Fixed by giving those elements
+  `min-w-0` (and `truncate` where missing) so they shrink and ellipsize
+  within the viewport instead of pushing it wider.
+
 ## [0.2.0] - 2026-08-29
 
 ### Added
