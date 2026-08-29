@@ -15,12 +15,13 @@ const STATIC_DIR = path.join(__dirname, '../public');
 function createApp() {
   const app = express();
 
-  // TEMP DEBUG - remove after diagnosing missing Set-Cookie on /api/login
-  app.use((req, res, next) => {
-    // eslint-disable-next-line no-console
-    console.log('[debug] TOP incoming request:', req.method, req.originalUrl);
-    next();
-  });
+  // Behind a reverse proxy / tunnel (Cloudflare Tunnel, nginx, etc.) that
+  // terminates TLS, the connection this process sees is plain HTTP. Without
+  // trust proxy, Express ignores X-Forwarded-Proto, req.secure stays false,
+  // and express-session silently refuses to set a secure cookie (cookie.secure
+  // requires issecure(req) to be true). This must stay set for cookie.secure
+  // to work in production.
+  app.set('trust proxy', 1);
 
   app.use(express.json());
   app.use(
@@ -37,25 +38,6 @@ function createApp() {
       },
     }),
   );
-
-  // TEMP DEBUG - remove after diagnosing missing Set-Cookie on /api/login
-  app.use((req, res, next) => {
-    // eslint-disable-next-line no-console
-    console.log('[debug] incoming request:', req.method, req.originalUrl);
-    res.on('finish', () => {
-      // eslint-disable-next-line no-console
-      console.log('[debug] finished:', req.method, req.originalUrl, 'status=' + res.statusCode);
-      if (req.originalUrl === '/api/login') {
-        // eslint-disable-next-line no-console
-        console.log('[debug] sessionID:', req.sessionID);
-        // eslint-disable-next-line no-console
-        console.log('[debug] session:', req.session);
-        // eslint-disable-next-line no-console
-        console.log('[debug] response headers:', res.getHeaders());
-      }
-    });
-    next();
-  });
 
   app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
   app.use('/api', authRoutes);

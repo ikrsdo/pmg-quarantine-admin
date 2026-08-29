@@ -317,15 +317,28 @@ and the static frontend (with SPA fallback) - no separate containers.
 with a real `docker compose up -d --build` run (build succeeded, health
 check passed, static assets served with correct content-type).
 
-**Known issue - login loop when tested over plain HTTP:** the session
-cookie is set with `secure: true` whenever `NODE_ENV=production`, which
-means the browser will only store/send it over HTTPS. Testing directly
-against `http://<host>:3000` (no TLS) will loop back to the login screen
-after a successful login - this is expected, not a bug, once the app
-sits behind an HTTPS reverse proxy/tunnel as intended for production.
-Not yet confirmed by an actual reproduction/test.
+**Fixed - login loop behind a TLS-terminating reverse proxy/tunnel:**
+confirmed by a real deployment behind Cloudflare Tunnel + Zero Trust
+Access (IP allowlist): login against PMG succeeded, but no session
+persisted and the app looped back to the login screen. Root cause was
+NOT Cloudflare Access - it was `app.js` never setting `trust proxy`.
+`cookie.secure: true` (set whenever `NODE_ENV=production`) makes
+express-session require `issecure(req)` to be true before it will emit
+`Set-Cookie`. Behind a reverse proxy/tunnel, TLS terminates upstream and
+the connection this Express process actually sees is plain HTTP, so
+without `app.set('trust proxy', 1)`, Express ignores the
+`X-Forwarded-Proto: https` header the proxy sends and `req.secure` stays
+false - express-session then silently skips `Set-Cookie` (no error, no
+warning, just an absent header). Diagnosed via live debug logging
+showing the session object fully populated correctly after login but
+`res.getHeaders()` missing `set-cookie` entirely. Fixed by adding
+`app.set('trust proxy', 1)` in `server.js`, before the session
+middleware. This line must stay - removing it silently reintroduces this
+bug in any deployment that terminates TLS in front of the app (the
+intended production setup).
 
 Main project scope (see "Purpose") is complete: Login, Quarantine
-List/Detail, Tracking Center List/Detail, and Docker packaging. Next
-step is end-to-end verification against a real PMG server, behind an
-HTTPS reverse proxy.
+List/Detail, Tracking Center List/Detail, and Docker packaging. The
+`trust proxy` fix above has been deployed but not yet re-verified
+end-to-end against the real PMG server behind Cloudflare Tunnel - that
+re-test is the next step.
