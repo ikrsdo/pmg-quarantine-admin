@@ -1,9 +1,26 @@
+import { useEffect } from 'react';
+
 export default function FilterSheet({ open, filters, onChange, onClose, onApply, availableEmails = [] }) {
+  useEffect(() => {
+    if (!open) return;
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center">
-      <div className="w-full max-w-md rounded-t-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950 sm:rounded-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md rounded-t-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950 sm:rounded-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <p className="mb-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">Filter</p>
 
         <div className="flex flex-col gap-3">
