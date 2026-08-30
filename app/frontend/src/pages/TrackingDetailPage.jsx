@@ -6,6 +6,7 @@ import { fetchTrackingDetail } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
 import TrackingStatusBadge from '../components/TrackingStatusBadge';
 import MessageEventsTimeline from '../components/MessageEventsTimeline';
+import CollapsibleSection from '../components/CollapsibleSection';
 import { SkeletonCard } from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 
@@ -94,16 +95,17 @@ export default function TrackingDetailPage({ overlay = false }) {
       {entry && (
         <div className={`flex flex-col gap-6 ${overlay ? '' : 'lg:flex-row lg:items-start'}`}>
           <div className={`flex flex-col gap-4 ${overlay ? '' : 'lg:w-96 lg:shrink-0'}`}>
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-              <div className="mb-3 flex items-center justify-between border-b border-zinc-200 pb-2 dark:border-zinc-800">
-                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Status</p>
-                <div className="flex items-center gap-1.5">
+            <CollapsibleSection
+              title="Status"
+              right={
+                <>
                   {entry.dstatus && <TrackingStatusBadge status={entry.dstatus} />}
                   {entry.rstatus && entry.rstatus !== entry.dstatus && (
                     <TrackingStatusBadge status={entry.rstatus} />
                   )}
-                </div>
-              </div>
+                </>
+              }
+            >
               <div className="flex flex-col gap-3">
                 <MetaRow label="From" value={entry.from} />
                 <MetaRow label="Recipient" value={entry.to} />
@@ -114,7 +116,7 @@ export default function TrackingDetailPage({ overlay = false }) {
                 <MetaRow label="Client" value={entry.client} />
                 <MetaRow label="Size" value={formatBytes(entry.size)} />
               </div>
-            </div>
+            </CollapsibleSection>
           </div>
 
           <div className="min-w-0 flex-1">

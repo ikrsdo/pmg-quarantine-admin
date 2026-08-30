@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronDown, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { parseTrackingLogEvents, EVENT_CATEGORY_COLOR } from '../utils/trackingLogEvents';
 import CopyButton from './CopyButton';
+import CollapsibleSection from './CollapsibleSection';
 
 function EventRow({ event }) {
   const [expanded, setExpanded] = useState(false);
@@ -40,11 +41,12 @@ export default function MessageEventsTimeline({ logs }) {
   const hasLogs = logs && logs.length > 0;
 
   return (
-    <div>
-      <div className="mb-3 flex flex-col gap-2 border-b border-zinc-200 pb-2 dark:border-zinc-800 lg:flex-row lg:items-center lg:justify-between">
-        <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Message Events</p>
-        {hasLogs && (
-          <div className="flex items-center gap-2">
+    <CollapsibleSection
+      title="Message Events"
+      defaultOpen={false}
+      right={
+        hasLogs && (
+          <>
             <CopyButton text={logs.join('\n')} label="Copy Log" />
             <button
               type="button"
@@ -54,10 +56,10 @@ export default function MessageEventsTimeline({ logs }) {
               {structured ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
               {structured ? 'Show Raw Log' : 'Show Structured View'}
             </button>
-          </div>
-        )}
-      </div>
-
+          </>
+        )
+      }
+    >
       {!logs || logs.length === 0 ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-500">No log entries.</p>
       ) : structured ? (
@@ -85,6 +87,6 @@ export default function MessageEventsTimeline({ logs }) {
           </pre>
         </div>
       )}
-    </div>
+    </CollapsibleSection>
   );
 }

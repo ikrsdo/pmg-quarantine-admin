@@ -11,6 +11,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { quarantineActionToast } from '../utils/quarantineActionToast';
 import SpamScoreBadge from '../components/SpamScoreBadge';
+import CollapsibleSection from '../components/CollapsibleSection';
 import ConfirmDialog from '../components/ConfirmDialog';
 import CopyButton from '../components/CopyButton';
 import { SkeletonCard } from '../components/Skeleton';
@@ -261,11 +262,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
       {mail && (
         <div className={`flex flex-col gap-6 ${overlay ? '' : 'lg:flex-row lg:items-start'}`}>
           <div className={`flex flex-col gap-4 ${overlay ? '' : 'lg:w-80 lg:shrink-0'}`}>
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-              <div className="mb-3 flex items-center justify-between border-b border-zinc-200 pb-2 dark:border-zinc-800">
-                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Spam Score</p>
-                <SpamScoreBadge score={mail.spamlevel} />
-              </div>
+            <CollapsibleSection title="Spam Score" right={<SpamScoreBadge score={mail.spamlevel} />}>
               <div className="flex flex-col gap-3">
                 <MetaRow label="From" value={mail.sender || mail.from} />
                 <MetaRow label="Envelope Sender" value={mail.envelope_sender} />
@@ -273,14 +270,11 @@ export default function QuarantineDetailPage({ overlay = false }) {
                 <MetaRow label="Date" value={formatTime(mail.time)} />
                 <MetaRow label="Size" value={formatBytes(mail.bytes)} />
               </div>
-            </div>
+            </CollapsibleSection>
 
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-              <p className="mb-3 border-b border-zinc-200 pb-2 text-sm font-semibold text-zinc-900 dark:border-zinc-800 dark:text-zinc-100">
-                Spam Test Details
-              </p>
+            <CollapsibleSection title="Spam Test Details" defaultOpen={false}>
               <SpamInfoBreakdown spaminfo={mail.spaminfo} />
-            </div>
+            </CollapsibleSection>
           </div>
 
           <div className="min-w-0 flex-1">

@@ -7,6 +7,16 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ## [Unreleased]
 
+### Changed
+
+- Quarantine detail's "Spam Score" and "Spam Test Details" sections, and
+  Tracking Center detail's "Status" and "Message Events" sections, are
+  now collapsible accordions on both mobile and desktop (Spam Score and
+  Status open by default, Spam Test Details and Message Events closed).
+- The Quarantine filter modal's "Recipient email" field is now a
+  searchable dropdown instead of a plain select, so a long recipient
+  list can be filtered by typing instead of scrolling.
+
 ### Fixed
 
 - Tracking Center detail's "Message Events" timeline showed every log
