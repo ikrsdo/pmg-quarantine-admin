@@ -108,13 +108,16 @@ project is in `0.x`, minor bumps may still include breaking changes.
   Safari address bar and toolbar) instead of a standalone PWA. This
   also caused the sticky bottom action bars (Quarantine bulk-selection
   bar, detail-page action bar) to sit under the browser's own bottom
-  toolbar, hiding all but their top edge. Fixed by adding a web app
-  manifest, `apple-touch-icon`, and the iOS PWA meta tags, plus
-  `safe-area-inset` padding on the mobile header and on both sticky
-  bottom action bars so they clear the status bar/home indicator when
-  running standalone. An already-installed Home Screen icon must be
-  deleted and re-added for this to take effect, since iOS only reads
-  these tags at install time.
+  toolbar, hiding all but their top edge, and let the sticky top
+  header on the Quarantine list, Tracking Center list, and both detail
+  pages render underneath the iOS status bar/notch/Dynamic Island.
+  Fixed by adding a web app manifest, `apple-touch-icon`, and the iOS
+  PWA meta tags, plus `safe-area-inset` padding on all of those sticky
+  headers and on both sticky bottom action bars so they clear the
+  status bar/home indicator when running standalone. An
+  already-installed Home Screen icon must be deleted and re-added for
+  this to take effect, since iOS only reads these tags at install
+  time.
 - On desktop, hovering the Deliver and Block buttons in the Quarantine
   list table rows kept the default arrow cursor instead of a pointer.
   Tailwind v4 dropped the `button { cursor: pointer }` rule its

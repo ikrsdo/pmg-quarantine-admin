@@ -376,7 +376,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950">
-      <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
+      <header className="pt-safe sticky top-0 z-10 flex items-center gap-3 border-b border-zinc-200 bg-white/95 px-4 pb-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
         <button
           type="button"
           onClick={close}
