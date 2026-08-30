@@ -41,7 +41,7 @@ export default function QuarantineListPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
-  const [blockTarget, setBlockTarget] = useState(null); // single id or 'bulk'
+  const [pendingAction, setPendingAction] = useState(null); // { type: 'deliver' | 'blocklist', target: id or 'bulk' }
   const [sortKey, setSortKey] = useState('time');
   const [sortDir, setSortDir] = useState('desc');
 
@@ -127,14 +127,11 @@ export default function QuarantineListPage() {
     );
   }
 
-  function deliver(idOrIds) {
-    actionMutation.mutate({ ids: idOrIds, action: 'deliver' });
-  }
-
-  function confirmBlock() {
-    const ids = blockTarget === 'bulk' ? Array.from(selectedIds) : blockTarget;
-    actionMutation.mutate({ ids, action: 'blocklist' });
-    setBlockTarget(null);
+  function confirmPendingAction() {
+    const { type, target } = pendingAction;
+    const ids = target === 'bulk' ? Array.from(selectedIds) : target;
+    actionMutation.mutate({ ids, action: type });
+    setPendingAction(null);
   }
 
   return (
@@ -205,8 +202,8 @@ export default function QuarantineListPage() {
                   selectionMode={selectionMode}
                   onToggleSelect={toggleSelect}
                   onToggleSelectAll={toggleSelectAll}
-                  onDeliver={deliver}
-                  onBlockRequest={setBlockTarget}
+                  onDeliverRequest={(id) => setPendingAction({ type: 'deliver', target: id })}
+                  onBlockRequest={(id) => setPendingAction({ type: 'blocklist', target: id })}
                   sortKey={sortKey}
                   sortDir={sortDir}
                   onSort={toggleSort}
@@ -221,8 +218,8 @@ export default function QuarantineListPage() {
                     selected={selectedIds.has(mail.id)}
                     selectionMode={selectionMode}
                     onToggleSelect={toggleSelect}
-                    onDeliver={deliver}
-                    onBlock={() => setBlockTarget(mail.id)}
+                    onDeliver={() => setPendingAction({ type: 'deliver', target: mail.id })}
+                    onBlock={() => setPendingAction({ type: 'blocklist', target: mail.id })}
                   />
                 ))}
               </div>
@@ -233,8 +230,8 @@ export default function QuarantineListPage() {
         {selectionMode && selectedIds.size > 0 && (
           <SelectionBar
             count={selectedIds.size}
-            onDeliver={() => deliver(Array.from(selectedIds))}
-            onBlockRequest={() => setBlockTarget('bulk')}
+            onDeliverRequest={() => setPendingAction({ type: 'deliver', target: 'bulk' })}
+            onBlockRequest={() => setPendingAction({ type: 'blocklist', target: 'bulk' })}
             onClear={() => setSelectedIds(new Set())}
           />
         )}
@@ -253,16 +250,25 @@ export default function QuarantineListPage() {
       />
 
       <ConfirmDialog
-        open={blockTarget !== null}
+        open={pendingAction !== null}
         title={
-          blockTarget === 'bulk'
-            ? `Block ${selectedIds.size} messages?`
-            : 'Block this message?'
+          pendingAction?.type === 'deliver'
+            ? pendingAction.target === 'bulk'
+              ? `Deliver ${selectedIds.size} messages?`
+              : 'Deliver this message?'
+            : pendingAction?.target === 'bulk'
+              ? `Block ${selectedIds.size} messages?`
+              : 'Block this message?'
         }
-        description="The sender will be added to the block list and the message(s) will be deleted. This cannot be undone."
-        confirmLabel="Block"
-        onConfirm={confirmBlock}
-        onCancel={() => setBlockTarget(null)}
+        description={
+          pendingAction?.type === 'deliver'
+            ? 'The message(s) will be delivered to the recipient inbox.'
+            : 'The sender will be added to the block list and the message(s) will be deleted. This cannot be undone.'
+        }
+        confirmLabel={pendingAction?.type === 'deliver' ? 'Deliver' : 'Block'}
+        tone={pendingAction?.type === 'deliver' ? 'primary' : 'danger'}
+        onConfirm={confirmPendingAction}
+        onCancel={() => setPendingAction(null)}
       />
     </AppShell>
   );

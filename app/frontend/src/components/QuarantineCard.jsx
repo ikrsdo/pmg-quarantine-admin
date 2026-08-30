@@ -60,8 +60,9 @@ export default function QuarantineCard({ mail, selected, selectionMode, onToggle
   return (
     <div className="relative overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
       {/* Block panel - revealed on the left when the card is dragged right.
-          Only opens the confirm dialog owned by the list page - the swipe
-          itself is the first deliberate step, the dialog is the second. */}
+          Deliver and Block panels both only open the confirm dialog owned
+          by the list page - the swipe is the first deliberate step, the
+          dialog is the second. */}
       <button
         type="button"
         className="absolute inset-y-0 left-0 flex w-24 items-center justify-center bg-red-600 text-sm font-medium text-white"

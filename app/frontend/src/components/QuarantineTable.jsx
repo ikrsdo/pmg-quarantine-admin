@@ -42,7 +42,7 @@ export default function QuarantineTable({
   selectionMode,
   onToggleSelect,
   onToggleSelectAll,
-  onDeliver,
+  onDeliverRequest,
   onBlockRequest,
   sortKey,
   sortDir,
@@ -119,7 +119,7 @@ export default function QuarantineTable({
                 <div className="inline-flex gap-1">
                   <button
                     type="button"
-                    onClick={() => onDeliver(mail.id)}
+                    onClick={() => onDeliverRequest(mail.id)}
                     className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
                   >
                     <Send className="size-3.5" />

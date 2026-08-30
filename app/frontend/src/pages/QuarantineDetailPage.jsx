@@ -212,10 +212,6 @@ export default function QuarantineDetailPage({ overlay = false }) {
     actionMutation.mutate(action);
   }
 
-  function whitelist() {
-    actionMutation.mutate('whitelist');
-  }
-
   function ActionButtons({ wide = false }) {
     if (!mail) return null;
     const widthClass = wide ? 'flex-1' : 'flex-1 lg:flex-none';
@@ -231,7 +227,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
         </button>
         <button
           type="button"
-          onClick={whitelist}
+          onClick={() => requestAction('whitelist')}
           className={`flex items-center justify-center gap-1.5 rounded-md border border-blue-600 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-500/10 dark:text-blue-400 ${widthClass}`}
         >
           <ShieldCheck className="size-4" />
@@ -295,17 +291,37 @@ export default function QuarantineDetailPage({ overlay = false }) {
     </>
   );
 
+  const CONFIRM_COPY = {
+    deliver: {
+      title: 'Deliver this message?',
+      description: 'The message will be delivered to the recipient’s inbox.',
+      confirmLabel: 'Deliver',
+      tone: 'primary',
+    },
+    whitelist: {
+      title: 'Whitelist this sender?',
+      description: 'The sender will be added to the welcome list and the message will be delivered.',
+      confirmLabel: 'Whitelist',
+      tone: 'primary',
+    },
+    blocklist: {
+      title: 'Block this message?',
+      description:
+        'The sender will be added to the block list and the message will be deleted. This cannot be undone.',
+      confirmLabel: 'Block',
+      tone: 'danger',
+    },
+  };
+
+  const confirmCopy = pendingAction ? CONFIRM_COPY[pendingAction] : null;
+
   const confirmDialog = (
     <ConfirmDialog
       open={pendingAction !== null}
-      title={pendingAction === 'deliver' ? 'Deliver this message?' : 'Block this message?'}
-      description={
-        pendingAction === 'deliver'
-          ? 'The message will be delivered to the recipient’s inbox.'
-          : 'The sender will be added to the block list and the message will be deleted. This cannot be undone.'
-      }
-      confirmLabel={pendingAction === 'deliver' ? 'Deliver' : 'Block'}
-      tone={pendingAction === 'deliver' ? 'primary' : 'danger'}
+      title={confirmCopy?.title}
+      description={confirmCopy?.description}
+      confirmLabel={confirmCopy?.confirmLabel}
+      tone={confirmCopy?.tone}
       onConfirm={confirmAction}
       onCancel={() => setPendingAction(null)}
     />

@@ -20,10 +20,14 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Changed
 
-- The Filter and Tracking filter modals, and the Deliver/Block
-  confirmation dialog, now blur the page behind them when open
-  (mobile and desktop), and on mobile the filter modals open centered
-  on screen instead of as a bottom sheet.
+- The Filter and Tracking filter modals, and the confirmation dialog,
+  now blur the page behind them when open (mobile and desktop), and on
+  mobile the filter modals open centered on screen instead of as a
+  bottom sheet.
+- Deliver and Whitelist now require confirmation via the same dialog
+  already used for Block, on both the Quarantine list (table row,
+  bulk-selection bar, and mobile swipe actions) and detail pages, on
+  mobile and desktop. Previously only Block was confirmed.
 - The Quarantine and Tracking Center search field placeholders dropped
   the redundant "Search" word - now "Subject or Sender…" and "Sender
   or Recipient…".
