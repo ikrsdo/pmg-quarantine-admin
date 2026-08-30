@@ -30,18 +30,6 @@ project is in `0.x`, minor bumps may still include breaking changes.
   below the "Message Events" heading instead of competing for space
   next to it; desktop keeps them inline. Both labels are now title
   case ("Copy Log", "Show Raw Log") instead of sentence case.
-
-### Fixed
-
-- Quarantine detail's Preview tab showed the raw, still MIME-encoded
-  message source (quoted-printable text, unrendered HTML/CSS) instead
-  of the message as an email client would show it. Now fetched from
-  PMG's own sanitized HTML rendering endpoint (`/api2/htmlmail/...`)
-  and rendered in a sandboxed iframe; the raw source is no longer
-  shown anywhere in the UI.
-
-### Changed
-
 - The Quarantine and Tracking Center filter modals, and the Quarantine
   "Block" confirmation dialog, now close on Escape or on a click
   outside the modal, not just via their Close/Cancel button.
@@ -71,6 +59,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Fixed
 
+- Quarantine detail's Preview tab showed the raw, still MIME-encoded
+  message source (quoted-printable text, unrendered HTML/CSS) instead
+  of the message as an email client would show it. Now fetched from
+  PMG's own sanitized HTML rendering endpoint (`/api2/htmlmail/...`)
+  and rendered in a sandboxed iframe; the raw source is no longer
+  shown anywhere in the UI.
 - On mobile, the app header (title/version and logged-in username) and
   the Tracking Center card list could overflow past the right edge of
   the screen and force horizontal scrolling, when the username or a
