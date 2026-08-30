@@ -31,6 +31,13 @@ project is in `0.x`, minor bumps may still include breaking changes.
   case. Fixed by recognizing both timestamp formats and formatting the
   ISO one for display (`30/08, 14:34:09`) - Received/Queued/Processed/
   Delivered etc. now categorize correctly again.
+- The Quarantine filter modal's "Recipient email" searchable dropdown
+  list rendered flush against the modal's bottom border, with no gap.
+  The dropdown was absolutely positioned, so it didn't affect the
+  modal's own (shorter) layout height, and the modal's `overflow-y-auto`
+  clipped the dropdown right at that height. Fixed by having the
+  dropdown render in normal document flow instead, so it pushes the
+  fields below it down and the modal now grows to fit it properly.
 
 ## [0.3.0] - 2026-08-30
 

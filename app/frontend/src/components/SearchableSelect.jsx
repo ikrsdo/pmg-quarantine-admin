@@ -45,7 +45,7 @@ export default function SearchableSelect({ value, onChange, options, allLabel = 
       </button>
 
       {open && (
-        <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-zinc-300 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <div className="mb-2 mt-1 w-full overflow-hidden rounded-md border border-zinc-300 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
           <input
             type="text"
             autoFocus
