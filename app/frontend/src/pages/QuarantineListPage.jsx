@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Search, SlidersHorizontal, CheckSquare } from 'lucide-react';
+import { Search, SlidersHorizontal, CheckSquare, RefreshCw } from 'lucide-react';
 import { fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import QuarantineCard from '../components/QuarantineCard';
@@ -50,7 +50,7 @@ export default function QuarantineListPage() {
     [appliedFilters],
   );
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery({
     queryKey: ['quarantine', queryParams],
     queryFn: () => fetchQuarantineList(queryParams),
   });
@@ -143,6 +143,16 @@ export default function QuarantineListPage() {
               className="w-full rounded-md border border-zinc-300 bg-transparent py-2 pl-9 pr-3 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
             />
           </div>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            aria-label="Refresh"
+            title="Refresh"
+            className="inline-flex shrink-0 items-center justify-center rounded-md border border-zinc-300 p-2 text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+          >
+            <RefreshCw className={`size-4 ${isFetching ? 'animate-spin' : ''}`} />
+          </button>
           <button
             type="button"
             onClick={() => setFilterOpen(true)}

@@ -7,6 +7,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ## [Unreleased]
 
+### Added
+
+- Quarantine and Tracking Center list toolbars (mobile and desktop)
+  now have a Refresh button that re-fetches the list on demand, with
+  a spinning icon while the request is in flight.
+
 ### Fixed
 
 - Quarantine detail's Preview tab showed the raw, still MIME-encoded
