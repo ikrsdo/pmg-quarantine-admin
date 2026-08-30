@@ -15,6 +15,9 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Changed
 
+- The Quarantine and Tracking Center search field placeholders dropped
+  the redundant "Search" word - now "Subject or Sender…" and "Sender
+  or Recipient…".
 - On mobile, the Filter, Select, Refresh, and theme-toggle buttons on
   the Quarantine and Tracking Center list toolbars now show only their
   icon (no text label), freeing up width for the search box. Desktop

@@ -139,7 +139,7 @@ export default function QuarantineListPage() {
               type="search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search subject or sender…"
+              placeholder="Subject or Sender…"
               className="w-full rounded-md border border-zinc-300 bg-transparent py-2 pl-9 pr-3 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
             />
           </div>
