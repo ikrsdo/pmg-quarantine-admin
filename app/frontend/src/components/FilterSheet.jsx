@@ -29,14 +29,14 @@ export default function FilterSheet({ open, filters, onChange, onClose, onApply,
         <p className="mb-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">Filter</p>
 
         <div className="flex flex-col gap-3">
-          <label className="flex flex-col gap-1 text-xs text-zinc-500 dark:text-zinc-500">
+          <div className="flex flex-col gap-1 text-xs text-zinc-500 dark:text-zinc-500">
             Recipient email
             <SearchableSelect
               value={filters.pmail}
               onChange={(email) => onChange({ ...filters, pmail: email })}
               options={availableEmails}
             />
-          </label>
+          </div>
 
           <label className="flex flex-col gap-1 text-xs text-zinc-500 dark:text-zinc-500">
             Start

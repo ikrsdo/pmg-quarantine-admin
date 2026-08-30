@@ -38,6 +38,16 @@ project is in `0.x`, minor bumps may still include breaking changes.
   clipped the dropdown right at that height. Fixed by having the
   dropdown render in normal document flow instead, so it pushes the
   fields below it down and the modal now grows to fit it properly.
+- On Safari (mobile and desktop), selecting an email from the
+  Quarantine filter modal's searchable dropdown set the value but left
+  the dropdown open, blocking the Start/End date fields underneath.
+  The "Recipient email" field wrapped the whole dropdown widget (its
+  toggle button, search input, and every option button) in a single
+  `<label>`; Safari's implicit label-to-control click forwarding then
+  re-toggled the dropdown open right after the selection's own click
+  handler closed it. Fixed by using a plain `<div>` instead of a
+  `<label>` for that field, since it wraps a custom widget rather than
+  a single form control.
 
 ## [0.3.0] - 2026-08-30
 
