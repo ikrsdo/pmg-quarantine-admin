@@ -41,18 +41,18 @@ export default function MessageEventsTimeline({ logs }) {
 
   return (
     <div>
-      <div className="mb-3 flex items-center justify-between border-b border-zinc-200 pb-2 dark:border-zinc-800">
+      <div className="mb-3 flex flex-col gap-2 border-b border-zinc-200 pb-2 dark:border-zinc-800 lg:flex-row lg:items-center lg:justify-between">
         <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Message Events</p>
         {hasLogs && (
           <div className="flex items-center gap-2">
-            <CopyButton text={logs.join('\n')} label="Copy log" />
+            <CopyButton text={logs.join('\n')} label="Copy Log" />
             <button
               type="button"
               onClick={() => setStructured((v) => !v)}
               className="inline-flex items-center gap-1 rounded-md border border-zinc-300 px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
             >
               {structured ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
-              {structured ? 'Show raw log' : 'Show structured view'}
+              {structured ? 'Show Raw Log' : 'Show Structured View'}
             </button>
           </div>
         )}

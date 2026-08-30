@@ -23,7 +23,7 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
     >
       {theme === 'dark' ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
-      {theme === 'dark' ? 'Light theme' : 'Dark theme'}
+      <span className="hidden lg:inline">{theme === 'dark' ? 'Light theme' : 'Dark theme'}</span>
     </button>
   );
 }

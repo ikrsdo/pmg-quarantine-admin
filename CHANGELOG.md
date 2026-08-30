@@ -13,6 +13,21 @@ project is in `0.x`, minor bumps may still include breaking changes.
   now have a Refresh button that re-fetches the list on demand, with
   a spinning icon while the request is in flight.
 
+### Changed
+
+- On mobile, the Filter, Select, Refresh, and theme-toggle buttons on
+  the Quarantine and Tracking Center list toolbars now show only their
+  icon (no text label), freeing up width for the search box. Desktop
+  is unaffected - labels still show there.
+- The Back button on the Quarantine and Tracking Center detail pages
+  is now a bordered button (matching the app's other toolbar buttons)
+  instead of plain text, so it reads clearly as a tappable control.
+- On mobile, the "Copy Log" and "Show Raw Log" buttons in the Tracking
+  Center detail's Message Events section now sit on their own row
+  below the "Message Events" heading instead of competing for space
+  next to it; desktop keeps them inline. Both labels are now title
+  case ("Copy Log", "Show Raw Log") instead of sentence case.
+
 ### Fixed
 
 - Quarantine detail's Preview tab showed the raw, still MIME-encoded
