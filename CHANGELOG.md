@@ -7,6 +7,8 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-30
+
 ### Added
 
 - Quarantine and Tracking Center list toolbars (mobile and desktop)
