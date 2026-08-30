@@ -82,6 +82,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
   below their natural text width. Fixed by giving those elements
   `min-w-0` (and `truncate` where missing) so they shrink and ellipsize
   within the viewport instead of pushing it wider.
+- On mobile Safari, the backdrop blur behind the Filter/Tracking
+  filter modals and the confirmation dialog didn't render, even though
+  the underlying CSS was correct. iOS Safari silently skips
+  `backdrop-filter` on a `position: fixed` element unless that element
+  has its own GPU compositing layer. Fixed by forcing one via
+  `transform: translateZ(0)` on the three modal backdrops.
 - On mobile, focusing any form field (login username/password, search
   boxes, filter fields) made the page appear to shift/zoom and could
   cause horizontal overflow. iOS Safari auto-zooms the viewport when a

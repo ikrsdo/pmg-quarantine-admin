@@ -15,6 +15,10 @@ export default function FilterSheet({ open, filters, onChange, onClose, onApply,
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      // iOS Safari silently skips backdrop-filter on a `fixed` element
+      // unless it has its own compositing layer - forcing one here is what
+      // makes the blur actually render on mobile Safari.
+      style={{ transform: 'translateZ(0)' }}
       onClick={onClose}
     >
       <div
