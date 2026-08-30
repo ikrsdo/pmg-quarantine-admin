@@ -7,6 +7,18 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ## [Unreleased]
 
+### Fixed
+
+- Tracking Center detail's "Message Events" timeline showed every log
+  line as a generic "Log" event with no date, on PMG installs whose
+  syslog timestamps are ISO 8601 (`2026-08-30T14:34:09.659617+03:00`)
+  rather than classic Postfix syslog format (`Aug 29 15:10:01`). The
+  line parser's regex only recognized the classic format, so every
+  line silently failed to match and fell back to the generic/no-date
+  case. Fixed by recognizing both timestamp formats and formatting the
+  ISO one for display (`30/08, 14:34:09`) - Received/Queued/Processed/
+  Delivered etc. now categorize correctly again.
+
 ## [0.3.0] - 2026-08-30
 
 ### Added

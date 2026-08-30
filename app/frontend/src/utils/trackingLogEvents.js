@@ -1,14 +1,36 @@
 // Parses PMG's raw Tracking Center syslog lines (Postfix log format,
-// e.g. "Aug 29 15:10:01 host postfix/qmgr[123]: ABCDEF: from=<...>, size=...")
+// e.g. "Aug 29 15:10:01 host postfix/qmgr[123]: ABCDEF: from=<...>, size=..."
+// or, on newer/rsyslog-configured PMG installs, ISO 8601 timestamps like
+// "2026-08-30T14:34:09.659617+03:00 host postfix/qmgr[123]: ...")
 // into a friendlier, categorized event list for display. The PMG API only
 // guarantees `logs` is an array of plain strings (see pmg-api's
 // MailTracker.pm) - there is no structured "event type" field at the
 // source, so the categories below are inferred heuristically from the
 // Postfix service name and common message patterns. Lines that don't match
 // anything recognized fall back to a generic "Log" category rather than
-// being dropped, so no information is ever hidden.
+// being dropped, so no information is ever hidden. The process field is
+// also not always "service/subservice" (e.g. PMG's own
+// "pmg-smtp-filter[pid]" has no slash) - that still parses fine, it just
+// falls back to the generic "Log" category since it isn't Postfix.
 
-const LINE_RE = /^(\w{3}\s+\d{1,2}\s+\d{1,2}:\d{2}:\d{2})\s+(\S+)\s+([\w.-]+\/[\w.-]+)(?:\[\d+\])?:\s*(.*)$/;
+const LINE_RE =
+  /^((?:\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:\d{2}|Z)?)|(?:\w{3}\s+\d{1,2}\s+\d{1,2}:\d{2}:\d{2}))\s+(\S+)\s+([\w.-]+(?:\/[\w.-]+)?)(?:\[\d+\])?:\s*(.*)$/;
+
+const ISO_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
+
+function formatDisplayTime(time) {
+  if (!time) return null;
+  if (!ISO_RE.test(time)) return time; // classic "Mon Day HH:MM:SS" is already readable
+  const date = new Date(time);
+  if (Number.isNaN(date.getTime())) return time;
+  return date.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+}
 
 function extract(message, re) {
   const m = message.match(re);
@@ -87,7 +109,7 @@ export function parseTrackingLogEvents(logs) {
     }
     const [, time, , process, message] = match;
     const category = classify(process, message);
-    return { key: `${i}`, time, category, summary: summarize(category, message), raw };
+    return { key: `${i}`, time: formatDisplayTime(time), category, summary: summarize(category, message), raw };
   });
 }
 
