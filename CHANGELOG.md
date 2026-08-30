@@ -16,6 +16,9 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - The Quarantine filter modal's "Recipient email" field is now a
   searchable dropdown instead of a plain select, so a long recipient
   list can be filtered by typing instead of scrolling.
+- Quarantine detail's "Spam Test Details" section now has a "Copy"
+  button (next to its heading, like Tracking Center's "Copy Log") that
+  copies the spam test breakdown as plain text.
 
 ### Fixed
 

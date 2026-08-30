@@ -45,6 +45,15 @@ function MetaRow({ label, value }) {
   );
 }
 
+function formatSpamInfo(spaminfo) {
+  return spaminfo
+    .map((test) => {
+      const score = Number(test.score) >= 0 ? `+${Number(test.score).toFixed(1)}` : Number(test.score).toFixed(1);
+      return test.desc && test.desc !== '-' ? `${test.name} ${score} ${test.desc}` : `${test.name} ${score}`;
+    })
+    .join('\n');
+}
+
 function SpamInfoBreakdown({ spaminfo }) {
   if (!spaminfo || spaminfo.length === 0) {
     return <p className="text-sm text-zinc-500 dark:text-zinc-500">No matching spam tests.</p>;
@@ -272,7 +281,13 @@ export default function QuarantineDetailPage({ overlay = false }) {
               </div>
             </CollapsibleSection>
 
-            <CollapsibleSection title="Spam Test Details" defaultOpen={false}>
+            <CollapsibleSection
+              title="Spam Test Details"
+              defaultOpen={false}
+              right={
+                mail.spaminfo?.length > 0 && <CopyButton text={formatSpamInfo(mail.spaminfo)} label="Copy" />
+              }
+            >
               <SpamInfoBreakdown spaminfo={mail.spaminfo} />
             </CollapsibleSection>
           </div>
