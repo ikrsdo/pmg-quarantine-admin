@@ -124,6 +124,9 @@ export default function QuarantineCard({ mail, selected, selectionMode, onToggle
           <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
             {mail.subject || '(no subject)'}
           </p>
+          {mail.receiver && (
+            <p className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-500">→ {mail.receiver}</p>
+          )}
           <div className="mt-0.5 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
             <span>{formatTime(mail.time)}</span>
             <span>·</span>

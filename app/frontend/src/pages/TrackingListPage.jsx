@@ -240,7 +240,11 @@ export default function TrackingListPage() {
                       <TrackingStatusBadge status={m.rstatus || m.dstatus} />
                     </div>
                     <p className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-500">→ {m.to}</p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-500">{formatTime(m.time)}</p>
+                    <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
+                      <span>{formatTime(m.time)}</span>
+                      <span>·</span>
+                      <span>{formatKB(m.size)}</span>
+                    </div>
                   </button>
                 ))}
               </div>

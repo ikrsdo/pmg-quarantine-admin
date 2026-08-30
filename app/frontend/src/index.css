@@ -12,6 +12,23 @@ html {
   overflow-x: hidden;
 }
 
+/* Tailwind v4's preflight no longer sets button cursor to pointer (v3 did) -
+   restore it so every button reads as clickable, matching native buttons. */
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+/* Installed as a standalone PWA (status bar overlays the page, home
+   indicator area isn't otherwise accounted for), these keep fixed/sticky
+   bars clear of the iOS status bar and home indicator. */
+.pt-safe {
+  padding-top: calc(0.75rem + env(safe-area-inset-top));
+}
+
+.pb-safe {
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
 body {
   @apply bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100;
   font-family: var(--font-sans);

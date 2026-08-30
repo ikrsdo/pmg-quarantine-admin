@@ -38,6 +38,10 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - The Back button on the Quarantine and Tracking Center detail pages
   is now a bordered button (matching the app's other toolbar buttons)
   instead of plain text, so it reads clearly as a tappable control.
+- The mobile Quarantine card now shows the recipient address (styled
+  like Tracking Center's `→ recipient@…` line), and the mobile
+  Tracking Center card now shows the message size next to its
+  timestamp - both previously desktop-only or absent.
 - On mobile, the "Copy Log" and "Show Raw Log" buttons in the Tracking
   Center detail's Message Events section now sit on their own row
   below the "Message Events" heading instead of competing for space
@@ -98,6 +102,23 @@ project is in `0.x`, minor bumps may still include breaking changes.
   focused input's `font-size` is below 16px; several inputs used
   `text-sm` (14px). Fixed by forcing `font-size: 16px` on all
   `input`/`select`/`textarea` elements below the `640px` breakpoint.
+- The app had no web app manifest or iOS "add to home screen" meta
+  tags, so installing it via Safari's "Add to Home Screen" only
+  created a bookmark that opened in a full browser tab (with the
+  Safari address bar and toolbar) instead of a standalone PWA. This
+  also caused the sticky bottom action bars (Quarantine bulk-selection
+  bar, detail-page action bar) to sit under the browser's own bottom
+  toolbar, hiding all but their top edge. Fixed by adding a web app
+  manifest, `apple-touch-icon`, and the iOS PWA meta tags, plus
+  `safe-area-inset` padding on the mobile header and on both sticky
+  bottom action bars so they clear the status bar/home indicator when
+  running standalone. An already-installed Home Screen icon must be
+  deleted and re-added for this to take effect, since iOS only reads
+  these tags at install time.
+- On desktop, hovering the Deliver and Block buttons in the Quarantine
+  list table rows kept the default arrow cursor instead of a pointer.
+  Tailwind v4 dropped the `button { cursor: pointer }` rule its
+  preflight used to set. Fixed by restoring it globally in `index.css`.
 
 ## [0.2.0] - 2026-08-29
 

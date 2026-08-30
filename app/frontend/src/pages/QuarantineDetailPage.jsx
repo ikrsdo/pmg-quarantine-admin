@@ -396,7 +396,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
       <main className="px-4 pb-28 pt-4 lg:pb-6">{body}</main>
 
       {mail && (
-        <div className="fixed inset-x-0 bottom-0 z-10 border-t border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950 lg:hidden">
+        <div className="pb-safe fixed inset-x-0 bottom-0 z-10 border-t border-zinc-200 bg-white px-4 pt-4 dark:border-zinc-800 dark:bg-zinc-950 lg:hidden">
           <ActionButtons />
         </div>
       )}
