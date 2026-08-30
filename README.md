@@ -1,6 +1,6 @@
 # PMG Quarantine Admin
 
-**Version:** 0.1.0 · [Changelog](CHANGELOG.md)
+**Version:** 0.3.0 · [Changelog](CHANGELOG.md)
 
 > **Early development.** This project is under active development -
 > expect breaking changes between versions and rough edges. Not yet
