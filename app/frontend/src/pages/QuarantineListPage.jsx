@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Search, SlidersHorizontal, CheckSquare, RefreshCw } from 'lucide-react';
 import { fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
+import { quarantineActionToast } from '../utils/quarantineActionToast';
 import QuarantineCard from '../components/QuarantineCard';
 import QuarantineTable from '../components/QuarantineTable';
 import EmptyState from '../components/EmptyState';
@@ -30,6 +32,7 @@ function defaultFilters() {
 
 export default function QuarantineListPage() {
   const { handleUnauthorized } = useAuth();
+  const { showToast } = useToast();
   const queryClient = useQueryClient();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,11 +60,16 @@ export default function QuarantineListPage() {
 
   const actionMutation = useMutation({
     mutationFn: ({ ids, action }) => performQuarantineAction(ids, action),
-    onSuccess: () => {
+    onSuccess: (_data, { ids, action }) => {
       queryClient.invalidateQueries({ queryKey: ['quarantine'] });
       setSelectedIds(new Set());
+      const count = Array.isArray(ids) ? ids.length : 1;
+      const { tone, message } = quarantineActionToast(action, count);
+      showToast(message, tone);
     },
-    onError: (err) => handleUnauthorized(err),
+    onError: (err) => {
+      if (!handleUnauthorized(err)) showToast('Action failed', 'danger');
+    },
   });
 
   if (isError && handleUnauthorized(error)) {

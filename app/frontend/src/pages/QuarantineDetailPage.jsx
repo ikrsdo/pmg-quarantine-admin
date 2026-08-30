@@ -8,6 +8,8 @@ import {
   performQuarantineAction,
 } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
+import { quarantineActionToast } from '../utils/quarantineActionToast';
 import SpamScoreBadge from '../components/SpamScoreBadge';
 import ConfirmDialog from '../components/ConfirmDialog';
 import CopyButton from '../components/CopyButton';
@@ -145,6 +147,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { handleUnauthorized } = useAuth();
+  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const [pendingAction, setPendingAction] = useState(null); // 'deliver' | 'blocklist' | null
   const [drawerVisible, setDrawerVisible] = useState(!overlay);
@@ -156,11 +159,15 @@ export default function QuarantineDetailPage({ overlay = false }) {
 
   const actionMutation = useMutation({
     mutationFn: (action) => performQuarantineAction(id, action),
-    onSuccess: () => {
+    onSuccess: (_data, action) => {
       queryClient.invalidateQueries({ queryKey: ['quarantine'] });
+      const { tone, message } = quarantineActionToast(action);
+      showToast(message, tone);
       close();
     },
-    onError: (err) => handleUnauthorized(err),
+    onError: (err) => {
+      if (!handleUnauthorized(err)) showToast('Action failed', 'danger');
+    },
   });
 
   function close() {

@@ -12,9 +12,18 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - Quarantine and Tracking Center list toolbars (mobile and desktop)
   now have a Refresh button that re-fetches the list on demand, with
   a spinning icon while the request is in flight.
+- Quarantine list/detail and Tracking Center list actions now show a
+  toast notification (Deliver, Block, Whitelist, and failures), fixed
+  to the bottom of the screen on both mobile and desktop. Each toast
+  auto-dismisses after 5 seconds and has a shrinking progress bar
+  underneath so the remaining time is visible.
 
 ### Changed
 
+- The Filter and Tracking filter modals, and the Deliver/Block
+  confirmation dialog, now blur the page behind them when open
+  (mobile and desktop), and on mobile the filter modals open centered
+  on screen instead of as a bottom sheet.
 - The Quarantine and Tracking Center search field placeholders dropped
   the redundant "Search" word - now "Subject or Sender…" and "Sender
   or Recipient…".
