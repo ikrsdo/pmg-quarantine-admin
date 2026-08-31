@@ -277,68 +277,72 @@ you get a 403 with a different role, check this note first.
 - Each admin's ticket/CSRF token is kept in the backend, tied to that
   admin's own app-session cookie; the frontend only ever talks to the
   backend via its own httpOnly session cookie and never sees the ticket.
+- `/api/login` is rate-limited (20 attempts / 15 min per IP,
+  `server.js`) against PMG credential brute-forcing - it's the one
+  endpoint reachable without an existing session.
+- Security response headers are set on every response via
+  [Helmet](https://helmetjs.github.io/) (`X-Frame-Options`,
+  `X-Content-Type-Options`, `Referrer-Policy`, `X-Powered-By` removal).
+  CSP is deliberately left disabled (`contentSecurityPolicy: false` in
+  `server.js`) - the frontend relies on inline `style` attributes (iOS
+  backdrop-blur compositing fix, login page gradient) that a default
+  CSP's `style-src` would block. Don't re-enable it without also
+  reworking those inline styles.
+- The quarantined-mail HTML preview (`GET /api/quarantine/:id/preview`)
+  sends its own `Content-Security-Policy: sandbox` header, as
+  defense-in-depth against someone navigating the browser directly to
+  that URL (the frontend only ever loads it via `fetch()` into a
+  sandboxed iframe's `srcDoc`).
+- Every quarantine action is checked against a fixed whitelist of valid
+  PMG actions before being forwarded to PMG - see "PMG API Notes"
+  above for the enum.
+- The Docker image runs as a non-root user (see `Dockerfile`).
 
 ## Status
 
-**Backend complete and tested** (app/backend/): auth (login/logout),
-quarantine list/detail/action endpoints, tracking center list/detail
-endpoints (node name resolved via `GET /nodes` and cached for the
-process lifetime - see note below), 16 tests mocked with nock (`npm
-test` passes), manually verified against a real PMG with curl.
-`PMGAuthCookie`'s cookie name was verified against the official source
-(see "Auth note") and isn't expected to change.
+Feature-complete per "Purpose" above and actively maintained - the
+current version and full release history live in `README.md` /
+`CHANGELOG.md` (and their `.tr.md` Turkish translations); don't
+duplicate that history here. What follows are implementation details
+worth remembering that aren't spelled out in the changelog:
 
-**Note - node name resolution:** the `{node}` value in
-`/nodes/{node}/tracker...` paths is not a fixed config value - it's
-fetched from PMG itself via `GET /nodes` (a root-level endpoint,
-`src/PMG/API2/Nodes.pm`), which returns `[{node: "<hostname>"}]`; the
-first (only) node name is used. The backend resolves this once via
-`getNodeName()` in `pmgClient.js` and caches it for the process's
-lifetime (a server-wide constant, not per-session).
-
-**Frontend complete and visually verified** (via Playwright, mobile +
-desktop, against a mock backend, zero console errors): Login, Quarantine
-List/Detail, Tracking Center List/Detail. A shared left navigation
-(`AppShell.jsx`) wraps the Quarantine List and Tracking List pages - a
-fixed sidebar on desktop, a top tab bar on mobile; detail pages use their
-own back-navigation headers instead (no nav, not required by this file).
-Tracking Center is read-only (no swipe/bulk actions, per scope), status
-badges follow PMG's `$statmap` (2/4/5/N/G/A/B/Q), and the subject/header
-field is never shown or implied anywhere (not available in the API, see
-"IMPORTANT CONSTRAINT" above).
-
-**Docker/docker-compose complete** (see "Architecture Decisions"):
-`app/Dockerfile` is two-stage - stage 1 builds the frontend
-(`npm run build`), stage 2 installs backend production dependencies and
-copies the backend code plus stage 1's `dist/` output into
-`backend/public`; a single Express process serves both `/api/*` routes
-and the static frontend (with SPA fallback) - no separate containers.
-`docker-compose.yml` has a simple healthcheck (`/api/health`). Verified
-with a real `docker compose up -d --build` run (build succeeded, health
-check passed, static assets served with correct content-type).
-
-**Fixed - login loop behind a TLS-terminating reverse proxy/tunnel:**
-confirmed by a real deployment behind Cloudflare Tunnel + Zero Trust
-Access (IP allowlist): login against PMG succeeded, but no session
-persisted and the app looped back to the login screen. Root cause was
-NOT Cloudflare Access - it was `app.js` never setting `trust proxy`.
-`cookie.secure: true` (set whenever `NODE_ENV=production`) makes
-express-session require `issecure(req)` to be true before it will emit
-`Set-Cookie`. Behind a reverse proxy/tunnel, TLS terminates upstream and
-the connection this Express process actually sees is plain HTTP, so
-without `app.set('trust proxy', 1)`, Express ignores the
-`X-Forwarded-Proto: https` header the proxy sends and `req.secure` stays
-false - express-session then silently skips `Set-Cookie` (no error, no
-warning, just an absent header). Diagnosed via live debug logging
-showing the session object fully populated correctly after login but
-`res.getHeaders()` missing `set-cookie` entirely. Fixed by adding
-`app.set('trust proxy', 1)` in `server.js`, before the session
-middleware. This line must stay - removing it silently reintroduces this
-bug in any deployment that terminates TLS in front of the app (the
-intended production setup).
-
-Main project scope (see "Purpose") is complete: Login, Quarantine
-List/Detail, Tracking Center List/Detail, and Docker packaging. The
-`trust proxy` fix above has been deployed but not yet re-verified
-end-to-end against the real PMG server behind Cloudflare Tunnel - that
-re-test is the next step.
+- **Node name resolution:** the `{node}` value in
+  `/nodes/{node}/tracker...` paths is not a fixed config value - it's
+  fetched from PMG itself via `GET /nodes` (a root-level endpoint,
+  `src/PMG/API2/Nodes.pm`), which returns `[{node: "<hostname>"}]`; the
+  first (only) node name is used. The backend resolves this once via
+  `getNodeName()` in `pmgClient.js` and caches it for the process's
+  lifetime (a server-wide constant, not per-session).
+- **`trust proxy` must stay set:** `app.set('trust proxy', 1)` in
+  `server.js`, before the session middleware, is required for the
+  session cookie to persist behind any TLS-terminating reverse proxy or
+  tunnel (Cloudflare Tunnel, nginx, etc.) - without it, `req.secure`
+  stays `false` and `express-session` silently skips `Set-Cookie` for
+  the `cookie.secure: true` session cookie, causing a silent login
+  loop. Confirmed fixed and running in production behind Cloudflare
+  Tunnel. Removing this line silently reintroduces that bug.
+  `PMGAuthCookie`'s cookie name (the cookie PMG itself expects) was
+  verified against the official PMG source (see "Auth note" above) and
+  isn't expected to change.
+- **Backend test suite:** `app/backend/` has 16 tests (`npm test`),
+  PMG API calls mocked with `nock` - no real PMG server needed. Also
+  manually verified against a real PMG with curl (see
+  `app/backend/README.md`).
+- **Frontend structure:** a shared left navigation (`AppShell.jsx`)
+  wraps the Quarantine List and Tracking List pages - a fixed sidebar
+  on desktop, a top tab bar on mobile. On desktop, opening a
+  message/entry shows its detail as a right-side drawer over the list
+  instead of navigating away (list stays mounted, filters/sort/scroll
+  preserved); a direct link or page refresh still opens the full
+  standalone detail page. Tracking Center stays read-only (no
+  swipe/bulk actions, per scope), status badges follow PMG's
+  `$statmap` (2/4/5/N/G/A/B/Q), and the subject/header field is never
+  shown or implied anywhere (not available in the API, see "IMPORTANT
+  CONSTRAINT" above).
+- **Docker packaging:** `app/Dockerfile` is two-stage - stage 1 builds
+  the frontend (`npm run build`), stage 2 installs backend production
+  dependencies and copies the backend code plus stage 1's `dist/`
+  output into `backend/public`; a single Express process serves both
+  `/api/*` routes and the static frontend (with SPA fallback) - no
+  separate containers. `docker-compose.yml` has a simple healthcheck
+  (`GET /api/health`).

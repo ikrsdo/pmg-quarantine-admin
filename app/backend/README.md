@@ -45,6 +45,10 @@ curl -i -b jar.txt http://localhost:3000/api/quarantine/<id>
 curl -i -b jar.txt -X POST http://localhost:3000/api/quarantine/<id>/action \
   -H 'Content-Type: application/json' -d '{"action":"deliver"}'
 
+# Tracking Center list, then one entry's detail
+curl -i -b jar.txt http://localhost:3000/api/tracking
+curl -i -b jar.txt http://localhost:3000/api/tracking/<id>
+
 curl -i -b jar.txt -X POST http://localhost:3000/api/logout
 ```
 
@@ -52,8 +56,16 @@ curl -i -b jar.txt -X POST http://localhost:3000/api/logout
 
 | Method | Path | Auth | Description |
 |---|---|---|---|
-| POST | `/api/login` | - | `{username, password}` → logs into PMG, sets a session cookie |
+| GET | `/api/health` | - | Liveness check, `{status: "ok"}` (used by the Docker healthcheck) |
+| POST | `/api/login` | - | `{username, password}` → logs into PMG, sets a session cookie. Rate-limited (20 attempts / 15 min per IP) |
 | POST | `/api/logout` | - | Clears the session |
+| GET | `/api/me` | ✓ | Currently logged-in PMG username |
 | GET | `/api/quarantine` | ✓ | Query: `starttime`, `endtime`, `pmail` (all optional) |
 | GET | `/api/quarantine/:id` | ✓ | Message content + headers |
+| GET | `/api/quarantine/:id/preview` | ✓ | Sanitized HTML rendering of the message (PMG's `/api2/htmlmail/...`), meant to be loaded into a sandboxed iframe |
 | POST | `/api/quarantine/:id/action` | ✓ | `{action}` - `deliver`, `delete`, `whitelist`, `welcomelist`, `blocklist`, `blacklist`, `mark-seen`, `mark-unseen` |
+| GET | `/api/tracking` | ✓ | Query: `starttime`, `endtime`, `xfilter`, `from`, `target`, `ndr`, `greylist`, `limit` (all optional) |
+| GET | `/api/tracking/:id` | ✓ | That message's syslog trail (raw lines - see `trackingLogEvents.js` in the frontend for how they're categorized for display) |
+
+`✓` routes require an active session (set by `/api/login`); a missing
+or expired one gets a `401`.
