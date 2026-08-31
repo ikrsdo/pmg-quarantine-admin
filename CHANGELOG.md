@@ -48,6 +48,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - Dashboard's "Tracking Center Status Distribution" section was
   renamed to "Message Delivery Status" - no behavior change, just a
   clearer title.
+- Dashboard's quarantine/tracking queries now use a 60-second
+  `staleTime` and a minute-rounded time window, so navigating away
+  from the Dashboard and back within a minute reuses the already-
+  fetched data instead of re-fetching a full 7 days of tracking data
+  again. The first load after login still pays the real cost of
+  fetching that data.
 
 ### Fixed
 

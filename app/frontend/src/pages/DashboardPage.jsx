@@ -176,18 +176,23 @@ function StatusDistribution({ trackingMails }) {
 export default function DashboardPage() {
   const { handleUnauthorized } = useAuth();
   const { starttime, endtime } = useMemo(() => {
-    const endtime = nowSeconds();
+    // Rounded to the minute so remounting within the staleTime window
+    // (e.g. navigating away and back) reuses the same query cache entry
+    // instead of missing on a slightly different timestamp.
+    const endtime = Math.floor(nowSeconds() / 60) * 60;
     return { starttime: endtime - SEVEN_DAYS_SECONDS, endtime };
   }, []);
 
   const quarantineQuery = useQuery({
     queryKey: ['quarantine', { starttime, endtime }],
     queryFn: () => fetchQuarantineList({ starttime, endtime }),
+    staleTime: 60 * 1000,
   });
 
   const trackingQuery = useQuery({
     queryKey: ['tracking', { starttime, endtime, limit: 5000 }],
     queryFn: () => fetchTrackingList({ starttime, endtime, limit: 5000 }),
+    staleTime: 60 * 1000,
   });
 
   if (quarantineQuery.isError && handleUnauthorized(quarantineQuery.error)) {

@@ -53,6 +53,12 @@ uyumsuz değişiklikler içerebilir.
 - Dashboard'daki "Tracking Center Status Distribution" bölümü
   "Message Delivery Status" olarak yeniden adlandırıldı - davranış
   değişikliği yok, sadece daha anlaşılır bir başlık.
+- Dashboard'ın karantina/tracking sorguları artık 60 saniyelik bir
+  `staleTime` ve dakikaya yuvarlanmış bir zaman penceresi kullanıyor,
+  böylece Dashboard'dan uzaklaşıp bir dakika içinde geri dönmek 7
+  günlük tracking verisini tekrar çekmek yerine zaten alınmış veriyi
+  yeniden kullanıyor. Girişten sonraki ilk yükleme yine bu verinin
+  gerçek maliyetine katlanıyor.
 
 ### Düzeltmeler
 
