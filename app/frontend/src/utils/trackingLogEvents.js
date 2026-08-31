@@ -11,7 +11,9 @@
 // being dropped, so no information is ever hidden. The process field is
 // also not always "service/subservice" (e.g. PMG's own
 // "pmg-smtp-filter[pid]" has no slash) - that still parses fine, it just
-// falls back to the generic "Log" category since it isn't Postfix.
+// isn't matched against the Postfix-service checks below (see the
+// "Policy Match" category for the one pmg-smtp-filter line that matters:
+// an antispam/policy rule match).
 
 const LINE_RE =
   /^((?:\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:\d{2}|Z)?)|(?:\w{3}\s+\d{1,2}\s+\d{1,2}:\d{2}:\d{2}))\s+(\S+)\s+([\w.-]+(?:\/[\w.-]+)?)(?:\[\d+\])?:\s*(.*)$/;
@@ -37,30 +39,34 @@ function extract(message, re) {
   return m ? m[1] : null;
 }
 
+// pmg-smtp-filter (the content filter, not a Postfix service - its process
+// field has no "service/subservice" slash) logs a line like
+// "... (rule: Some Rule Name)" whenever a mail matches one of PMG's
+// antispam/policy rules. That's real, useful information the categories
+// above don't cover, so it's checked as a fallback and pulled out into its
+// own category instead of falling into the generic "Log" bucket.
+const RULE_RE = /\(rule:\s*([^)]+)\)/i;
+
 function classify(process, message) {
   const service = process.split('/')[1] || '';
 
   if (service === 'smtpd') {
     if (/^NOQUEUE: reject/.test(message) || /reject:/.test(message)) return 'Rejected';
     if (message.includes('connect from')) return 'Received';
-    return 'Log';
-  }
-  if (service === 'cleanup') {
+  } else if (service === 'cleanup') {
     if (message.includes('message-id=')) return 'Processed';
-    return 'Log';
-  }
-  if (service === 'qmgr') {
+  } else if (service === 'qmgr') {
     if (message.includes('from=<')) return 'Queued';
-    return 'Log';
-  }
-  if (['smtp', 'lmtp', 'local', 'pipe', 'virtual'].includes(service)) {
+  } else if (['smtp', 'lmtp', 'local', 'pipe', 'virtual'].includes(service)) {
     if (message.includes('status=sent')) return 'Delivered';
     if (message.includes('status=bounced')) return 'Bounced';
     if (message.includes('status=deferred')) return 'Deferred';
     if (/greylist/i.test(message)) return 'Greylisted';
-    return 'Log';
+  } else if (service === 'bounce') {
+    return 'Bounced';
   }
-  if (service === 'bounce') return 'Bounced';
+
+  if (RULE_RE.test(message)) return 'Policy Match';
 
   return 'Log';
 }
@@ -72,6 +78,7 @@ function summarize(category, message) {
   const relay = extract(message, /relay=(\S+),/);
   const size = extract(message, /size=(\d+)/);
   const reason = extract(message, /\(([^)]*)\)\s*$/);
+  const rule = extract(message, RULE_RE);
 
   switch (category) {
     case 'Received':
@@ -92,6 +99,8 @@ function summarize(category, message) {
       return 'Greylisted - delivery will be retried';
     case 'Rejected':
       return reason ? `Message rejected: ${reason}` : 'Message rejected';
+    case 'Policy Match':
+      return rule ? `Matched policy rule "${rule.trim()}"` : 'Matched a content-filter policy rule';
     default:
       return message.length > 90 ? `${message.slice(0, 90)}…` : message;
   }
@@ -122,5 +131,6 @@ export const EVENT_CATEGORY_COLOR = {
   Rejected: 'text-red-600 dark:text-red-400',
   Deferred: 'text-amber-600 dark:text-amber-400',
   Greylisted: 'text-amber-600 dark:text-amber-400',
+  'Policy Match': 'text-violet-600 dark:text-violet-400',
   Log: 'text-zinc-500 dark:text-zinc-400',
 };

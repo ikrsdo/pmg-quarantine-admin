@@ -5,6 +5,18 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [Unreleased]
+
+### Changed
+
+- Tracking Center detail's "Message Events" timeline previously showed
+  every content-filter (`pmg-smtp-filter`) log line as a generic "Log"
+  event, even when the line recorded a mail matching one of PMG's
+  antispam/policy rules (`... (rule: <rule name>)`). These now get
+  their own "Policy Match" category and show the matched rule's name.
+- The favicon is now a blue badge with the same Lucide Shield icon
+  used on the login page, instead of an unrelated abstract logo.
+
 ## [0.4.0] - 2026-08-31
 
 ### Security
