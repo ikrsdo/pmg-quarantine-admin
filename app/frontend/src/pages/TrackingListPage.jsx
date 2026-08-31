@@ -83,7 +83,7 @@ export default function TrackingListPage() {
   const [sortKey, setSortKey] = useState('time');
   const [sortDir, setSortDir] = useState('desc');
 
-  // Coming from the "Tracking Center'da Ara" cross-link button on a
+  // Coming from the "Search in Tracking Center" cross-link button on a
   // Quarantine message (QuarantineDetailPage.jsx) - apply its preset
   // filters immediately instead of requiring the admin to open the Filter
   // modal.
@@ -185,13 +185,13 @@ export default function TrackingListPage() {
                 `tracking-center-${new Date().toISOString().slice(0, 10)}.csv`,
                 filtered,
                 [
-                  { key: 'from', label: 'Gönderen' },
-                  { key: 'to', label: 'Alıcı' },
-                  { key: 'time', label: 'Zaman (unix)' },
+                  { key: 'from', label: 'From' },
+                  { key: 'to', label: 'Recipient' },
+                  { key: 'time', label: 'Time (unix)' },
                   { key: 'relay', label: 'Relay' },
-                  { key: 'size', label: 'Boyut (bayt)' },
-                  { key: 'dstatus', label: 'Teslimat Durumu' },
-                  { key: 'rstatus', label: 'Alım Durumu' },
+                  { key: 'size', label: 'Size (bytes)' },
+                  { key: 'dstatus', label: 'Delivery Status' },
+                  { key: 'rstatus', label: 'Receive Status' },
                   { key: 'id', label: 'ID' },
                 ],
               )

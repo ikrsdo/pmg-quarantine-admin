@@ -43,7 +43,7 @@ export default function QuarantineListPage() {
   const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
   const [filterOpen, setFilterOpen] = useState(false);
 
-  // Coming from the "Karantinada Ara" cross-link button on a Tracking
+  // Coming from the "Search in Quarantine" cross-link button on a Tracking
   // Center entry (TrackingDetailPage.jsx) - apply its preset filters
   // immediately instead of requiring the admin to open the Filter modal.
   useEffect(() => {
@@ -185,15 +185,15 @@ export default function QuarantineListPage() {
             type="button"
             onClick={() =>
               downloadCsv(
-                `karantina-${new Date().toISOString().slice(0, 10)}.csv`,
+                `quarantine-${new Date().toISOString().slice(0, 10)}.csv`,
                 filtered,
                 [
-                  { key: 'sender', label: 'Gönderen' },
-                  { key: 'receiver', label: 'Alıcı' },
-                  { key: 'subject', label: 'Konu' },
-                  { key: 'time', label: 'Zaman (unix)' },
-                  { key: 'bytes', label: 'Boyut (bayt)' },
-                  { key: 'spamlevel', label: 'Spam Skoru' },
+                  { key: 'sender', label: 'Sender' },
+                  { key: 'receiver', label: 'Recipient' },
+                  { key: 'subject', label: 'Subject' },
+                  { key: 'time', label: 'Time (unix)' },
+                  { key: 'bytes', label: 'Size (bytes)' },
+                  { key: 'spamlevel', label: 'Spam Score' },
                   { key: 'id', label: 'ID' },
                 ],
               )

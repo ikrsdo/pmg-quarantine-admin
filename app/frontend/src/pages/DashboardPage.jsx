@@ -47,7 +47,7 @@ function VolumeChart({ mails }) {
     }
     const days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (6 - i));
-      return { label: d.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' }), start: d.getTime() };
+      return { label: d.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit' }), start: d.getTime() };
     });
     return days.map(({ label, start }, i) => {
       const end = i < days.length - 1 ? days[i + 1].start : start + 24 * 60 * 60 * 1000;
@@ -60,12 +60,12 @@ function VolumeChart({ mails }) {
 
   return (
     <CollapsibleSection
-      title="Karantina Hacmi"
+      title="Quarantine Volume"
       right={
         <div className="flex gap-1 rounded-md border border-zinc-300 p-0.5 text-xs dark:border-zinc-700">
           {[
-            { id: '24h', label: '24 saat' },
-            { id: '7d', label: '7 gün' },
+            { id: '24h', label: '24h' },
+            { id: '7d', label: '7d' },
           ].map((opt) => (
             <button
               key={opt.id}
@@ -84,7 +84,7 @@ function VolumeChart({ mails }) {
       }
     >
       {buckets.every((b) => b.count === 0) ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-500">Bu aralıkta karantinaya düşen mesaj yok.</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-500">No messages quarantined in this range.</p>
       ) : (
         <div className="flex flex-col gap-1.5">
           {buckets.map((b) => (
@@ -100,7 +100,7 @@ function TopSenders({ mails }) {
   const top = useMemo(() => {
     const counts = new Map();
     for (const m of mails) {
-      const sender = m.sender || m.from || 'Bilinmiyor';
+      const sender = m.sender || m.from || 'Unknown';
       counts.set(sender, (counts.get(sender) || 0) + 1);
     }
     return Array.from(counts.entries())
@@ -111,9 +111,9 @@ function TopSenders({ mails }) {
   const max = Math.max(1, ...top.map(([, count]) => count));
 
   return (
-    <CollapsibleSection title="En Çok Karantinaya Düşen Gönderenler (son 7 gün)">
+    <CollapsibleSection title="Top Senders (last 7 days)">
       {top.length === 0 ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-500">Son 7 günde karantina kaydı yok.</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-500">No quarantine activity in the last 7 days.</p>
       ) : (
         <div className="flex flex-col gap-1.5">
           {top.map(([sender, count]) => (
@@ -143,9 +143,9 @@ function StatusDistribution({ trackingMails }) {
   const max = Math.max(1, ...counts.map(([, count]) => count));
 
   return (
-    <CollapsibleSection title="Tracking Center Durum Dağılımı (son 7 gün)">
+    <CollapsibleSection title="Tracking Center Status Distribution (last 7 days)">
       {counts.length === 0 ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-500">Son 7 günde tracking kaydı yok.</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-500">No tracking activity in the last 7 days.</p>
       ) : (
         <div className="flex flex-col gap-2">
           {counts.map(([status, count]) => (
@@ -190,7 +190,7 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <div className="h-full overflow-auto px-4 py-4">
-        <h1 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">Genel Bakış</h1>
+        <h1 className="mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">Overview</h1>
 
         {isLoading && <SkeletonList />}
 

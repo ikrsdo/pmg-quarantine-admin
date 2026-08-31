@@ -8,7 +8,7 @@ function toDatetimeLocal(date) {
 
 const PRESETS = [
   {
-    label: 'Son 24 saat',
+    label: 'Last 24h',
     apply: (filters) => ({
       ...filters,
       starttimeLocal: toDatetimeLocal(new Date(Date.now() - 24 * 60 * 60 * 1000)),
@@ -16,7 +16,7 @@ const PRESETS = [
     }),
   },
   {
-    label: 'Son 7 gün',
+    label: 'Last 7 days',
     apply: (filters) => ({
       ...filters,
       starttimeLocal: toDatetimeLocal(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
@@ -53,7 +53,7 @@ export default function FilterSheet({ open, filters, onChange, onClose, onApply,
         <p className="mb-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">Filter</p>
 
         <div className="mb-4 flex flex-col gap-1.5">
-          <p className="text-xs text-zinc-500 dark:text-zinc-500">Kayıtlı Filtreler</p>
+          <p className="text-xs text-zinc-500 dark:text-zinc-500">Saved Filters</p>
           <div className="flex flex-wrap gap-1.5">
             {PRESETS.map((preset) => (
               <button
