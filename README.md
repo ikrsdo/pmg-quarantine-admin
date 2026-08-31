@@ -1,5 +1,7 @@
 # PMG Quarantine Admin
 
+English | [Türkçe](README.tr.md)
+
 **Version:** 0.4.1 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail

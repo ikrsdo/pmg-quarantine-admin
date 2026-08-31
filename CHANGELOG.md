@@ -1,5 +1,7 @@
 # Changelog
 
+English | [Türkçe](CHANGELOG.tr.md)
+
 All notable changes to this project are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
