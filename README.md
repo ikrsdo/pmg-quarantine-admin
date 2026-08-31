@@ -110,10 +110,12 @@ check). Sign in with your own PMG username/password on the login screen.
 
 ## Updating
 
-To update to the latest version, pull the new code and rebuild the
-image:
+To update to the latest version, run this from inside the project
+directory (the one containing `docker-compose.yml`) to pull the new
+code and rebuild the image:
 
 ```bash
+cd pmg-quarantine-admin
 sudo git pull && sudo docker compose up -d --build
 ```
 

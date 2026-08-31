@@ -116,9 +116,12 @@ Uygulama 3000 portunda dinler (hızlı bir yerel kontrol için
 
 ## Güncelleme
 
-En son sürüme güncellemek için yeni kodu çekip imajı yeniden derleyin:
+En son sürüme güncellemek için, `docker-compose.yml` dosyasını içeren
+proje klasörünün içinden şu komutu çalıştırarak yeni kodu çekip imajı
+yeniden derleyin:
 
 ```bash
+cd pmg-quarantine-admin
 sudo git pull && sudo docker compose up -d --build
 ```
 
