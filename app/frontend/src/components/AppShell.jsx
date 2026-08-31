@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { ShieldAlert, Activity, LogOut } from 'lucide-react';
+import { LayoutDashboard, ShieldAlert, Activity, LogOut } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from '../theme/ThemeToggle';
 import { version } from '../../package.json';
 
 const NAV_ITEMS = [
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/quarantine', label: 'Quarantine', icon: ShieldAlert },
   { to: '/tracking', label: 'Tracking Center', icon: Activity },
 ];

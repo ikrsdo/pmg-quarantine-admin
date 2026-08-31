@@ -11,8 +11,33 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Added
 
+- New Dashboard screen, now the landing page after login. Shows a
+  quarantine volume chart (24h/7-day toggle), a top-senders list, and
+  a Tracking Center status distribution widget, all built with plain
+  CSS bar charts (no charting library added).
+- Best-effort cross-linking between Quarantine and Tracking Center: a
+  "Tracking Center'da Ara" button on the Quarantine detail page and a
+  "Karantinada Ara" button on the Tracking Center detail page each
+  jump to the other list pre-filtered by sender/recipient and a
+  ±15-minute time window around the message's timestamp. This is a
+  best-effort match, not a guaranteed exact link - PMG's Quarantine
+  and Tracking Center APIs share no common identifier.
+- Saved filter presets ("Kayıtlı Filtreler") inside both the
+  Quarantine and Tracking Center filter modals - quick pill buttons
+  for common time ranges (Quarantine: last 24h/7d; Tracking Center:
+  last 24h/7d, NDR/rejected, greylisted).
+- CSV export button on both the Quarantine and Tracking Center list
+  pages, exporting the currently filtered rows.
 - README now includes a Screenshots section with desktop and mobile
   captures of the Login, Quarantine, and Tracking Center screens.
+
+### Fixed
+
+- `CollapsibleSection`'s clickable header was a `<button>` element;
+  when a widget passed interactive controls into its `right` slot
+  (e.g. the Dashboard volume chart's 24h/7d toggle), this produced an
+  invalid `<button>` nested inside a `<button>` and a React hydration
+  warning. The header is now a `role="button"` `<div>` instead.
 
 ## [0.4.1] - 2026-08-31
 

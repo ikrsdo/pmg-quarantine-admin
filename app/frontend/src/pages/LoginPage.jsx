@@ -20,7 +20,7 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const redirectTo = location.state?.from || '/quarantine';
+  const redirectTo = location.state?.from || '/dashboard';
 
   async function handleSubmit(e) {
     e.preventDefault();

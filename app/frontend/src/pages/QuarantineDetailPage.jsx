@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Send, ShieldCheck, Ban, X } from 'lucide-react';
+import { ArrowLeft, ArrowRightLeft, Send, ShieldCheck, Ban, X } from 'lucide-react';
 import {
   fetchQuarantineDetail,
   fetchQuarantinePreviewHtml,
@@ -33,6 +33,27 @@ function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function toDatetimeLocal(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+// PMG's quarantine and tracking APIs don't share a common id - this jumps
+// to Tracking Center pre-filtered by this mail's recipient and a time
+// window around when it was quarantined, as a best-effort way to find the
+// matching delivery-trail entry rather than a guaranteed exact link.
+function trackingSearchFilters(mail) {
+  const center = new Date(mail.time * 1000);
+  const start = new Date(center.getTime() - 15 * 60 * 1000);
+  const end = new Date(center.getTime() + 15 * 60 * 1000);
+  return {
+    from: mail.envelope_sender || mail.sender || mail.from || '',
+    target: mail.receiver || '',
+    starttimeLocal: toDatetimeLocal(start),
+    endtimeLocal: toDatetimeLocal(end),
+  };
 }
 
 function MetaRow({ label, value }) {
@@ -278,6 +299,16 @@ export default function QuarantineDetailPage({ overlay = false }) {
                 <MetaRow label="Recipient" value={mail.receiver} />
                 <MetaRow label="Date" value={formatTime(mail.time)} />
                 <MetaRow label="Size" value={formatBytes(mail.bytes)} />
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate('/tracking', { state: { presetFilters: trackingSearchFilters(mail) } })
+                  }
+                  className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+                >
+                  <ArrowRightLeft className="size-3.5" />
+                  Tracking Center'da Ara
+                </button>
               </div>
             </CollapsibleSection>
 

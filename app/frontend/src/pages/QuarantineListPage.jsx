@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Search, SlidersHorizontal, CheckSquare, RefreshCw } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { Search, SlidersHorizontal, CheckSquare, RefreshCw, Download } from 'lucide-react';
 import { fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { quarantineActionToast } from '../utils/quarantineActionToast';
+import { downloadCsv } from '../utils/csvExport';
 import QuarantineCard from '../components/QuarantineCard';
 import QuarantineTable from '../components/QuarantineTable';
 import EmptyState from '../components/EmptyState';
@@ -34,11 +36,24 @@ export default function QuarantineListPage() {
   const { handleUnauthorized } = useAuth();
   const { showToast } = useToast();
   const queryClient = useQueryClient();
+  const location = useLocation();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState(defaultFilters);
   const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
   const [filterOpen, setFilterOpen] = useState(false);
+
+  // Coming from the "Karantinada Ara" cross-link button on a Tracking
+  // Center entry (TrackingDetailPage.jsx) - apply its preset filters
+  // immediately instead of requiring the admin to open the Filter modal.
+  useEffect(() => {
+    const preset = location.state?.presetFilters;
+    if (!preset) return;
+    const merged = { ...defaultFilters(), ...preset };
+    setFilters(merged);
+    setAppliedFilters(merged);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [pendingAction, setPendingAction] = useState(null); // { type: 'deliver' | 'blocklist', target: id or 'bulk' }
@@ -165,6 +180,30 @@ export default function QuarantineListPage() {
           >
             <SlidersHorizontal className="size-4" />
             <span className="hidden lg:inline">Filter</span>
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              downloadCsv(
+                `karantina-${new Date().toISOString().slice(0, 10)}.csv`,
+                filtered,
+                [
+                  { key: 'sender', label: 'Gönderen' },
+                  { key: 'receiver', label: 'Alıcı' },
+                  { key: 'subject', label: 'Konu' },
+                  { key: 'time', label: 'Zaman (unix)' },
+                  { key: 'bytes', label: 'Boyut (bayt)' },
+                  { key: 'spamlevel', label: 'Spam Skoru' },
+                  { key: 'id', label: 'ID' },
+                ],
+              )
+            }
+            disabled={filtered.length === 0}
+            title="CSV'ye Aktar"
+            className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+          >
+            <Download className="size-4" />
+            <span className="hidden lg:inline">CSV</span>
           </button>
           <button
             type="button"

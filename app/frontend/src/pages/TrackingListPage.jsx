@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Search, SlidersHorizontal, ArrowUp, ArrowDown, ChevronsUpDown, RefreshCw } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowUp, ArrowDown, ChevronsUpDown, RefreshCw, Download } from 'lucide-react';
 import { fetchTrackingList } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
+import { downloadCsv } from '../utils/csvExport';
 import AppShell from '../components/AppShell';
 import TrackingStatusBadge from '../components/TrackingStatusBadge';
 import TrackingFilterSheet from '../components/TrackingFilterSheet';
@@ -81,6 +82,19 @@ export default function TrackingListPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortKey, setSortKey] = useState('time');
   const [sortDir, setSortDir] = useState('desc');
+
+  // Coming from the "Tracking Center'da Ara" cross-link button on a
+  // Quarantine message (QuarantineDetailPage.jsx) - apply its preset
+  // filters immediately instead of requiring the admin to open the Filter
+  // modal.
+  useEffect(() => {
+    const preset = location.state?.presetFilters;
+    if (!preset) return;
+    const merged = { ...defaultFilters(), ...preset };
+    setFilters(merged);
+    setAppliedFilters(merged);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const queryParams = useMemo(
     () => ({
@@ -163,6 +177,31 @@ export default function TrackingListPage() {
           >
             <SlidersHorizontal className="size-4" />
             <span className="hidden lg:inline">Filter</span>
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              downloadCsv(
+                `tracking-center-${new Date().toISOString().slice(0, 10)}.csv`,
+                filtered,
+                [
+                  { key: 'from', label: 'Gönderen' },
+                  { key: 'to', label: 'Alıcı' },
+                  { key: 'time', label: 'Zaman (unix)' },
+                  { key: 'relay', label: 'Relay' },
+                  { key: 'size', label: 'Boyut (bayt)' },
+                  { key: 'dstatus', label: 'Teslimat Durumu' },
+                  { key: 'rstatus', label: 'Alım Durumu' },
+                  { key: 'id', label: 'ID' },
+                ],
+              )
+            }
+            disabled={filtered.length === 0}
+            title="CSV'ye Aktar"
+            className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+          >
+            <Download className="size-4" />
+            <span className="hidden lg:inline">CSV</span>
           </button>
         </div>
 

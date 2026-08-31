@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, X } from 'lucide-react';
+import { ArrowLeft, ArrowRightLeft, X } from 'lucide-react';
 import { fetchTrackingDetail } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
 import TrackingStatusBadge from '../components/TrackingStatusBadge';
@@ -26,6 +26,24 @@ function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function toDatetimeLocal(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+// See the matching helper in QuarantineDetailPage.jsx - same best-effort
+// approach in the other direction (no shared id between the two APIs).
+function quarantineSearchFilters(entry) {
+  const center = new Date(entry.time * 1000);
+  const start = new Date(center.getTime() - 15 * 60 * 1000);
+  const end = new Date(center.getTime() + 15 * 60 * 1000);
+  return {
+    pmail: entry.to || '',
+    starttimeLocal: toDatetimeLocal(start),
+    endtimeLocal: toDatetimeLocal(end),
+  };
 }
 
 function MetaRow({ label, value }) {
@@ -115,6 +133,16 @@ export default function TrackingDetailPage({ overlay = false }) {
                 <MetaRow label="Relay" value={entry.relay} />
                 <MetaRow label="Client" value={entry.client} />
                 <MetaRow label="Size" value={formatBytes(entry.size)} />
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate('/quarantine', { state: { presetFilters: quarantineSearchFilters(entry) } })
+                  }
+                  className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+                >
+                  <ArrowRightLeft className="size-3.5" />
+                  Karantinada Ara
+                </button>
               </div>
             </CollapsibleSection>
           </div>

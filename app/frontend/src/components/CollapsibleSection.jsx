@@ -6,10 +6,17 @@ export default function CollapsibleSection({ title, right, defaultOpen = true, c
 
   return (
     <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center justify-between gap-3 text-left ${open ? 'mb-3 border-b border-zinc-200 pb-2 dark:border-zinc-800' : ''}`}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setOpen((v) => !v);
+          }
+        }}
+        className={`flex w-full items-center justify-between gap-3 text-left cursor-pointer ${open ? 'mb-3 border-b border-zinc-200 pb-2 dark:border-zinc-800' : ''}`}
       >
         <span className="flex items-center gap-1.5">
           {open ? (
@@ -24,7 +31,7 @@ export default function CollapsibleSection({ title, right, defaultOpen = true, c
             {right}
           </span>
         )}
-      </button>
+      </div>
       {open && children}
     </div>
   );

@@ -12,9 +12,37 @@ uyumsuz değişiklikler içerebilir.
 
 ### Eklenenler
 
+- Girişten sonra açılan yeni bir Dashboard ekranı, artık ilk açılış
+  sayfası. Karantina hacim grafiği (24 saat/7 gün geçişli), en çok
+  karantinaya düşen gönderenler listesi ve Tracking Center durum
+  dağılımı widget'ı içeriyor; hiçbiri harici bir grafik kütüphanesi
+  eklemeden, düz CSS çubuk grafikleriyle yapıldı.
+- Karantina ve Tracking Center arasında en-iyi-çaba (best-effort)
+  çapraz bağlantı: Karantina detay sayfasındaki "Tracking Center'da
+  Ara" ve Tracking Center detay sayfasındaki "Karantinada Ara"
+  butonları, ilgili kaydın gönderen/alıcı bilgisi ve zaman damgası
+  etrafında ±15 dakikalık bir pencereyle filtrelenmiş diğer listeye
+  götürüyor. Bu kesin bir eşleşme garantisi değil, en-iyi-çaba bir
+  eşleştirmedir - PMG'nin Karantina ve Tracking Center API'leri ortak
+  bir kimlik alanı paylaşmıyor.
+- Hem Karantina hem Tracking Center filtre modallarının içinde
+  "Kayıtlı Filtreler" - sık kullanılan zaman aralıkları için hızlı
+  butonlar (Karantina: son 24 saat/7 gün; Tracking Center: son 24
+  saat/7 gün, NDR/Reddedilenler, Greylist).
+- Hem Karantina hem Tracking Center liste sayfalarında, o an
+  filtrelenmiş satırları dışa aktaran bir CSV export butonu.
 - README artık Login, Karantina ve Tracking Center ekranlarının
   masaüstü ve mobil görüntülerini içeren bir Ekran Görüntüleri
   bölümüne sahip.
+
+### Düzeltmeler
+
+- `CollapsibleSection` bileşeninin tıklanabilir başlığı bir `<button>`
+  elemanıydı; bir widget `right` slotuna etkileşimli bir kontrol
+  geçtiğinde (ör. Dashboard hacim grafiğindeki 24 saat/7 gün geçiş
+  butonları) bu, bir `<button>` içine iç içe geçmiş geçersiz bir
+  `<button>` ve bir React hydration uyarısı üretiyordu. Başlık artık
+  bir `<button>` yerine `role="button"` özellikli bir `<div>`.
 
 ## [0.4.1] - 2026-08-31
 

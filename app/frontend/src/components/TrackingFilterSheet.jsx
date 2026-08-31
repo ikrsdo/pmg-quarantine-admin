@@ -1,5 +1,37 @@
 import { useEffect } from 'react';
 
+function toDatetimeLocal(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+const PRESETS = [
+  {
+    label: 'Son 24 saat',
+    apply: (filters) => ({
+      ...filters,
+      starttimeLocal: toDatetimeLocal(new Date(Date.now() - 24 * 60 * 60 * 1000)),
+      endtimeLocal: toDatetimeLocal(new Date()),
+    }),
+  },
+  {
+    label: 'Son 7 gün',
+    apply: (filters) => ({
+      ...filters,
+      starttimeLocal: toDatetimeLocal(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+      endtimeLocal: toDatetimeLocal(new Date()),
+    }),
+  },
+  {
+    label: 'NDR/Reddedilenler',
+    apply: (filters) => ({ ...filters, ndr: true, greylist: false }),
+  },
+  {
+    label: 'Greylist',
+    apply: (filters) => ({ ...filters, greylist: true, ndr: false }),
+  },
+];
+
 export default function TrackingFilterSheet({ open, filters, onChange, onClose, onApply }) {
   useEffect(() => {
     if (!open) return;
@@ -26,6 +58,22 @@ export default function TrackingFilterSheet({ open, filters, onChange, onClose, 
         onClick={(e) => e.stopPropagation()}
       >
         <p className="mb-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">Filter</p>
+
+        <div className="mb-4 flex flex-col gap-1.5">
+          <p className="text-xs text-zinc-500 dark:text-zinc-500">Kayıtlı Filtreler</p>
+          <div className="flex flex-wrap gap-1.5">
+            {PRESETS.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => onChange(preset.apply(filters))}
+                className="rounded-full border border-zinc-300 px-3 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="flex flex-col gap-3">
           <label className="flex flex-col gap-1 text-xs text-zinc-500 dark:text-zinc-500">

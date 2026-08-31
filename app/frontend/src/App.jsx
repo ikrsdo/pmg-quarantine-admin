@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
 import QuarantineListPage from './pages/QuarantineListPage';
 import QuarantineDetailPage from './pages/QuarantineDetailPage';
 import TrackingListPage from './pages/TrackingListPage';
@@ -41,6 +42,14 @@ export default function App() {
       <Routes location={backgroundLocation || location}>
         <Route path="/login" element={<LoginPage />} />
         <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/quarantine"
           element={
             <ProtectedRoute>
@@ -72,7 +81,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/quarantine" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
 
       {backgroundLocation && (
