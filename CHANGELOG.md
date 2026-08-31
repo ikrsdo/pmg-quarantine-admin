@@ -66,6 +66,10 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Fixed
 
+- Tracking Center detail's "Search in Quarantine" button now only
+  appears when the entry's status is actually "Quarantined" (`Q`) -
+  previously it showed on every entry, including Delivered/Bounced/
+  Rejected/Blocked ones that can never exist in Quarantine.
 - The "Saved Filters" preset pills (Quarantine and Tracking Center) now
   highlight the currently-active preset, so it's clear at a glance
   which quick filter (if any) is applied.

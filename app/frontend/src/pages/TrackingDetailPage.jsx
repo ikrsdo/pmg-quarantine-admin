@@ -139,16 +139,18 @@ export default function TrackingDetailPage({ overlay = false }) {
                 <MetaRow label="Relay" value={entry.relay} />
                 <MetaRow label="Client" value={entry.client} />
                 <MetaRow label="Size" value={formatBytes(entry.size)} />
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate('/quarantine', { state: { presetFilters: quarantineSearchFilters(entry) } })
-                  }
-                  className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
-                >
-                  <ArrowRightLeft className="size-3.5" />
-                  Search in Quarantine
-                </button>
+                {(entry.dstatus === 'Q' || entry.rstatus === 'Q') && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate('/quarantine', { state: { presetFilters: quarantineSearchFilters(entry) } })
+                    }
+                    className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
+                  >
+                    <ArrowRightLeft className="size-3.5" />
+                    Search in Quarantine
+                  </button>
+                )}
               </div>
             </CollapsibleSection>
           </div>

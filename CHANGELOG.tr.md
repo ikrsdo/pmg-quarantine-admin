@@ -72,6 +72,10 @@ uyumsuz değişiklikler içerebilir.
 
 ### Düzeltmeler
 
+- Tracking Center detay sayfasındaki "Search in Quarantine" butonu
+  artık sadece kaydın durumu gerçekten "Quarantined" (`Q`) olduğunda
+  görünüyor - daha önce Delivered/Bounced/Rejected/Blocked gibi
+  karantinada asla olamayacak kayıtlar dahil her kayıtta gösteriliyordu.
 - "Saved Filters" ön tanımlı filtre butonları (Karantina ve Tracking
   Center) artık o an aktif olan ön ayarı vurguluyor, böylece hangi
   hızlı filtrenin (varsa) uygulandığı bir bakışta anlaşılıyor.
