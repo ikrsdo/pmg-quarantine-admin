@@ -42,6 +42,12 @@ router.get('/:id', async (req, res) => {
 router.get('/:id/preview', async (req, res) => {
   try {
     const html = await pmgClient.getQuarantineHtmlPreview(req.session, req.params.id);
+    // The frontend only ever loads this via fetch() into a sandboxed
+    // iframe's srcDoc - this header is defense-in-depth for the case where
+    // someone navigates the browser straight to this URL, so mail content
+    // (already sanitized by PMG, but still third-party HTML) can't run
+    // script or navigate the top frame in the app's own origin.
+    res.set('Content-Security-Policy', "sandbox; default-src 'none'");
     res.type('html').send(html);
   } catch (err) {
     handlePmgError(err, res);

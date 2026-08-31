@@ -18,5 +18,9 @@ RUN npm ci --omit=dev
 COPY backend/src ./src
 COPY --from=frontend-build /build/frontend/dist ./public
 
+# Run as the non-root user node:22-alpine already ships, instead of root.
+RUN chown -R node:node /app
+USER node
+
 EXPOSE 3000
 CMD ["node", "src/server.js"]

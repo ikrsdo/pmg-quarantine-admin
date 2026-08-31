@@ -1,10 +1,6 @@
 # PMG Quarantine Admin
 
-**Version:** 0.3.0 · [Changelog](CHANGELOG.md)
-
-> **Early development.** This project is under active development -
-> expect breaking changes between versions and rough edges. Not yet
-> recommended for unattended/critical production use.
+**Version:** 0.4.0 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
@@ -102,14 +98,52 @@ anything reachable from outside a trusted network.
 
 ## Security Notes
 
+**Credentials and sessions**
+
+- No PMG username/password ever touches `.env`, disk, or the browser -
+  each admin's password is forwarded to PMG once at login time and
+  never stored anywhere; only the short-lived ticket/CSRF token PMG
+  issues is kept, server-side, tied to that admin's own httpOnly,
+  `Secure` (in production), `SameSite=lax` session cookie. The session
+  is regenerated on every successful login to prevent session fixation.
 - Use a dedicated PMG account per admin (Help Desk role), never
-  `root@pam`.
+  `root@pam` - see [Prerequisites](#prerequisites).
 - `.env` is never committed - it holds no PMG credentials, only
   connection/session settings.
+
+**Backend hardening**
+
+- `/api/login` is rate-limited (20 attempts per 15 minutes per IP) to
+  slow down PMG credential brute-forcing, the one endpoint reachable
+  without an existing session.
+- Every quarantine action is checked against a fixed whitelist of valid
+  PMG actions (`deliver`, `delete`, `whitelist`, `blocklist`, etc.)
+  before it's forwarded to PMG - arbitrary action strings are rejected.
+- Security headers (via [Helmet](https://helmetjs.github.io/)) are set
+  on every response: `X-Frame-Options`, `X-Content-Type-Options`,
+  `Referrer-Policy`, and removal of the `X-Powered-By` header, among
+  others.
+- The quarantined-mail HTML preview is rendered through PMG's own
+  sanitizing formatter and loaded into a `sandbox=""` iframe on the
+  frontend; the backend route that serves it also sends its own
+  `Content-Security-Policy: sandbox` header as defense-in-depth against
+  direct navigation to that URL.
+- The Docker image runs as a non-root user, not root.
+- Dependencies are checked with `npm audit` before each release (0
+  known vulnerabilities as of this version).
+
+**Network**
+
 - Restrict network access to the PMG API to this container's network/VPN
   - don't expose the PMG API itself to the general internet.
 - Treat `PMG_ALLOW_SELF_SIGNED=true` as a deliberate, documented choice
-  for internal/lab networks, not a default to leave on blindly.
+  for internal/lab networks, not a default to leave on blindly - a
+  warning is logged on startup whenever it's enabled.
+- See [Exposing it outside your local network](#exposing-it-outside-your-local-network)
+  for HTTPS and reverse-proxy requirements.
+
+If you find a security issue, please open an issue (or contact the
+maintainer directly for anything sensitive) rather than a public PR.
 
 ## Development
 

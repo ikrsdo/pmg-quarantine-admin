@@ -5,7 +5,28 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
-## [Unreleased]
+## [0.4.0] - 2026-08-31
+
+### Security
+
+- `/api/login` is now rate-limited (20 attempts per 15 minutes per IP)
+  against PMG credential brute-forcing, since login is the one endpoint
+  reachable without an existing session.
+- Security response headers (via [Helmet](https://helmetjs.github.io/))
+  are now set on every response - `X-Frame-Options`,
+  `X-Content-Type-Options`, `Referrer-Policy`, `X-Powered-By` removal,
+  etc. (CSP is left off, since the frontend relies on inline `style`
+  attributes for the iOS backdrop-blur fix and the login page's
+  gradient background).
+- The quarantined-mail HTML preview endpoint now also sends its own
+  `Content-Security-Policy: sandbox` header, as defense-in-depth
+  against someone navigating the browser directly to that URL (the
+  frontend's own sandboxed-iframe usage is unaffected).
+- The Docker image now runs as a non-root user instead of root.
+- README now has a full "Security Notes" section documenting the
+  app's credential handling, session hygiene, backend hardening, and
+  network posture, and no longer carries the "early development"
+  disclaimer.
 
 ### Changed
 
