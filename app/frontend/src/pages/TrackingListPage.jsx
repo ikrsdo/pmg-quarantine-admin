@@ -66,6 +66,7 @@ function defaultFilters() {
     xfilter: '',
     ndr: false,
     greylist: false,
+    status: '',
     starttimeLocal: toDatetimeLocal(oneHourAgo),
     endtimeLocal: toDatetimeLocal(midnight),
   };
@@ -127,6 +128,9 @@ export default function TrackingListPage() {
           return haystack.includes(searchTerm.toLowerCase());
         })
       : mails;
+    if (appliedFilters.status) {
+      result = result.filter((m) => (m.rstatus || m.dstatus) === appliedFilters.status);
+    }
     const dir = sortDir === 'asc' ? 1 : -1;
     const sortValue = (m) =>
       sortKey === 'status' ? statusLabel(m.rstatus || m.dstatus) : (m[sortKey] ?? '');
@@ -137,7 +141,7 @@ export default function TrackingListPage() {
       if (av > bv) return 1 * dir;
       return 0;
     });
-  }, [mails, searchTerm, sortKey, sortDir]);
+  }, [mails, searchTerm, appliedFilters.status, sortKey, sortDir]);
 
   function toggleSort(key) {
     if (key === sortKey) {

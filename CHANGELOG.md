@@ -46,6 +46,11 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - Tracking Center's Status column is now sortable, matching the other
   columns - sorting is by the displayed status label (e.g. "Delivered",
   "Quarantined"), not the raw PMG status code.
+- Tracking Center's filter modal now has a "Status" dropdown to narrow
+  the list down to a single delivery/receive status (e.g. Quarantined,
+  Bounced, Rejected) - this is a client-side filter over the already-
+  fetched time range, since the Tracking Center API itself has no
+  status query parameter.
 
 ### Changed
 

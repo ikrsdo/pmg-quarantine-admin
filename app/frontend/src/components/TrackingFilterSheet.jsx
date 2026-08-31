@@ -1,4 +1,7 @@
 import { useEffect } from 'react';
+import { STATUS_MAP } from './TrackingStatusBadge';
+
+const STATUS_OPTIONS = Object.entries(STATUS_MAP).map(([code, { label }]) => ({ code, label }));
 
 function toDatetimeLocal(date) {
   const pad = (n) => String(n).padStart(2, '0');
@@ -151,6 +154,22 @@ export default function TrackingFilterSheet({ open, filters, onChange, onClose, 
               onChange={(e) => onChange({ ...filters, endtimeLocal: e.target.value })}
               className="rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
             />
+          </label>
+
+          <label className="flex flex-col gap-1 text-xs text-zinc-500 dark:text-zinc-500">
+            Status
+            <select
+              value={filters.status}
+              onChange={(e) => onChange({ ...filters, status: e.target.value })}
+              className="rounded-md border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
+            >
+              <option value="">All</option>
+              {STATUS_OPTIONS.map(({ code, label }) => (
+                <option key={code} value={code}>
+                  {label}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">

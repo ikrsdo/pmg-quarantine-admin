@@ -52,6 +52,11 @@ uyumsuz değişiklikler içerebilir.
   sıralanabiliyor - sıralama, ham PMG durum koduna göre değil, ekranda
   gösterilen durum etiketine göre yapılıyor (örn. "Delivered",
   "Quarantined").
+- Tracking Center'ın filtre modalına, listeyi tek bir teslimat/alım
+  durumuna göre daraltan bir "Status" açılır menüsü eklendi (örn.
+  Quarantined, Bounced, Rejected) - bu, zaten çekilmiş zaman aralığı
+  üzerinde istemci tarafında yapılan bir filtre, çünkü Tracking
+  Center API'sinin kendisinde bir status sorgu parametresi yok.
 
 ### Değişenler
 
