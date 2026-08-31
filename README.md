@@ -28,6 +28,49 @@ appliance itself, only talks to it over the PMG API.
 Out of scope: welcomelist/blocklist *policy* management (global or
 per-domain) - use PMG's own UI for that.
 
+## Screenshots
+
+### Desktop
+
+<table>
+<tr>
+<td width="50%"><img src="screenshots/desktop/1-desktop-login.jpg" width="100%" alt="Login"/><br/><sub>Login</sub></td>
+<td width="50%"><img src="screenshots/desktop/2-desktop-quarantine-main-list-view.jpg" width="100%" alt="Quarantine list view"/><br/><sub>Quarantine - list view</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="screenshots/desktop/3-desktop-quarantine-filter-modal.jpg" width="100%" alt="Quarantine filter modal"/><br/><sub>Quarantine - filter</sub></td>
+<td width="50%"><img src="screenshots/desktop/4-desktop-quarantine-message-details.jpg" width="100%" alt="Quarantine message details"/><br/><sub>Quarantine - message detail</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="screenshots/desktop/5-desktop-tracking-center-main-list-view.jpg" width="100%" alt="Tracking Center list view"/><br/><sub>Tracking Center - list view</sub></td>
+<td width="50%"><img src="screenshots/desktop/6-desktop-tracking-center-filter-modal.jpg" width="100%" alt="Tracking Center filter modal"/><br/><sub>Tracking Center - filter</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="screenshots/desktop/7-desktop-tracking-center-message-details.jpg" width="100%" alt="Tracking Center message details"/><br/><sub>Tracking Center - message detail</sub></td>
+<td width="50%"><img src="screenshots/desktop/8-desktop-structured-message-events-view.jpg" width="100%" alt="Structured Message Events view"/><br/><sub>Tracking Center - structured Message Events</sub></td>
+</tr>
+</table>
+
+### Mobile
+
+<table>
+<tr>
+<td width="33%"><img src="screenshots/mobile/1-mobile-login.jpeg" width="100%" alt="Login"/><br/><sub>Login</sub></td>
+<td width="33%"><img src="screenshots/mobile/2-mobile-quarantine-main-list-view.jpeg" width="100%" alt="Quarantine list view"/><br/><sub>Quarantine - list view</sub></td>
+<td width="33%"><img src="screenshots/mobile/3-mobile-quarantine-message-details.jpeg" width="100%" alt="Quarantine message details"/><br/><sub>Quarantine - message detail</sub></td>
+</tr>
+<tr>
+<td width="33%"><img src="screenshots/mobile/4-mobile-quarantine-multi-selection.jpeg" width="100%" alt="Quarantine multi-selection"/><br/><sub>Quarantine - multi-select</sub></td>
+<td width="33%"><img src="screenshots/mobile/5-mobile-quarantine-swipe-left-deliver.jpeg" width="100%" alt="Quarantine swipe to deliver"/><br/><sub>Quarantine - swipe to deliver</sub></td>
+<td width="33%"><img src="screenshots/mobile/6-mobile-quarantine-swipe-right-block.jpeg" width="100%" alt="Quarantine swipe to block"/><br/><sub>Quarantine - swipe to block</sub></td>
+</tr>
+<tr>
+<td width="33%"><img src="screenshots/mobile/7-mobile-tracking-center-main-list-view.jpeg" width="100%" alt="Tracking Center list view"/><br/><sub>Tracking Center - list view</sub></td>
+<td width="33%"><img src="screenshots/mobile/8-mobile-tracking-center-message-details.jpeg" width="100%" alt="Tracking Center message details"/><br/><sub>Tracking Center - message detail</sub></td>
+<td width="33%"><img src="screenshots/mobile/9-mobile-structured-message-events-view.jpeg" width="100%" alt="Structured Message Events view"/><br/><sub>Tracking Center - structured Message Events</sub></td>
+</tr>
+</table>
+
 ## Tech Stack
 
 - **Backend:** Node.js/Express, acting as an auth + PMG API proxy

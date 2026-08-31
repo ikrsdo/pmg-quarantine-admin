@@ -5,6 +5,13 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [Unreleased]
+
+### Added
+
+- README now includes a Screenshots section with desktop and mobile
+  captures of the Login, Quarantine, and Tracking Center screens.
+
 ## [0.4.1] - 2026-08-31
 
 ### Changed
