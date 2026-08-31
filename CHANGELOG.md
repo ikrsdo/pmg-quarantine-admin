@@ -16,20 +16,24 @@ project is in `0.x`, minor bumps may still include breaking changes.
   a Tracking Center status distribution widget, all built with plain
   CSS bar charts (no charting library added).
 - Best-effort cross-linking between Quarantine and Tracking Center: a
-  "Tracking Center'da Ara" button on the Quarantine detail page and a
-  "Karantinada Ara" button on the Tracking Center detail page each
-  jump to the other list pre-filtered by sender/recipient and a
+  "Search in Tracking Center" button on the Quarantine detail page and
+  a "Search in Quarantine" button on the Tracking Center detail page
+  each jump to the other list pre-filtered by sender/recipient and a
   ±15-minute time window around the message's timestamp. This is a
   best-effort match, not a guaranteed exact link - PMG's Quarantine
   and Tracking Center APIs share no common identifier.
-- Saved filter presets ("Kayıtlı Filtreler") inside both the
-  Quarantine and Tracking Center filter modals - quick pill buttons
-  for common time ranges (Quarantine: last 24h/7d; Tracking Center:
-  last 24h/7d, NDR/rejected, greylisted).
+- Saved filter presets ("Saved Filters") inside both the Quarantine
+  and Tracking Center filter modals - quick pill buttons for common
+  time ranges (Quarantine: last 24h/7 days; Tracking Center: last
+  24h/7 days, NDR/rejected, greylisted).
 - CSV export button on both the Quarantine and Tracking Center list
   pages, exporting the currently filtered rows.
 - README now includes a Screenshots section with desktop and mobile
   captures of the Login, Quarantine, and Tracking Center screens.
+- README now documents how to update to the latest version
+  (`git pull && docker compose up -d --build`), and the `git clone`
+  command in Setup uses the actual repository URL instead of a
+  placeholder.
 
 ### Fixed
 

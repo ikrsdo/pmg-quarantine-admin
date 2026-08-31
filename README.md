@@ -93,7 +93,7 @@ per-domain) - use PMG's own UI for that.
 ## Setup
 
 ```bash
-git clone <this-repo-url>
+git clone https://github.com/ikrsdo/pmg-quarantine-admin.git
 cd pmg-quarantine-admin
 cp .env.example .env
 ```
@@ -107,6 +107,15 @@ docker compose up -d --build
 
 The app listens on port 3000 (`http://localhost:3000` for a quick local
 check). Sign in with your own PMG username/password on the login screen.
+
+## Updating
+
+To update to the latest version, pull the new code and rebuild the
+image:
+
+```bash
+sudo git pull && sudo docker compose up -d --build
+```
 
 ## Configuration
 

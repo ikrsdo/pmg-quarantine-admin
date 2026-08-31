@@ -18,15 +18,15 @@ uyumsuz değişiklikler içerebilir.
   dağılımı widget'ı içeriyor; hiçbiri harici bir grafik kütüphanesi
   eklemeden, düz CSS çubuk grafikleriyle yapıldı.
 - Karantina ve Tracking Center arasında en-iyi-çaba (best-effort)
-  çapraz bağlantı: Karantina detay sayfasındaki "Tracking Center'da
-  Ara" ve Tracking Center detay sayfasındaki "Karantinada Ara"
-  butonları, ilgili kaydın gönderen/alıcı bilgisi ve zaman damgası
-  etrafında ±15 dakikalık bir pencereyle filtrelenmiş diğer listeye
-  götürüyor. Bu kesin bir eşleşme garantisi değil, en-iyi-çaba bir
-  eşleştirmedir - PMG'nin Karantina ve Tracking Center API'leri ortak
-  bir kimlik alanı paylaşmıyor.
+  çapraz bağlantı: Karantina detay sayfasındaki "Search in Tracking
+  Center" ve Tracking Center detay sayfasındaki "Search in
+  Quarantine" butonları, ilgili kaydın gönderen/alıcı bilgisi ve zaman
+  damgası etrafında ±15 dakikalık bir pencereyle filtrelenmiş diğer
+  listeye götürüyor. Bu kesin bir eşleşme garantisi değil, en-iyi-çaba
+  bir eşleştirmedir - PMG'nin Karantina ve Tracking Center API'leri
+  ortak bir kimlik alanı paylaşmıyor.
 - Hem Karantina hem Tracking Center filtre modallarının içinde
-  "Kayıtlı Filtreler" - sık kullanılan zaman aralıkları için hızlı
+  "Saved Filters" - sık kullanılan zaman aralıkları için hızlı
   butonlar (Karantina: son 24 saat/7 gün; Tracking Center: son 24
   saat/7 gün, NDR/Reddedilenler, Greylist).
 - Hem Karantina hem Tracking Center liste sayfalarında, o an
@@ -34,6 +34,10 @@ uyumsuz değişiklikler içerebilir.
 - README artık Login, Karantina ve Tracking Center ekranlarının
   masaüstü ve mobil görüntülerini içeren bir Ekran Görüntüleri
   bölümüne sahip.
+- README artık en son sürüme nasıl güncelleneceğini belgeliyor
+  (`git pull && docker compose up -d --build`), ve Kurulum
+  bölümündeki `git clone` komutu artık yer tutucu yerine gerçek
+  repository adresini kullanıyor.
 
 ### Düzeltmeler
 

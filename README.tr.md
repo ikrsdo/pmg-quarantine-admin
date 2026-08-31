@@ -97,7 +97,7 @@ alan adı bazında) - bunun için PMG'nin kendi arayüzünü kullanın.
 ## Kurulum
 
 ```bash
-git clone <this-repo-url>
+git clone https://github.com/ikrsdo/pmg-quarantine-admin.git
 cd pmg-quarantine-admin
 cp .env.example .env
 ```
@@ -113,6 +113,14 @@ docker compose up -d --build
 Uygulama 3000 portunda dinler (hızlı bir yerel kontrol için
 `http://localhost:3000`). Giriş ekranında kendi PMG kullanıcı adı/
 şifrenizle oturum açın.
+
+## Güncelleme
+
+En son sürüme güncellemek için yeni kodu çekip imajı yeniden derleyin:
+
+```bash
+sudo git pull && sudo docker compose up -d --build
+```
 
 ## Yapılandırma
 
