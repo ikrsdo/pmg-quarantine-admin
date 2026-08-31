@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchQuarantineList } from '../api/quarantine';
 import { fetchTrackingList } from '../api/tracking';
+import { useAuth } from '../hooks/useAuth';
 import AppShell from '../components/AppShell';
 import CollapsibleSection from '../components/CollapsibleSection';
 import TrackingStatusBadge from '../components/TrackingStatusBadge';
@@ -96,28 +97,30 @@ function VolumeChart({ mails }) {
   );
 }
 
-function TopSenders({ mails }) {
+// Shared by TopSenders/TopReceivers - both rank Tracking Center's
+// overall mail traffic (not just quarantined mail) by an address field.
+function TopAddresses({ trackingMails, field, title, tone, emptyText }) {
   const top = useMemo(() => {
     const counts = new Map();
-    for (const m of mails) {
-      const sender = m.sender || m.from || 'Unknown';
-      counts.set(sender, (counts.get(sender) || 0) + 1);
+    for (const m of trackingMails) {
+      const address = m[field] || 'Unknown';
+      counts.set(address, (counts.get(address) || 0) + 1);
     }
     return Array.from(counts.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 8);
-  }, [mails]);
+  }, [trackingMails, field]);
 
   const max = Math.max(1, ...top.map(([, count]) => count));
 
   return (
-    <CollapsibleSection title="Top Senders (last 7 days)">
+    <CollapsibleSection title={title}>
       {top.length === 0 ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-500">No quarantine activity in the last 7 days.</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-500">{emptyText}</p>
       ) : (
         <div className="flex flex-col gap-1.5">
-          {top.map(([sender, count]) => (
-            <BarRow key={sender} label={sender} count={count} max={max} tone="bg-red-500 dark:bg-red-500" />
+          {top.map(([address, count]) => (
+            <BarRow key={address} label={address} count={count} max={max} tone={tone} />
           ))}
         </div>
       )}
@@ -143,7 +146,7 @@ function StatusDistribution({ trackingMails }) {
   const max = Math.max(1, ...counts.map(([, count]) => count));
 
   return (
-    <CollapsibleSection title="Tracking Center Status Distribution (last 7 days)">
+    <CollapsibleSection title="Message Delivery Status (last 7 days)">
       {counts.length === 0 ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-500">No tracking activity in the last 7 days.</p>
       ) : (
@@ -171,17 +174,26 @@ function StatusDistribution({ trackingMails }) {
 }
 
 export default function DashboardPage() {
-  const starttime = nowSeconds() - SEVEN_DAYS_SECONDS;
+  const { handleUnauthorized } = useAuth();
+  const endtime = nowSeconds();
+  const starttime = endtime - SEVEN_DAYS_SECONDS;
 
   const quarantineQuery = useQuery({
-    queryKey: ['quarantine', { starttime }],
-    queryFn: () => fetchQuarantineList({ starttime }),
+    queryKey: ['quarantine', { starttime, endtime }],
+    queryFn: () => fetchQuarantineList({ starttime, endtime }),
   });
 
   const trackingQuery = useQuery({
-    queryKey: ['tracking', { starttime, limit: 5000 }],
-    queryFn: () => fetchTrackingList({ starttime, limit: 5000 }),
+    queryKey: ['tracking', { starttime, endtime, limit: 5000 }],
+    queryFn: () => fetchTrackingList({ starttime, endtime, limit: 5000 }),
   });
+
+  if (quarantineQuery.isError && handleUnauthorized(quarantineQuery.error)) {
+    return null;
+  }
+  if (trackingQuery.isError && handleUnauthorized(trackingQuery.error)) {
+    return null;
+  }
 
   const isLoading = quarantineQuery.isLoading || trackingQuery.isLoading;
   const mails = quarantineQuery.data || [];
@@ -197,7 +209,20 @@ export default function DashboardPage() {
         {!isLoading && (
           <div className="flex flex-col gap-4">
             <VolumeChart mails={mails} />
-            <TopSenders mails={mails} />
+            <TopAddresses
+              trackingMails={trackingMails}
+              field="from"
+              title="Top Senders (last 7 days)"
+              tone="bg-red-500 dark:bg-red-500"
+              emptyText="No mail activity in the last 7 days."
+            />
+            <TopAddresses
+              trackingMails={trackingMails}
+              field="to"
+              title="Top Receivers (last 7 days)"
+              tone="bg-purple-500 dark:bg-purple-500"
+              emptyText="No mail activity in the last 7 days."
+            />
             <StatusDistribution trackingMails={trackingMails} />
           </div>
         )}

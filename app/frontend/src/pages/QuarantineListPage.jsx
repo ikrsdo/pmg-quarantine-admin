@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { Search, SlidersHorizontal, CheckSquare, RefreshCw, Download } from 'lucide-react';
-import { fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
+import { fetchQuarantineDetail, fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { quarantineActionToast } from '../utils/quarantineActionToast';
@@ -32,6 +32,41 @@ function defaultFilters() {
   return { pmail: '', starttimeLocal: toDatetimeLocal(weekAgo), endtimeLocal: toDatetimeLocal(now) };
 }
 
+function formatCsvTime(unixSeconds) {
+  if (!unixSeconds) return '';
+  return new Date(unixSeconds * 1000).toLocaleString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+}
+
+function formatCsvKB(bytes) {
+  if (!bytes) return '0 KB';
+  return `${(bytes / 1024).toFixed(1)} KB`;
+}
+
+// Bounded-concurrency map: envelope_sender only exists on the per-message
+// detail response (see CLAUDE.md "PMG API Notes"), not on list data, so
+// exporting it means one fetchQuarantineDetail() call per row. Capped at 5
+// concurrent requests so a large filtered export doesn't fire hundreds of
+// requests at once.
+async function mapWithConcurrency(items, limit, fn) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await fn(items[i], i);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
 export default function QuarantineListPage() {
   const { handleUnauthorized } = useAuth();
   const { showToast } = useToast();
@@ -59,6 +94,7 @@ export default function QuarantineListPage() {
   const [pendingAction, setPendingAction] = useState(null); // { type: 'deliver' | 'blocklist', target: id or 'bulk' }
   const [sortKey, setSortKey] = useState('time');
   const [sortDir, setSortDir] = useState('desc');
+  const [exporting, setExporting] = useState(false);
 
   const queryParams = useMemo(
     () => ({
@@ -149,6 +185,41 @@ export default function QuarantineListPage() {
     setPendingAction(null);
   }
 
+  async function handleExportCsv() {
+    setExporting(true);
+    try {
+      const envelopeSenders = await mapWithConcurrency(filtered, 5, async (mail) => {
+        try {
+          const detail = await fetchQuarantineDetail(mail.id);
+          return detail?.envelope_sender || '';
+        } catch {
+          return '';
+        }
+      });
+      const rows = filtered.map((mail, i) => ({
+        ...mail,
+        from: mail.sender || mail.from,
+        envelopeSender: envelopeSenders[i],
+        timeDisplay: formatCsvTime(mail.time),
+        sizeDisplay: formatCsvKB(mail.bytes),
+      }));
+      downloadCsv(`quarantine-${new Date().toISOString().slice(0, 10)}.csv`, rows, [
+        { key: 'from', label: 'From' },
+        { key: 'envelopeSender', label: 'Envelope Sender' },
+        { key: 'receiver', label: 'Recipient' },
+        { key: 'subject', label: 'Subject' },
+        { key: 'timeDisplay', label: 'Time' },
+        { key: 'sizeDisplay', label: 'Size' },
+        { key: 'spamlevel', label: 'Spam Score' },
+        { key: 'id', label: 'ID' },
+      ]);
+    } catch {
+      showToast('CSV export failed', 'danger');
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <AppShell>
       <div className="flex h-full flex-col overflow-hidden">
@@ -183,27 +254,13 @@ export default function QuarantineListPage() {
           </button>
           <button
             type="button"
-            onClick={() =>
-              downloadCsv(
-                `quarantine-${new Date().toISOString().slice(0, 10)}.csv`,
-                filtered,
-                [
-                  { key: 'sender', label: 'Sender' },
-                  { key: 'receiver', label: 'Recipient' },
-                  { key: 'subject', label: 'Subject' },
-                  { key: 'time', label: 'Time (unix)' },
-                  { key: 'bytes', label: 'Size (bytes)' },
-                  { key: 'spamlevel', label: 'Spam Score' },
-                  { key: 'id', label: 'ID' },
-                ],
-              )
-            }
-            disabled={filtered.length === 0}
-            title="CSV'ye Aktar"
+            onClick={handleExportCsv}
+            disabled={filtered.length === 0 || exporting}
+            title="Export CSV"
             className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
           >
             <Download className="size-4" />
-            <span className="hidden lg:inline">CSV</span>
+            <span className="hidden lg:inline">{exporting ? 'Exporting…' : 'CSV'}</span>
           </button>
           <button
             type="button"

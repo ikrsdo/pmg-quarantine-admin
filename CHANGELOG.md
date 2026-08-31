@@ -34,6 +34,20 @@ project is in `0.x`, minor bumps may still include breaking changes.
   (`git pull && docker compose up -d --build`), and the `git clone`
   command in Setup uses the actual repository URL instead of a
   placeholder.
+- Dashboard now has a "Top Receivers" widget alongside "Top Senders",
+  ranking the recipients that appear most often in Tracking Center's
+  last 7 days.
+
+### Changed
+
+- Dashboard's "Top Senders" widget now ranks senders from Tracking
+  Center's overall mail traffic instead of the Quarantine list, so it
+  reflects who is sending the most mail overall, not just who is
+  triggering quarantine most often (the new "Top Receivers" widget
+  above uses the same Tracking Center source).
+- Dashboard's "Tracking Center Status Distribution" section was
+  renamed to "Message Delivery Status" - no behavior change, just a
+  clearer title.
 
 ### Fixed
 
@@ -42,6 +56,33 @@ project is in `0.x`, minor bumps may still include breaking changes.
   (e.g. the Dashboard volume chart's 24h/7d toggle), this produced an
   invalid `<button>` nested inside a `<button>` and a React hydration
   warning. The header is now a `role="button"` `<div>` instead.
+- Quarantine CSV export's "Sender" column came out empty (it read
+  PMG's often-empty `sender` field directly, without the app's usual
+  `sender || from` fallback). The column is now "From" using that
+  fallback, and a new "Envelope Sender" column is included alongside
+  it (fetched per row, since PMG's list endpoint doesn't return that
+  field - only the per-message detail does). The "Time" and "Size"
+  columns are now human-readable (`dd/mm/yyyy, hh:mm:ss` and KB)
+  instead of a raw unix timestamp and byte count.
+- Tracking Center CSV export's "Time" and "Size" columns were also raw
+  unix timestamp/bytes, now formatted the same way as Quarantine's.
+  "Delivery Status"/"Receive Status" exported PMG's raw status code
+  (`2`, `5`, `N`, `B`, etc.) instead of its meaning - they now export
+  the same label shown in the app's status badge (e.g. "Delivered",
+  "Bounced", "Blocked").
+- Two remaining Turkish button tooltips ("CSV'ye Aktar" on both list
+  pages) were missed by the earlier English-translation pass - fixed
+  to "Export CSV".
+- Dashboard's Quarantine Volume/Top Senders/Status Distribution
+  widgets always showed empty, regardless of the 24h/7d range picker.
+  Both widgets' queries requested `starttime` only and left `endtime`
+  unset; PMG's API defaults a missing `endtime` to `starttime + 24h`
+  (not "now"), so a 7-day-ago `starttime` silently queried a single
+  24-hour window from a week ago instead of the intended 7-day range
+  up to the present. Both queries now pass an explicit `endtime`. Also
+  added the same PMG-ticket-expiry redirect the other pages already
+  have - a failed Dashboard query previously rendered the misleading
+  empty state instead of returning to the login screen.
 
 ## [0.4.1] - 2026-08-31
 

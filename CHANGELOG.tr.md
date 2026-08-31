@@ -38,6 +38,21 @@ uyumsuz değişiklikler içerebilir.
   (`git pull && docker compose up -d --build`), ve Kurulum
   bölümündeki `git clone` komutu artık yer tutucu yerine gerçek
   repository adresini kullanıyor.
+- Dashboard'a "Top Senders" yanına, Tracking Center'ın son 7 gününde
+  en çok görünen alıcıları sıralayan bir "Top Receivers" widget'ı
+  eklendi.
+
+### Değişenler
+
+- Dashboard'daki "Top Senders" widget'ı artık gönderenleri Karantina
+  listesi yerine Tracking Center'ın genel posta trafiğinden
+  sıralıyor - böylece sadece en çok karantinaya düşen değil, genel
+  olarak en çok posta gönderen kim onu yansıtıyor (yukarıdaki yeni
+  "Top Receivers" widget'ı da aynı Tracking Center kaynağını
+  kullanıyor).
+- Dashboard'daki "Tracking Center Status Distribution" bölümü
+  "Message Delivery Status" olarak yeniden adlandırıldı - davranış
+  değişikliği yok, sadece daha anlaşılır bir başlık.
 
 ### Düzeltmeler
 
@@ -47,6 +62,35 @@ uyumsuz değişiklikler içerebilir.
   butonları) bu, bir `<button>` içine iç içe geçmiş geçersiz bir
   `<button>` ve bir React hydration uyarısı üretiyordu. Başlık artık
   bir `<button>` yerine `role="button"` özellikli bir `<div>`.
+- Karantina CSV export'unda "Sender" kolonu boş geliyordu (PMG'nin
+  genelde boş olan `sender` alanını, uygulamanın genelindeki
+  `sender || from` yedeklemesi olmadan doğrudan okuyordu). Bu kolon
+  artık bu yedeklemeyi kullanan "From" oldu, ve yanına PMG'nin liste
+  uç noktasında bulunmayan (sadece mesaj detayında bulunan)
+  "Envelope Sender" kolonu satır başına ayrı bir istekle eklendi.
+  "Time" ve "Size" kolonları artık ham unix zaman damgası ve bayt
+  sayısı yerine okunabilir formatta (`gg/aa/yyyy, sa:dk:sn` ve KB).
+- Tracking Center CSV export'undaki "Time" ve "Size" kolonları da
+  ham unix zaman damgası/bayt cinsindeydi, artık Karantina'dakiyle
+  aynı şekilde formatlanıyor. "Delivery Status"/"Receive Status"
+  PMG'nin ham durum kodunu (`2`, `5`, `N`, `B` vb.) export ediyordu,
+  bunun yerine artık uygulamadaki durum rozetinde gösterilen aynı
+  etiketi export ediyor (ör. "Delivered", "Bounced", "Blocked").
+- Önceki İngilizce çeviri geçişinde gözden kaçan iki Türkçe buton
+  ipucu ("CSV'ye Aktar", her iki liste sayfasında da) "Export CSV"
+  olarak düzeltildi.
+- Dashboard'daki Quarantine Volume/Top Senders/Status Distribution
+  widget'ları, 24 saat/7 gün seçicisinden bağımsız olarak her zaman
+  boş görünüyordu. Her iki widget'ın sorgusu da sadece `starttime`
+  gönderip `endtime`'ı boş bırakıyordu; PMG'nin API'si `endtime`
+  gönderilmediğinde bunu "şimdi" değil `starttime + 24 saat` olarak
+  varsayıyor - bu yüzden 7 gün öncesine ayarlı bir `starttime`,
+  aslında bir hafta önceki tek bir 24 saatlik pencereyi sorguluyordu,
+  şimdiye kadar uzanan 7 günlük aralığı değil. Her iki sorgu da artık
+  açık bir `endtime` gönderiyor. Ayrıca diğer sayfalarda zaten var olan
+  PMG bileti süresi dolduğunda login'e yönlendirme davranışı Dashboard'a
+  da eklendi - önceden başarısız bir Dashboard sorgusu yanıltıcı boş
+  durumu gösteriyordu, login ekranına dönmek yerine.
 
 ## [0.4.1] - 2026-08-31
 

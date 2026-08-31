@@ -11,6 +11,11 @@ const STATUS_MAP = {
   Q: { label: 'Quarantined', style: 'bg-zinc-500/10 text-zinc-400 ring-zinc-500/20' },
 };
 
+export function statusLabel(status) {
+  if (!status) return '';
+  return STATUS_MAP[status]?.label || status;
+}
+
 export default function TrackingStatusBadge({ status }) {
   const entry = STATUS_MAP[status] || {
     label: status || '—',

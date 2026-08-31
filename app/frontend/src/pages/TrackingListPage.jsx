@@ -6,7 +6,7 @@ import { fetchTrackingList } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
 import { downloadCsv } from '../utils/csvExport';
 import AppShell from '../components/AppShell';
-import TrackingStatusBadge from '../components/TrackingStatusBadge';
+import TrackingStatusBadge, { statusLabel } from '../components/TrackingStatusBadge';
 import TrackingFilterSheet from '../components/TrackingFilterSheet';
 import EmptyState from '../components/EmptyState';
 import { SkeletonList } from '../components/Skeleton';
@@ -183,21 +183,27 @@ export default function TrackingListPage() {
             onClick={() =>
               downloadCsv(
                 `tracking-center-${new Date().toISOString().slice(0, 10)}.csv`,
-                filtered,
+                filtered.map((m) => ({
+                  ...m,
+                  timeDisplay: formatTime(m.time),
+                  sizeDisplay: formatKB(m.size),
+                  dstatusDisplay: statusLabel(m.dstatus),
+                  rstatusDisplay: statusLabel(m.rstatus),
+                })),
                 [
                   { key: 'from', label: 'From' },
                   { key: 'to', label: 'Recipient' },
-                  { key: 'time', label: 'Time (unix)' },
+                  { key: 'timeDisplay', label: 'Time' },
                   { key: 'relay', label: 'Relay' },
-                  { key: 'size', label: 'Size (bytes)' },
-                  { key: 'dstatus', label: 'Delivery Status' },
-                  { key: 'rstatus', label: 'Receive Status' },
+                  { key: 'sizeDisplay', label: 'Size' },
+                  { key: 'dstatusDisplay', label: 'Delivery Status' },
+                  { key: 'rstatusDisplay', label: 'Receive Status' },
                   { key: 'id', label: 'ID' },
                 ],
               )
             }
             disabled={filtered.length === 0}
-            title="CSV'ye Aktar"
+            title="Export CSV"
             className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900"
           >
             <Download className="size-4" />
