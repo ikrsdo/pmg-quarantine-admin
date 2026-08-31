@@ -24,6 +24,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
   on their own row below the heading instead of crowding it, on both
   mobile and desktop. The heading itself now shows only its title
   (plus its badge, for Spam Score and Status).
+- The login page is more polished: the form now sits in an actual
+  card (border, shadow, background) with a shield icon above the
+  title, inputs have a visible focus ring, the password field has a
+  show/hide toggle, the error message has a matching icon, and the
+  "Sign in" button shows a spinner while submitting - on both mobile
+  and desktop.
 
 ### Fixed
 
