@@ -55,12 +55,8 @@ export default function MessageEventsTimeline({ logs }) {
   );
 
   return (
-    <CollapsibleSection
-      title="Message Events"
-      defaultOpen={false}
-      right={actionButtons && <span className="hidden items-center gap-1.5 lg:flex">{actionButtons}</span>}
-    >
-      {actionButtons && <div className="mb-3 flex items-center gap-1.5 lg:hidden">{actionButtons}</div>}
+    <CollapsibleSection title="Message Events" defaultOpen={false}>
+      {actionButtons && <div className="mb-3 flex items-center gap-1.5">{actionButtons}</div>}
       {!logs || logs.length === 0 ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-500">No log entries.</p>
       ) : structured ? (

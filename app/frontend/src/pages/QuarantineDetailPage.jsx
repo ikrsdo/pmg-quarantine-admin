@@ -281,13 +281,12 @@ export default function QuarantineDetailPage({ overlay = false }) {
               </div>
             </CollapsibleSection>
 
-            <CollapsibleSection
-              title="Spam Test Details"
-              defaultOpen={false}
-              right={
-                mail.spaminfo?.length > 0 && <CopyButton text={formatSpamInfo(mail.spaminfo)} label="Copy" />
-              }
-            >
+            <CollapsibleSection title="Spam Test Details" defaultOpen={false}>
+              {mail.spaminfo?.length > 0 && (
+                <div className="mb-3 flex items-center gap-1.5">
+                  <CopyButton text={formatSpamInfo(mail.spaminfo)} label="Copy" />
+                </div>
+              )}
               <SpamInfoBreakdown spaminfo={mail.spaminfo} />
             </CollapsibleSection>
           </div>

@@ -17,12 +17,13 @@ project is in `0.x`, minor bumps may still include breaking changes.
   searchable dropdown instead of a plain select, so a long recipient
   list can be filtered by typing instead of scrolling.
 - Quarantine detail's "Spam Test Details" section now has a "Copy"
-  button (next to its heading, like Tracking Center's "Copy Log") that
-  copies the spam test breakdown as plain text.
-- On mobile, Tracking Center detail's "Message Events" accordion header
-  now shows only the "Message Events" title; the "Copy Log" and "Show
-  Raw Log" buttons moved to their own row below it instead of crowding
-  the header. Desktop keeps them inline in the header, unchanged.
+  button that copies the spam test breakdown as plain text.
+- For visual consistency, all action buttons in the Quarantine and
+  Tracking Center detail pages' section headers - Spam Test Details'
+  "Copy", and Message Events' "Copy Log" and "Show Raw Log" - now sit
+  on their own row below the heading instead of crowding it, on both
+  mobile and desktop. The heading itself now shows only its title
+  (plus its badge, for Spam Score and Status).
 
 ### Fixed
 
