@@ -128,9 +128,11 @@ export default function TrackingListPage() {
         })
       : mails;
     const dir = sortDir === 'asc' ? 1 : -1;
+    const sortValue = (m) =>
+      sortKey === 'status' ? statusLabel(m.rstatus || m.dstatus) : (m[sortKey] ?? '');
     return [...result].sort((a, b) => {
-      const av = a[sortKey] ?? '';
-      const bv = b[sortKey] ?? '';
+      const av = sortValue(a);
+      const bv = sortValue(b);
       if (av < bv) return -1 * dir;
       if (av > bv) return 1 * dir;
       return 0;
@@ -232,7 +234,7 @@ export default function TrackingListPage() {
                       <SortableHeader label="Date" sortKey="time" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <SortableHeader label="Relay" sortKey="relay" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                       <SortableHeader label="Size" sortKey="size" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
-                      <th className="py-2 pr-3">Status</th>
+                      <SortableHeader label="Status" sortKey="status" activeKey={sortKey} dir={sortDir} onSort={toggleSort} />
                     </tr>
                   </thead>
                   <tbody>

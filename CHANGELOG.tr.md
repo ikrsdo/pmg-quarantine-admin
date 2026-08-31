@@ -48,6 +48,10 @@ uyumsuz değişiklikler içerebilir.
   kısa bir not eklendi. Tracking Center'ın API'si her zaman sadece bu
   tek zarf-seviyesi alanı sağlıyor - yanına gösterilebilecek ayrı bir
   header-From verisi mevcut değil.
+- Tracking Center listesindeki Status kolonu artık diğer kolonlar gibi
+  sıralanabiliyor - sıralama, ham PMG durum koduna göre değil, ekranda
+  gösterilen durum etiketine göre yapılıyor (örn. "Delivered",
+  "Quarantined").
 
 ### Değişenler
 

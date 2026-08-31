@@ -43,6 +43,9 @@ project is in `0.x`, minor bumps may still include breaking changes.
   bounce/VERP addresses like `bounce.xxx=...@...`). Tracking Center's
   API only ever exposes this single envelope-level field - there's no
   separate header-From data available to show alongside it.
+- Tracking Center's Status column is now sortable, matching the other
+  columns - sorting is by the displayed status label (e.g. "Delivered",
+  "Quarantined"), not the raw PMG status code.
 
 ### Changed
 
