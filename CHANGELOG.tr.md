@@ -72,6 +72,14 @@ uyumsuz değişiklikler içerebilir.
 
 ### Düzeltmeler
 
+- "Saved Filters" ön tanımlı filtre butonları (Karantina ve Tracking
+  Center) artık o an aktif olan ön ayarı vurguluyor, böylece hangi
+  hızlı filtrenin (varsa) uygulandığı bir bakışta anlaşılıyor.
+- Tracking Center'ın tarih ön ayarları ("Last 24h"/"Last 7 days")
+  artık tıklandığında NDR/Greylist onay kutularını temizliyor - daha
+  önce NDR veya Greylist seçildikten sonra bir tarih ön ayarına
+  basıldığında, filtre panelinde hiçbir gösterge olmamasına rağmen
+  NDR/Greylist sessizce uygulanmış kalıyordu.
 - `CollapsibleSection` bileşeninin tıklanabilir başlığı bir `<button>`
   elemanıydı; bir widget `right` slotuna etkileşimli bir kontrol
   geçtiğinde (ör. Dashboard hacim grafiğindeki 24 saat/7 gün geçiş

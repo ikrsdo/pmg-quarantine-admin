@@ -66,6 +66,13 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Fixed
 
+- The "Saved Filters" preset pills (Quarantine and Tracking Center) now
+  highlight the currently-active preset, so it's clear at a glance
+  which quick filter (if any) is applied.
+- Tracking Center's date-range presets ("Last 24h"/"Last 7 days") now
+  clear the NDR/Greylist checkboxes when clicked - previously, picking
+  NDR or Greylist and then a date preset left NDR/Greylist silently
+  still applied even though nothing in the filter sheet indicated it.
 - `CollapsibleSection`'s clickable header was a `<button>` element;
   when a widget passed interactive controls into its `right` slot
   (e.g. the Dashboard volume chart's 24h/7d toggle), this produced an
