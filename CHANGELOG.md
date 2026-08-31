@@ -37,6 +37,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - Dashboard now has a "Top Receivers" widget alongside "Top Senders",
   ranking the recipients that appear most often in Tracking Center's
   last 7 days.
+- Tracking Center's detail page now shows a short note under the
+  "From" field explaining that it is the envelope sender recorded by
+  Postfix and may differ from the message's header From address (e.g.
+  bounce/VERP addresses like `bounce.xxx=...@...`). Tracking Center's
+  API only ever exposes this single envelope-level field - there's no
+  separate header-From data available to show alongside it.
 
 ### Changed
 

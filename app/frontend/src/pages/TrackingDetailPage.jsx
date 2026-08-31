@@ -125,7 +125,13 @@ export default function TrackingDetailPage({ overlay = false }) {
               }
             >
               <div className="flex flex-col gap-3">
-                <MetaRow label="From" value={entry.from} />
+                <div className="flex flex-col gap-0.5">
+                  <MetaRow label="From" value={entry.from} />
+                  <p className="text-xs text-zinc-400 dark:text-zinc-600">
+                    This is the envelope sender recorded by Postfix - it may differ from the
+                    message's header From address (e.g. bounce/VERP addresses).
+                  </p>
+                </div>
                 <MetaRow label="Recipient" value={entry.to} />
                 <MetaRow label="Date" value={formatTime(entry.time)} />
                 <MetaRow label="Queue ID (qid)" value={entry.qid} />

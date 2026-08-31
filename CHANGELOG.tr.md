@@ -41,6 +41,13 @@ uyumsuz değişiklikler içerebilir.
 - Dashboard'a "Top Senders" yanına, Tracking Center'ın son 7 gününde
   en çok görünen alıcıları sıralayan bir "Top Receivers" widget'ı
   eklendi.
+- Tracking Center detay sayfasındaki "From" alanının altına, bu
+  değerin Postfix tarafından kaydedilen zarf (envelope) göndereni
+  olduğunu ve mesajın header From adresinden farklı olabileceğini
+  (örn. `bounce.xxx=...@...` gibi bounce/VERP adresleri) açıklayan
+  kısa bir not eklendi. Tracking Center'ın API'si her zaman sadece bu
+  tek zarf-seviyesi alanı sağlıyor - yanına gösterilebilecek ayrı bir
+  header-From verisi mevcut değil.
 
 ### Değişenler
 
