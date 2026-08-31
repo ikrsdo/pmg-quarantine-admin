@@ -83,6 +83,19 @@ project is in `0.x`, minor bumps may still include breaking changes.
   added the same PMG-ticket-expiry redirect the other pages already
   have - a failed Dashboard query previously rendered the misleading
   empty state instead of returning to the login screen.
+- Dashboard felt very slow to load after the `endtime` fix above: its
+  `starttime`/`endtime` were computed inline in the component body
+  (unmemoized), so any re-render that crossed a one-second boundary
+  produced a new value, which changed the query's cache key and
+  triggered a brand new fetch - which caused another re-render, which
+  could cross another second boundary, and so on. This bug already
+  existed before the `endtime` fix, but was invisible because the old,
+  accidentally-narrow queries returned almost instantly; once they
+  started returning a full 7 days of real data (slower per request),
+  each refetch had more time to cross a second boundary, turning it
+  into a visible chain of repeated `/api/quarantine` and `/api/tracking`
+  requests. `starttime`/`endtime` are now computed once via `useMemo`
+  on mount instead of on every render.
 
 ## [0.4.1] - 2026-08-31
 

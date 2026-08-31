@@ -175,8 +175,10 @@ function StatusDistribution({ trackingMails }) {
 
 export default function DashboardPage() {
   const { handleUnauthorized } = useAuth();
-  const endtime = nowSeconds();
-  const starttime = endtime - SEVEN_DAYS_SECONDS;
+  const { starttime, endtime } = useMemo(() => {
+    const endtime = nowSeconds();
+    return { starttime: endtime - SEVEN_DAYS_SECONDS, endtime };
+  }, []);
 
   const quarantineQuery = useQuery({
     queryKey: ['quarantine', { starttime, endtime }],

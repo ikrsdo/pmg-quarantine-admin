@@ -91,6 +91,21 @@ uyumsuz değişiklikler içerebilir.
   PMG bileti süresi dolduğunda login'e yönlendirme davranışı Dashboard'a
   da eklendi - önceden başarısız bir Dashboard sorgusu yanıltıcı boş
   durumu gösteriyordu, login ekranına dönmek yerine.
+- Yukarıdaki `endtime` düzeltmesinden sonra Dashboard çok yavaş
+  yükleniyormuş gibi hissettiriyordu: `starttime`/`endtime` bileşen
+  gövdesinde her render'da (memoize edilmeden) yeniden hesaplanıyordu,
+  bu yüzden bir saniye sınırını aşan herhangi bir yeniden render yeni
+  bir değer üretiyor, bu da sorgunun önbellek anahtarını değiştirip
+  yepyeni bir istek tetikliyor - bu da başka bir yeniden render'a yol
+  açıyor, o da başka bir saniye sınırını aşabiliyor, ve bu böyle devam
+  ediyordu. Bu hata `endtime` düzeltmesinden önce de vardı, ama eski,
+  yanlışlıkla dar sorgular neredeyse anında döndüğü için görünmüyordu;
+  sorgular gerçek 7 günlük veriyi döndürmeye başlayınca (istek başına
+  daha yavaş), her yeniden sorgunun bir saniye sınırını aşması için
+  daha fazla zamanı oldu, bu da tekrarlanan `/api/quarantine` ve
+  `/api/tracking` isteklerinden oluşan görünür bir zincire dönüştü.
+  `starttime`/`endtime` artık her render'da değil, mount'ta bir kez
+  `useMemo` ile hesaplanıyor.
 
 ## [0.4.1] - 2026-08-31
 
