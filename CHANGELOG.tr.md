@@ -44,6 +44,9 @@ uyumsuz değişiklikler içerebilir.
 
 ### Değişenler
 
+- Dashboard'daki "Quarantine Volume" grafiği artık varsayılan olarak
+  7 gün görünümünü gösteriyor (24 saat değil); 24 saat/7 gün geçişi
+  aynı şekilde duruyor, kullanıcı isterse değiştirebiliyor.
 - Dashboard'daki "Top Senders" widget'ı artık gönderenleri Karantina
   listesi yerine Tracking Center'ın genel posta trafiğinden
   sıralıyor - böylece sadece en çok karantinaya düşen değil, genel

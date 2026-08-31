@@ -40,6 +40,9 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Changed
 
+- Dashboard's "Quarantine Volume" chart now defaults to the 7-day view
+  instead of 24h; the 24h/7d toggle is unchanged, users can still
+  switch.
 - Dashboard's "Top Senders" widget now ranks senders from Tracking
   Center's overall mail traffic instead of the Quarantine list, so it
   reflects who is sending the most mail overall, not just who is

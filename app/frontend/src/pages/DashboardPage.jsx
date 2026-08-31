@@ -30,7 +30,7 @@ function BarRow({ label, count, max, tone = 'bg-blue-600 dark:bg-blue-500' }) {
 }
 
 function VolumeChart({ mails }) {
-  const [range, setRange] = useState('24h');
+  const [range, setRange] = useState('7d');
 
   const buckets = useMemo(() => {
     const now = new Date();
