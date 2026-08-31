@@ -19,6 +19,10 @@ project is in `0.x`, minor bumps may still include breaking changes.
 - Quarantine detail's "Spam Test Details" section now has a "Copy"
   button (next to its heading, like Tracking Center's "Copy Log") that
   copies the spam test breakdown as plain text.
+- On mobile, Tracking Center detail's "Message Events" accordion header
+  now shows only the "Message Events" title; the "Copy Log" and "Show
+  Raw Log" buttons moved to their own row below it instead of crowding
+  the header. Desktop keeps them inline in the header, unchanged.
 
 ### Fixed
 
