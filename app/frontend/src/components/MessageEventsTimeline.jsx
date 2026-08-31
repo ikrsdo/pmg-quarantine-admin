@@ -37,7 +37,10 @@ function EventRow({ event }) {
 
 export default function MessageEventsTimeline({ logs }) {
   const [structured, setStructured] = useState(true);
-  const events = parseTrackingLogEvents(logs);
+  // Lines that don't match a recognized event type aren't shown here - the
+  // raw log (toggle below) already has every line, uncategorized ones
+  // included, so there's no information loss.
+  const events = parseTrackingLogEvents(logs).filter((event) => event.category !== 'Log');
   const hasLogs = logs && logs.length > 0;
 
   const actionButtons = hasLogs && (
@@ -59,6 +62,10 @@ export default function MessageEventsTimeline({ logs }) {
       {actionButtons && <div className="mb-3 flex items-center gap-1.5">{actionButtons}</div>}
       {!logs || logs.length === 0 ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-500">No log entries.</p>
+      ) : structured && events.length === 0 ? (
+        <p className="text-sm text-zinc-500 dark:text-zinc-500">
+          No recognized events - see the raw log for the full trail.
+        </p>
       ) : structured ? (
         <div className="max-h-[60vh] overflow-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
           <table className="w-full border-collapse text-left text-sm">

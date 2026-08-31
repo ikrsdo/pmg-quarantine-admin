@@ -16,6 +16,11 @@ project is in `0.x`, minor bumps may still include breaking changes.
   their own "Policy Match" category and show the matched rule's name.
 - The favicon is now a blue badge with the same Lucide Shield icon
   used on the login page, instead of an unrelated abstract logo.
+- Tracking Center detail's "Message Events" timeline no longer shows
+  the generic "Log" category - lines that don't match a recognized
+  event type are now left out of the structured view entirely, since
+  the raw log (toggle available on the same section) already has
+  every line, uncategorized ones included.
 
 ## [0.4.0] - 2026-08-31
 
