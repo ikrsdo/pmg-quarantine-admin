@@ -8,6 +8,14 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.8] - 2026-09-02
+
+### Değişti
+
+- Başlıktaki sürüm numarası (masaüstü kenar çubuğu ve mobil başlık
+  çubuğu) koyu modda daha okunaklı hale getirildi - `text-zinc-600`,
+  `zinc-950` arka planına çok yakındı.
+
 ## [0.8.7] - 2026-09-02
 
 ### Değişti

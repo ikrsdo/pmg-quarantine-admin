@@ -75,7 +75,7 @@ export default function AppShell({ children }) {
             </p>
             {demoMode && <DemoBadge />}
           </div>
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-600">v{version}</p>
+          <p className="text-[11px] text-zinc-400 dark:text-zinc-500">v{version}</p>
         </div>
         <p className="mt-3 truncate px-2 text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
         <div className="mt-3 flex items-center gap-2 px-2">
@@ -133,7 +133,7 @@ export default function AppShell({ children }) {
         <header className="pt-safe z-10 flex shrink-0 items-center justify-between gap-3 border-b border-zinc-200 bg-white/95 px-4 pb-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95 lg:hidden">
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              PMG Quarantine Admin <span className="text-zinc-400 dark:text-zinc-600">v{version}</span>
+              PMG Quarantine Admin <span className="text-zinc-400 dark:text-zinc-500">v{version}</span>
             </p>
             <p className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
               <span className="truncate">{user}</span>

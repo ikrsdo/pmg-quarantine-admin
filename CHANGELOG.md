@@ -7,6 +7,14 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.8] - 2026-09-02
+
+### Changed
+
+- The version number in the header (desktop sidebar and mobile title
+  bar) is more legible in dark mode - `text-zinc-600` was too close to
+  the `zinc-950` background.
+
 ## [0.8.7] - 2026-09-02
 
 ### Changed
