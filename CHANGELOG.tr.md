@@ -8,6 +8,15 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.7] - 2026-09-02
+
+### Değişti
+
+- README ekran görüntüleri, eski/daha küçük görüntü kümesi yerine demo
+  modundan alınan tam bir görüntü kümesiyle (dashboard, üç karantina
+  türünün tamamı, Tracking Center, yapılandırılmış Message Events)
+  değiştirildi.
+
 ## [0.8.6] - 2026-09-01
 
 ### Değişti

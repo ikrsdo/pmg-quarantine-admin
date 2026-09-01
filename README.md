@@ -2,7 +2,7 @@
 
 English | [Türkçe](README.tr.md)
 
-**Version:** 0.8.6 · [Changelog](CHANGELOG.md)
+**Version:** 0.8.7 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
@@ -48,24 +48,30 @@ per-domain) - use PMG's own UI for that.
 
 ## Screenshots
 
+Captured from [demo mode](#demo-mode).
+
 ### Desktop
 
 <table>
 <tr>
-<td width="50%"><img src="screenshots/desktop/1-desktop-login.jpg" width="100%" alt="Login"/><br/><sub>Login</sub></td>
-<td width="50%"><img src="screenshots/desktop/2-desktop-quarantine-main-list-view.jpg" width="100%" alt="Quarantine list view"/><br/><sub>Quarantine - list view</sub></td>
+<td width="50%"><img src="screenshots/desktop/01-desktop-dashboard.png" width="100%" alt="Dashboard"/><br/><sub>Dashboard</sub></td>
+<td width="50%"><img src="screenshots/desktop/02-desktop-spam-quarantine-list.png" width="100%" alt="Spam quarantine list"/><br/><sub>Quarantine - spam list</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="screenshots/desktop/3-desktop-quarantine-filter-modal.jpg" width="100%" alt="Quarantine filter modal"/><br/><sub>Quarantine - filter</sub></td>
-<td width="50%"><img src="screenshots/desktop/4-desktop-quarantine-message-details.jpg" width="100%" alt="Quarantine message details"/><br/><sub>Quarantine - message detail</sub></td>
+<td width="50%"><img src="screenshots/desktop/03-desktop-spam-quarantine-message-details.png" width="100%" alt="Spam quarantine message details"/><br/><sub>Quarantine - spam message detail</sub></td>
+<td width="50%"><img src="screenshots/desktop/04-desktop-virus-quarantine-list.png" width="100%" alt="Virus quarantine list"/><br/><sub>Quarantine - virus list</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="screenshots/desktop/5-desktop-tracking-center-main-list-view.jpg" width="100%" alt="Tracking Center list view"/><br/><sub>Tracking Center - list view</sub></td>
-<td width="50%"><img src="screenshots/desktop/6-desktop-tracking-center-filter-modal.jpg" width="100%" alt="Tracking Center filter modal"/><br/><sub>Tracking Center - filter</sub></td>
+<td width="50%"><img src="screenshots/desktop/05-desktop-virus-quarantine-message-details.png" width="100%" alt="Virus quarantine message details"/><br/><sub>Quarantine - virus message detail</sub></td>
+<td width="50%"><img src="screenshots/desktop/06-desktop-attachment-quarantine-list.png" width="100%" alt="Attachment quarantine list"/><br/><sub>Quarantine - attachment list</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="screenshots/desktop/7-desktop-tracking-center-message-details.jpg" width="100%" alt="Tracking Center message details"/><br/><sub>Tracking Center - message detail</sub></td>
-<td width="50%"><img src="screenshots/desktop/8-desktop-structured-message-events-view.jpg" width="100%" alt="Structured Message Events view"/><br/><sub>Tracking Center - structured Message Events</sub></td>
+<td width="50%"><img src="screenshots/desktop/07-desktop-attachment-quarantine-message-details.png" width="100%" alt="Attachment quarantine message details"/><br/><sub>Quarantine - attachment message detail</sub></td>
+<td width="50%"><img src="screenshots/desktop/08-desktop-tracking-center-list.png" width="100%" alt="Tracking Center list view"/><br/><sub>Tracking Center - list view</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="screenshots/desktop/09-desktop-tracking-message-details.png" width="100%" alt="Tracking Center message details"/><br/><sub>Tracking Center - message detail</sub></td>
+<td width="50%"><img src="screenshots/desktop/10-desktop-tracking-structured-message-events.png" width="100%" alt="Structured Message Events view"/><br/><sub>Tracking Center - structured Message Events</sub></td>
 </tr>
 </table>
 
@@ -73,19 +79,29 @@ per-domain) - use PMG's own UI for that.
 
 <table>
 <tr>
-<td width="33%"><img src="screenshots/mobile/1-mobile-login.jpeg" width="100%" alt="Login"/><br/><sub>Login</sub></td>
-<td width="33%"><img src="screenshots/mobile/2-mobile-quarantine-main-list-view.jpeg" width="100%" alt="Quarantine list view"/><br/><sub>Quarantine - list view</sub></td>
-<td width="33%"><img src="screenshots/mobile/3-mobile-quarantine-message-details.jpeg" width="100%" alt="Quarantine message details"/><br/><sub>Quarantine - message detail</sub></td>
+<td width="33%"><img src="screenshots/mobile/01-mobile-login.png" width="100%" alt="Login"/><br/><sub>Login</sub></td>
+<td width="33%"><img src="screenshots/mobile/02-mobile-dashboard.png" width="100%" alt="Dashboard"/><br/><sub>Dashboard</sub></td>
+<td width="33%"><img src="screenshots/mobile/03-mobile-quarantine-types-menu.png" width="100%" alt="Quarantine types menu"/><br/><sub>Quarantine - type menu</sub></td>
 </tr>
 <tr>
-<td width="33%"><img src="screenshots/mobile/4-mobile-quarantine-multi-selection.jpeg" width="100%" alt="Quarantine multi-selection"/><br/><sub>Quarantine - multi-select</sub></td>
-<td width="33%"><img src="screenshots/mobile/5-mobile-quarantine-swipe-left-deliver.jpeg" width="100%" alt="Quarantine swipe to deliver"/><br/><sub>Quarantine - swipe to deliver</sub></td>
-<td width="33%"><img src="screenshots/mobile/6-mobile-quarantine-swipe-right-block.jpeg" width="100%" alt="Quarantine swipe to block"/><br/><sub>Quarantine - swipe to block</sub></td>
+<td width="33%"><img src="screenshots/mobile/04-mobile-spam-quarantine-list.png" width="100%" alt="Spam quarantine list"/><br/><sub>Quarantine - spam list</sub></td>
+<td width="33%"><img src="screenshots/mobile/05-mobile-spam-quarantine-message-details.png" width="100%" alt="Spam quarantine message details"/><br/><sub>Quarantine - spam message detail</sub></td>
+<td width="33%"><img src="screenshots/mobile/06-mobile-virus-quarantine-list.png" width="100%" alt="Virus quarantine list"/><br/><sub>Quarantine - virus list</sub></td>
 </tr>
 <tr>
-<td width="33%"><img src="screenshots/mobile/7-mobile-tracking-center-main-list-view.jpeg" width="100%" alt="Tracking Center list view"/><br/><sub>Tracking Center - list view</sub></td>
-<td width="33%"><img src="screenshots/mobile/8-mobile-tracking-center-message-details.jpeg" width="100%" alt="Tracking Center message details"/><br/><sub>Tracking Center - message detail</sub></td>
-<td width="33%"><img src="screenshots/mobile/9-mobile-structured-message-events-view.jpeg" width="100%" alt="Structured Message Events view"/><br/><sub>Tracking Center - structured Message Events</sub></td>
+<td width="33%"><img src="screenshots/mobile/07-mobile-virus-quarantine-message-details.png" width="100%" alt="Virus quarantine message details"/><br/><sub>Quarantine - virus message detail</sub></td>
+<td width="33%"><img src="screenshots/mobile/08-mobile-attachment-quarantine-list.png" width="100%" alt="Attachment quarantine list"/><br/><sub>Quarantine - attachment list</sub></td>
+<td width="33%"><img src="screenshots/mobile/09-mobile-attachment-quarantine-message-details.png" width="100%" alt="Attachment quarantine message details"/><br/><sub>Quarantine - attachment message detail</sub></td>
+</tr>
+<tr>
+<td width="33%"><img src="screenshots/mobile/10-mobile-swipe-left-deliver.png" width="100%" alt="Quarantine swipe to deliver"/><br/><sub>Quarantine - swipe to deliver</sub></td>
+<td width="33%"><img src="screenshots/mobile/11-mobile-swipe-right-block.png" width="100%" alt="Quarantine swipe to block"/><br/><sub>Quarantine - swipe to block</sub></td>
+<td width="33%"><img src="screenshots/mobile/12-mobile-tracking-center-list.png" width="100%" alt="Tracking Center list view"/><br/><sub>Tracking Center - list view</sub></td>
+</tr>
+<tr>
+<td width="33%"><img src="screenshots/mobile/13-mobile-tracking-center-message-details.png" width="100%" alt="Tracking Center message details"/><br/><sub>Tracking Center - message detail</sub></td>
+<td width="33%"><img src="screenshots/mobile/14-mobile-tracking-center-structured-message-events.png" width="100%" alt="Structured Message Events view"/><br/><sub>Tracking Center - structured Message Events</sub></td>
+<td width="33%"></td>
 </tr>
 </table>
 

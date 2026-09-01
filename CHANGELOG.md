@@ -7,6 +7,14 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.7] - 2026-09-02
+
+### Changed
+
+- README screenshots replaced with a full set captured from demo mode
+  (dashboard, all three quarantine types, Tracking Center, structured
+  Message Events) instead of the smaller, older screenshot set.
+
 ## [0.8.6] - 2026-09-01
 
 ### Changed
