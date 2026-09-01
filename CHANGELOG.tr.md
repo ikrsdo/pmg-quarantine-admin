@@ -73,9 +73,11 @@ uyumsuz değişiklikler içerebilir.
   artık etiket alanında durum adını (örn. "Delivered"), değer
   alanında ise sayıyı gösteriyor - önceki "İsim (sayı)" biçimi dar
   mobil ekranlarda kesiliyordu.
-- Dashboard'daki "Quarantine Volume" grafiği artık varsayılan olarak
-  7 gün görünümünü gösteriyor (24 saat değil); 24 saat/7 gün geçişi
-  aynı şekilde duruyor, kullanıcı isterse değiştirebiliyor.
+- Dashboard'daki "Quarantine Volume" grafiği artık her zaman son 7
+  günü gösteriyor ve diğer widget'larla aynı "(last 7 days)" başlık
+  stiline uyuyor; 24 saat/7 gün geçişi kaldırıldı, çünkü zaten
+  Dashboard'daki diğer tüm widget'lar da sabit 7 günlük görünüme
+  sahip.
 - Dashboard'daki "Top Senders" widget'ı artık gönderenleri Karantina
   listesi yerine Tracking Center'ın genel posta trafiğinden
   sıralıyor - böylece sadece en çok karantinaya düşen değil, genel

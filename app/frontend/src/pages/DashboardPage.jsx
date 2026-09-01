@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Inbox, Mail, Users, Activity } from 'lucide-react';
 import { fetchQuarantineList } from '../api/quarantine';
@@ -68,22 +68,8 @@ function BarRow({ label, count, max, tone = 'blue' }) {
 }
 
 function VolumeChart({ mails }) {
-  const [range, setRange] = useState('7d');
-
   const buckets = useMemo(() => {
     const now = new Date();
-    if (range === '24h') {
-      const hours = Array.from({ length: 24 }, (_, i) => {
-        const d = new Date(now.getTime() - (23 - i) * 60 * 60 * 1000);
-        d.setMinutes(0, 0, 0);
-        return { label: `${String(d.getHours()).padStart(2, '0')}:00`, start: d.getTime() };
-      });
-      return hours.map(({ label, start }, i) => {
-        const end = i < hours.length - 1 ? hours[i + 1].start : start + 60 * 60 * 1000;
-        const count = mails.filter((m) => m.time * 1000 >= start && m.time * 1000 < end).length;
-        return { label, count };
-      });
-    }
     const days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (6 - i));
       return { label: d.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit' }), start: d.getTime() };
@@ -93,38 +79,14 @@ function VolumeChart({ mails }) {
       const count = mails.filter((m) => m.time * 1000 >= start && m.time * 1000 < end).length;
       return { label, count };
     });
-  }, [mails, range]);
+  }, [mails]);
 
   const max = Math.max(1, ...buckets.map((b) => b.count));
 
   return (
-    <CollapsibleSection
-      title="Quarantine Volume"
-      accent="blue"
-      right={
-        <div className="flex gap-1 rounded-md border border-zinc-300 p-0.5 text-xs dark:border-zinc-700">
-          {[
-            { id: '24h', label: '24h' },
-            { id: '7d', label: '7d' },
-          ].map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => setRange(opt.id)}
-              className={`rounded px-2 py-1 font-medium ${
-                range === opt.id
-                  ? 'bg-blue-600 text-white'
-                  : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      }
-    >
+    <CollapsibleSection title="Quarantine Volume (last 7 days)" accent="blue">
       {buckets.every((b) => b.count === 0) ? (
-        <p className="text-sm text-zinc-500 dark:text-zinc-500">No messages quarantined in this range.</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-500">No messages quarantined in the last 7 days.</p>
       ) : (
         <div className="flex flex-col gap-1.5">
           {buckets.map((b) => (

@@ -67,9 +67,10 @@ project is in `0.x`, minor bumps may still include breaking changes.
   count as its value, matching the other stat cards, instead of
   cramming "Name (count)" into the value field where it got
   truncated on narrow mobile widths.
-- Dashboard's "Quarantine Volume" chart now defaults to the 7-day view
-  instead of 24h; the 24h/7d toggle is unchanged, users can still
-  switch.
+- Dashboard's "Quarantine Volume" chart now always shows the last 7
+  days and matches the "(last 7 days)" title style used by the other
+  widgets; the 24h/7d toggle was removed since every other Dashboard
+  widget is a fixed 7-day view too.
 - Dashboard's "Top Senders" widget now ranks senders from Tracking
   Center's overall mail traffic instead of the Quarantine list, so it
   reflects who is sending the most mail overall, not just who is
