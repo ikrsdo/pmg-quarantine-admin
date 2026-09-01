@@ -45,7 +45,10 @@ function extract(message, re) {
 // antispam/policy rules. That's real, useful information the categories
 // above don't cover, so it's checked as a fallback and pulled out into its
 // own category instead of falling into the generic "Log" bucket.
-const RULE_RE = /\(rule:\s*([^)]+)\)/i;
+// Greedy + anchored at end of line: PMG rule names can themselves contain
+// parentheses (e.g. "Whitelist - Netmak (in)"), so a non-greedy [^)]+ would
+// stop at the rule name's own closing paren instead of the outer one.
+const RULE_RE = /\(rule:\s*(.+)\)\s*$/i;
 
 function classify(process, message) {
   const service = process.split('/')[1] || '';

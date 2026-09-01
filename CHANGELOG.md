@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.7.2] - 2026-09-01
+
+### Fixed
+
+- Tracking Center's "Policy Match" event truncated a matched rule's
+  name at its first closing parenthesis instead of its last, so a
+  rule name that itself contains parentheses (e.g.
+  `Whitelist - Netmak (in)`) displayed as `Whitelist - Netmak (in`,
+  missing the final `)`. Purely cosmetic - the underlying PMG action
+  was unaffected.
+
 ## [0.7.1] - 2026-09-01
 
 ### Fixed

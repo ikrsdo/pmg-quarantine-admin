@@ -8,6 +8,17 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.7.2] - 2026-09-01
+
+### Düzeltmeler
+
+- Tracking Center'daki "Policy Match" olayı, eşleşen kuralın adını son
+  kapanan parantez yerine ilk kapanan parantezde kesiyordu; bu yüzden
+  adının içinde kendi parantezi olan bir kural (örn.
+  `Whitelist - Netmak (in)`) `Whitelist - Netmak (in` şeklinde,
+  sondaki `)` eksik gösteriliyordu. Tamamen kozmetik - PMG'deki asıl
+  işlem etkilenmiyordu.
+
 ## [0.7.1] - 2026-09-01
 
 ### Düzeltmeler
