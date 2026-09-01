@@ -8,6 +8,14 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.6] - 2026-09-01
+
+### Değişti
+
+- Mobil başlıkta turuncu DEMO rozeti artık uygulama başlığı yerine
+  gerçekte neyi nitelediği olan giriş yapılmış hesap adının yanında
+  gösteriliyor.
+
 ## [0.8.5] - 2026-09-01
 
 ### Düzeltmeler

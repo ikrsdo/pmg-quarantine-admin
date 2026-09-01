@@ -132,13 +132,13 @@ export default function AppShell({ children }) {
       <div className="flex h-screen flex-1 flex-col overflow-hidden">
         <header className="pt-safe z-10 flex shrink-0 items-center justify-between gap-3 border-b border-zinc-200 bg-white/95 px-4 pb-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95 lg:hidden">
           <div className="min-w-0 flex-1">
-            <p className="flex items-center gap-2 truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              <span className="truncate">
-                PMG Quarantine Admin <span className="text-zinc-400 dark:text-zinc-600">v{version}</span>
-              </span>
+            <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              PMG Quarantine Admin <span className="text-zinc-400 dark:text-zinc-600">v{version}</span>
+            </p>
+            <p className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
+              <span className="truncate">{user}</span>
               {demoMode && <DemoBadge />}
             </p>
-            <p className="truncate text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />

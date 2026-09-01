@@ -7,6 +7,14 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.6] - 2026-09-01
+
+### Changed
+
+- Mobile header: the amber DEMO badge now sits next to the logged-in
+  account name instead of the app title, since that's the piece of
+  information it actually qualifies.
+
 ## [0.8.5] - 2026-09-01
 
 ### Fixed
