@@ -88,6 +88,11 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Fixed
 
+- Favicon/app-icon URLs (`favicon.svg`, `apple-touch-icon.png`, and
+  the manifest's `icon-192.png`/`icon-512.png`) now carry a `?v=2`
+  cache-busting query string, since mobile browsers were still
+  showing a stale favicon after an icon update even after clearing
+  site data.
 - Tracking Center detail's "Search in Quarantine" button now only
   appears when the entry's status is actually "Quarantined" (`Q`) -
   previously it showed on every entry, including Delivered/Bounced/

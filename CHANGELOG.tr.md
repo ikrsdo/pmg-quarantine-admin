@@ -96,6 +96,11 @@ uyumsuz değişiklikler içerebilir.
 
 ### Düzeltmeler
 
+- Favicon/uygulama ikonu URL'leri (`favicon.svg`, `apple-touch-icon.png`
+  ve manifest'teki `icon-192.png`/`icon-512.png`) artık `?v=2` cache-bust
+  sorgu parametresi taşıyor - mobil tarayıcılar site verisi tamamen
+  temizlendikten sonra bile ikon güncellemesinde eski favicon'u
+  göstermeye devam ediyordu.
 - Tracking Center detay sayfasındaki "Search in Quarantine" butonu
   artık sadece kaydın durumu gerçekten "Quarantined" (`Q`) olduğunda
   görünüyor - daha önce Delivered/Bounced/Rejected/Blocked gibi
