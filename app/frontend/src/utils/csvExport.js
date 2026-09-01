@@ -1,5 +1,11 @@
 function escapeCsvField(value) {
-  const s = value === null || value === undefined ? '' : String(value);
+  let s = value === null || value === undefined ? '' : String(value);
+  // Prefix a leading =, +, -, or @ with a quote so spreadsheet apps treat
+  // the cell as text instead of a formula (CSV/formula injection guard -
+  // subject/from fields come from attacker-controlled mail content).
+  if (/^[=+\-@]/.test(s)) {
+    s = `'${s}`;
+  }
   if (/[",\n]/.test(s)) {
     return `"${s.replace(/"/g, '""')}"`;
   }

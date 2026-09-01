@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.7.1] - 2026-09-01
+
+### Fixed
+
+- CSV export (Quarantine and Tracking Center) did not guard against
+  formula/CSV injection: a mail subject or sender starting with `=`,
+  `+`, `-`, or `@` (fully attacker-controlled, since it's mail
+  content) could be interpreted as a formula by Excel/Sheets when the
+  exported file is opened. Such fields are now prefixed with a leading
+  `'` so spreadsheet apps treat them as plain text.
+
 ## [0.7.0] - 2026-09-01
 
 ### Added

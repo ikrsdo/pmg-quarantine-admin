@@ -8,6 +8,18 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.7.1] - 2026-09-01
+
+### Düzeltmeler
+
+- CSV export'u (Karantina ve Tracking Center) formül/CSV injection'a
+  karşı korumasızdı: `=`, `+`, `-` veya `@` ile başlayan bir mail
+  konusu veya gönderen adresi (tamamen saldırganın kontrolünde, çünkü
+  mail içeriği) export edilen dosya Excel/Sheets'te açıldığında formül
+  olarak yorumlanabiliyordu. Bu tür alanların başına artık bir `'`
+  ekleniyor, böylece hesap tablosu uygulamaları bunları düz metin
+  olarak görüyor.
+
 ## [0.7.0] - 2026-09-01
 
 ### Eklenenler
