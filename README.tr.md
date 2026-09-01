@@ -214,6 +214,13 @@ doğrulama katmanı (örn. Cloudflare Access) eklemek önerilir.
   uyarı loglanır.
 - HTTPS ve reverse-proxy gereksinimleri için
   [Yerel ağın dışına açmak](#yerel-ağın-dışına-açmak) bölümüne bakın.
+- "PMG dışında dış bağlantı yok" kuralının tek istisnası: tarayıcı,
+  açılışta daha yeni bir sürüm olup olmadığını kontrol etmek ve bir
+  güncelleme bildirimi göstermek için genel, kimlik doğrulaması
+  gerektirmeyen GitHub API'sini (`api.github.com/repos/.../tags`)
+  çağırır. Hiçbir kimlik bilgisi veya uygulama verisi gönderilmez -
+  sadece düz bir `GET` isteği. GitHub'a erişilemezse (örneğin
+  internetten izole bir kurulumda) sessizce başarısız olur.
 
 Bir güvenlik açığı bulursanız, lütfen genel bir PR yerine bir issue
 açın (veya hassas konular için doğrudan proje sahibiyle iletişime

@@ -9,6 +9,14 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ## [Unreleased]
 
+### Added
+
+- On the Dashboard, Quarantine, and Tracking Center pages, the app now
+  checks GitHub's release tags on load and shows a persistent bottom
+  banner if a newer version is available. The banner stays open until
+  dismissed and links to the changelog; dismissing it is remembered per
+  version, so it won't reappear until an actually newer release ships.
+
 ### Fixed
 
 - The mobile tab bar's "Tracking Center" label wrapped onto two lines

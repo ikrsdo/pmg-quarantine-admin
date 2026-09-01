@@ -10,6 +10,16 @@ uyumsuz değişiklikler içerebilir.
 
 ## [Yayınlanmamış]
 
+### Eklenenler
+
+- Dashboard, Karantina ve Tracking Center sayfalarında uygulama artık
+  açılışta GitHub'daki release tag'lerini kontrol ediyor ve daha yeni
+  bir sürüm varsa ekranın altında kalıcı bir bildirim çubuğu
+  gösteriyor. Bu çubuk kullanıcı kapatana kadar açık kalıyor ve
+  changelog'a bağlantı veriyor; kapatma işlemi sürüm bazında
+  hatırlanıyor, yani gerçekten daha yeni bir sürüm çıkana kadar tekrar
+  görünmüyor.
+
 ### Düzeltmeler
 
 - Mobil sekme çubuğundaki "Tracking Center" etiketi dar telefon

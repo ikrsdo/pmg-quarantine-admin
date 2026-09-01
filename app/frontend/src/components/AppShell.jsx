@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, ShieldAlert, Activity, LogOut } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from '../theme/ThemeToggle';
+import UpdateBanner from './UpdateBanner';
 import { version } from '../../package.json';
 
 const NAV_ITEMS = [
@@ -91,6 +92,8 @@ export default function AppShell({ children }) {
 
         <div className="min-h-0 flex-1">{children}</div>
       </div>
+
+      <UpdateBanner />
     </div>
   );
 }

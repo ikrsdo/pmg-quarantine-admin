@@ -203,6 +203,12 @@ anything reachable from outside a trusted network.
   warning is logged on startup whenever it's enabled.
 - See [Exposing it outside your local network](#exposing-it-outside-your-local-network)
   for HTTPS and reverse-proxy requirements.
+- The one exception to "no outbound calls besides PMG": the browser
+  calls the public, unauthenticated GitHub API
+  (`api.github.com/repos/.../tags`) on load to check for a newer
+  release and show an update banner. No credentials or app data are
+  sent - only a plain `GET` request. Fails silently if GitHub is
+  unreachable (e.g. an air-gapped deployment).
 
 If you find a security issue, please open an issue (or contact the
 maintainer directly for anything sensitive) rather than a public PR.

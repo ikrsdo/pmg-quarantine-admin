@@ -346,3 +346,18 @@ worth remembering that aren't spelled out in the changelog:
   `/api/*` routes and the static frontend (with SPA fallback) - no
   separate containers. `docker-compose.yml` has a simple healthcheck
   (`GET /api/health`).
+- **Update-check banner (the one direct browser→external-API call):**
+  `UpdateBanner.jsx`, mounted in `AppShell.jsx` (so it shows on
+  Dashboard/Quarantine/Tracking, not the two standalone detail pages,
+  whose mobile layout has its own `fixed bottom-0` action bar it would
+  collide with), fetches `https://api.github.com/repos/<repo>/tags`
+  directly from the browser on load - no backend proxy - since that
+  endpoint is public and CORS-open (`access-control-allow-origin: *`).
+  This is a deliberate, narrow exception to the "backend proxies
+  everything" pattern used for PMG; don't route it through the backend
+  without a reason to. It parses every tag as semver and takes the true
+  max (GitHub doesn't guarantee array order), compares it to the
+  running app's own `package.json` version, and fails silently on any
+  fetch error (offline, rate-limited, air-gapped deployment). Dismissal
+  is stored in `localStorage` keyed by the dismissed version, not a
+  one-time flag, so it reappears for the next actually-newer release.
