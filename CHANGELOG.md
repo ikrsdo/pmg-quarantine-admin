@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.3] - 2026-09-01
+
+### Changed
+
+- README's Features section now covers every feature (structured
+  Message Events timeline, bulk selection, confirmation on destructive
+  actions, the update-check banner, demo mode) instead of a partial
+  list. The Quarantine↔Tracking Center cross-linking note, previously
+  attached to the Dashboard bullet even though it's a Quarantine/
+  Tracking detail-page feature, now has its own bullet.
+
 ## [0.8.2] - 2026-09-01
 
 ### Changed

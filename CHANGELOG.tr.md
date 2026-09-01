@@ -8,6 +8,18 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.3] - 2026-09-01
+
+### Değişti
+
+- README'nin Özellikler bölümü artık eksiksiz bir liste yerine tüm
+  özellikleri kapsıyor (yapılandırılmış Message Events zaman
+  çizelgesi, toplu seçim, yıkıcı işlemlerde onay adımı, güncelleme
+  kontrolü bandı, demo modu). Aslında bir Karantina/Tracking Center
+  detay sayfası özelliği olmasına rağmen daha önce Dashboard
+  maddesine iliştirilmiş olan Karantina↔Tracking Center çapraz
+  bağlantı notu artık kendi maddesinde.
+
 ## [0.8.2] - 2026-09-01
 
 ### Değişti

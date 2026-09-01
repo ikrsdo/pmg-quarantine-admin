@@ -2,7 +2,7 @@
 
 [English](README.md) | Türkçe
 
-**Sürüm:** 0.8.2 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
+**Sürüm:** 0.8.3 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
 
 [Proxmox Mail Gateway](https://www.proxmox.com/en/proxmox-mail-gateway)
 (PMG) için mobil öncelikli, tamamen duyarlı (responsive) bir yönetim
@@ -18,15 +18,21 @@ hiç dokunmaz, onunla yalnızca PMG API üzerinden konuşur.
 
 - **Dashboard** - girişten sonraki ilk açılış sayfası: son 7 güne ait
   karantina hacmi, mesaj teslimat durumu ve en çok görülen gönderen/
-  alıcılar; ayrıca bir Karantina kaydı ile eşleşen Tracking Center
-  kaydı arasında (ve tersi yönde) en-iyi-çaba çapraz bağlantı.
+  alıcılar.
 - **Karantina yönetimi** - PMG'nin üç karantina türünü de kapsar (Spam,
   Virus, Attachment), navigasyondan geçiş yapılabilir. Karantinadaki
   postaları listele, ara/filtrele ve işlem yap (teslim et, beyaz
-  listeye al, engelle, sil); mobilde kaydırmalı (swipe) kart listesi,
-  masaüstünde yoğun bir veri tablosu.
-- **Tracking Center** - bir postanın teslimat durumunu ve syslog
-  kaydını gönderene, alıcıya veya filtreye göre sorgula, salt okunur.
+  listeye al, engelle, sil); mobilde kaydırmalı (swipe) kart listesi ve
+  çoklu seçimle toplu işlem, masaüstünde yoğun bir veri tablosu. Yıkıcı
+  işlemler (engelle, sil) bir onay adımı gerektirir.
+- **Tracking Center** - bir postanın teslimat durumunu gönderene,
+  alıcıya veya filtreye göre sorgula, salt okunur. Her kaydın syslog
+  kaydı, ham log satırları yerine yapılandırılmış, genişletilebilir bir
+  Message Events zaman çizelgesi olarak gösterilir.
+- **Karantina ve Tracking Center arasında çapraz bağlantı** - bir
+  Karantina kaydının detay sayfası, en-iyi-çaba ile eşleşen Tracking
+  Center kaydına bağlantı verir (ve tersi yönde de) - böylece aynı
+  postayı iki kez aramanız gerekmez.
 - **Saved Filters ön ayarları ve CSV export**, hem Karantina hem
   Tracking Center liste sayfalarında.
 - **Yönetici başına PMG girişi** - her yönetici kendi PMG hesabıyla
@@ -36,6 +42,11 @@ hiç dokunmaz, onunla yalnızca PMG API üzerinden konuşur.
   yalnızca PMG'nin verdiği kısa ömürlü ticket/CSRF token'ı, sunucu
   tarafında httpOnly bir oturum çerezinde tutulur.
 - **Koyu/açık tema**, PWA olarak yüklenebilir.
+- **Güncelleme kontrolü bandı** - GitHub'da yeni bir sürüm çıktığında
+  uygulama içinde bildirir, sürüm bazında kapatılabilir.
+- **Demo modu** - gerçek bir PMG sunucusu olmadan, gerçekçi örnek veriyle
+  tüm ekranları deneyin, aşağıdaki [Demo modu](#demo-modu) bölümüne
+  bakın.
 
 Kapsam dışı: welcomelist/blocklist *politika* yönetimi (genel veya
 alan adı bazında) - bunun için PMG'nin kendi arayüzünü kullanın.

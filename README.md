@@ -2,7 +2,7 @@
 
 English | [Türkçe](README.tr.md)
 
-**Version:** 0.8.2 · [Changelog](CHANGELOG.md)
+**Version:** 0.8.3 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
@@ -16,16 +16,20 @@ appliance itself, only talks to it over the PMG API.
 ## Features
 
 - **Dashboard** - the landing page after login: a 7-day overview with
-  quarantine volume, message delivery status, and top senders/receivers,
-  plus best-effort cross-linking between a Quarantine message and its
-  matching Tracking Center entry (and back).
+  quarantine volume, message delivery status, and top senders/receivers.
 - **Quarantine management** - covers all three PMG quarantine types
   (Spam, Virus, Attachment), switchable from the navigation. List,
   search/filter, and act on quarantined mail (deliver, whitelist,
-  block, delete), with a swipeable card list on mobile and a dense
-  data table on desktop.
-- **Tracking Center** - look up a message's delivery status and syslog
-  trail by sender, recipient, or filter, read-only.
+  block, delete), with a swipeable card list and multi-select bulk
+  actions on mobile, and a dense data table on desktop. Destructive
+  actions (block, delete) require a confirmation step.
+- **Tracking Center** - look up a message's delivery status by sender,
+  recipient, or filter, read-only. Each entry's syslog trail is shown
+  as a structured, expandable Message Events timeline instead of raw
+  log lines.
+- **Cross-linking between Quarantine and Tracking Center** - a
+  Quarantine message's detail page links to its best-effort matching
+  Tracking Center entry, and back, so you don't have to search twice.
 - **Saved filter presets and CSV export** on both the Quarantine and
   Tracking Center list pages.
 - **Per-admin PMG login** - every admin authenticates with their own PMG
@@ -34,6 +38,10 @@ appliance itself, only talks to it over the PMG API.
   PMG credentials are ever stored - only the short-lived ticket/CSRF
   token PMG issues, kept server-side in an httpOnly session cookie.
 - **Dark/light theme**, installable as a PWA.
+- **Update-check banner** - notifies you in-app when a newer release is
+  available on GitHub, dismissible per version.
+- **Demo mode** - try every screen with realistic mock data and no real
+  PMG server, see [Demo mode](#demo-mode) below.
 
 Out of scope: welcomelist/blocklist *policy* management (global or
 per-domain) - use PMG's own UI for that.
