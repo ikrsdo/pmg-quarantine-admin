@@ -8,6 +8,21 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.0] - 2026-09-01
+
+### Eklendi
+
+- Demo modu (`DEMO_MODE=true`): uygulamayı gerçek bir PMG yerine bellek
+  içi sahte bir PMG'ye karşı, sabit `demo`/`demo` girişiyle çalıştırır.
+  Tüm ekranlar (Dashboard, Quarantine spam/virus/attachment, Tracking
+  Center) gerçekçi bir örnek veri setiyle çalışır; PMG sunucusu veya ağ
+  erişimi gerekmez. Quarantine aksiyonları (deliver/block vb.) bellek
+  içi veriyi gerçekten değiştirir, böylece demo canlı bir sistem gibi
+  davranır; veri yeniden başlatmada sıfırlanır. Bir demo instance'ın
+  gerçek olanla karıştırılmaması için sidebar/header'da bir "DEMO"
+  rozeti gösterilir. Gerçek bir dağıtımdan ayrı bir container olarak
+  çalıştırılmak üzere tasarlanmıştır - bkz. README.md > "Demo modu".
+
 ## [0.7.2] - 2026-09-01
 
 ### Düzeltmeler

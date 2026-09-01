@@ -7,6 +7,21 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.0] - 2026-09-01
+
+### Added
+
+- Demo mode (`DEMO_MODE=true`): runs the app against an in-memory fake
+  PMG instead of a real one, with a fixed `demo`/`demo` login. Every
+  screen (Dashboard, Quarantine spam/virus/attachment, Tracking Center)
+  works with a realistic mock dataset and no PMG server or network
+  access is needed. Quarantine actions (deliver/block/etc.) really
+  mutate the in-memory data, so the demo behaves like a live system;
+  state resets on restart. A "DEMO" badge is shown in the sidebar/
+  header so a demo instance can't be mistaken for a real one. Meant to
+  run as a separate container from a real deployment - see README.md >
+  "Demo mode".
+
 ## [0.7.2] - 2026-09-01
 
 ### Fixed

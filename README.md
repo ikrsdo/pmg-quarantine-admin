@@ -2,7 +2,7 @@
 
 English | [Türkçe](README.tr.md)
 
-**Version:** 0.7.2 · [Changelog](CHANGELOG.md)
+**Version:** 0.8.0 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
@@ -116,6 +116,32 @@ docker compose up -d --build
 The app listens on port 3000 (`http://localhost:3000` for a quick local
 check). Sign in with your own PMG username/password on the login screen.
 
+## Demo mode
+
+Want to try every screen (Quarantine spam/virus/attachment, Tracking
+Center, Dashboard) without a real PMG server? Clone the repo into a
+separate directory, set `DEMO_MODE=true` in that copy's own `.env`, and
+run it as its own container:
+
+```bash
+git clone https://github.com/ikrsdo/pmg-quarantine-admin.git pmg-quarantine-admin-demo
+cd pmg-quarantine-admin-demo
+cp .env.example .env
+# edit .env: set DEMO_MODE=true and your own SESSION_SECRET
+docker compose up -d --build
+```
+
+Log in with `demo` / `demo`. The backend runs entirely against an
+in-memory fake PMG - no `PMG_BASE_URL` is needed, nothing touches a
+real PMG server or the network. The mock dataset (quarantine mail,
+tracking entries) is realistic and medium-sized, and quarantine actions
+(deliver/block/etc.) really mutate it, so the demo behaves like a live
+system; the data resets whenever the process restarts. A "DEMO" badge
+is shown in the sidebar/header so a demo instance can never be mistaken
+for a real one. This is a separate, fully isolated instance - it does
+not touch or interfere with a real, already-running deployment cloned
+from the same repo.
+
 ## Updating
 
 To update to the latest version, run this from inside the project
@@ -134,7 +160,8 @@ the full template.
 
 | Variable | Description |
 |---|---|
-| `PMG_BASE_URL` | Base URL of your PMG server, e.g. `https://pmg.example.local:8006` |
+| `DEMO_MODE` | `true` to run against an in-memory fake PMG instead of a real one - see [Demo mode](#demo-mode) |
+| `PMG_BASE_URL` | Base URL of your PMG server, e.g. `https://pmg.example.local:8006` (not required when `DEMO_MODE=true`) |
 | `PMG_API_PATH` | PMG API path, normally `/api2/json` |
 | `PMG_ALLOW_SELF_SIGNED` | `true` to accept PMG's self-signed certificate (typical for internal networks) |
 | `NODE_ENV` | `production` in deployment - also controls whether the session cookie requires HTTPS |

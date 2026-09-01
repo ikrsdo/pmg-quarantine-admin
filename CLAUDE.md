@@ -379,3 +379,24 @@ worth remembering that aren't spelled out in the changelog:
   fetch error (offline, rate-limited, air-gapped deployment). Dismissal
   is stored in `localStorage` keyed by the dismissed version, not a
   one-time flag, so it reappears for the next actually-newer release.
+- **Demo mode:** `DEMO_MODE=true` (env var, `config.js`) swaps which
+  module `pmgClient.js` exports - `mockPmgClient.js` (an in-memory fake
+  PMG with the identical exported function interface) instead of the
+  real client - so no route file needs to know demo mode exists. Login
+  is hardcoded to `demo`/`demo`; `PMG_BASE_URL` isn't required in this
+  mode. The mock dataset (quarantine mail, tracking entries) is
+  generated once at process start and quarantine actions
+  (deliver/delete/whitelist/blocklist/mark-seen/mark-unseen) really
+  mutate it in memory, so the demo behaves like a live system - state
+  resets on restart, nothing persists, nothing touches the network.
+  Tracking Center's mock timestamps are deliberately skewed recent
+  (`randomTrackingTime`, `mockPmgClient.js`) because its default UI
+  filter is a narrow "last hour" window (unlike Quarantine's default
+  7-day window) - a uniform 7-day spread would make the demo Tracking
+  Center open empty most of the time. A `demoMode` boolean is threaded
+  from `/api/auth/me` and `/api/login` through `useAuth` to `AppShell`,
+  which shows an amber "DEMO" badge next to the app name so a demo
+  instance can never be mistaken for a real one. Meant to run as a
+  fully separate container/instance (its own `.env`, own
+  `docker compose up`), never alongside a real deployment's data - see
+  README.md > "Demo mode".

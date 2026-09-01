@@ -1,11 +1,12 @@
 const express = require('express');
 const pmgClient = require('../pmgClient');
 const requireAuth = require('../middleware/requireAuth');
+const config = require('../config');
 
 const router = express.Router();
 
 router.get('/me', requireAuth, (req, res) => {
-  res.json({ username: req.session.pmgUsername });
+  res.json({ username: req.session.pmgUsername, demoMode: config.demoMode });
 });
 
 router.post('/login', async (req, res) => {
@@ -29,7 +30,7 @@ router.post('/login', async (req, res) => {
       req.session.pmgTicket = pmgTicket;
       req.session.pmgCsrfToken = pmgCsrfToken;
       req.session.ticketIssuedAt = ticketIssuedAt;
-      res.json({ username: pmgUsername });
+      res.json({ username: pmgUsername, demoMode: config.demoMode });
     });
   } catch (err) {
     if (err instanceof pmgClient.PmgApiError && err.status === 401) {

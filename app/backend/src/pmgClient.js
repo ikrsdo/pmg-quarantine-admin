@@ -216,7 +216,7 @@ async function quarantineAction(session, id, action) {
   return res.data?.data;
 }
 
-module.exports = {
+const realClient = {
   PmgApiError,
   VALID_ACTIONS,
   VALID_QUARANTINE_TYPES,
@@ -229,3 +229,9 @@ module.exports = {
   getTrackingList,
   getTrackingDetail,
 };
+
+// Demo mode swaps in a fully in-memory fake PMG (mockPmgClient.js) with the
+// same exported interface, so every route file (which only does
+// `require('../pmgClient')`) keeps working unchanged and never needs to
+// know which one it's actually talking to.
+module.exports = config.demoMode ? require('./mockPmgClient') : realClient;

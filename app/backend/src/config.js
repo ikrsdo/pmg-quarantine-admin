@@ -17,12 +17,21 @@ function required(name, fallback) {
   return value;
 }
 
+const demoMode = /^true$/i.test(process.env.DEMO_MODE || 'false');
+
 const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '3000', 10),
   sessionSecret: required('SESSION_SECRET'),
+  demoMode,
   pmg: {
-    baseUrl: required('PMG_BASE_URL').replace(/\/$/, ''),
+    // In demo mode no real PMG is ever contacted (see mockPmgClient.js), so
+    // PMG_BASE_URL is not required - fall back to a placeholder instead of
+    // making every demo deployment invent a fake one.
+    baseUrl: (demoMode ? process.env.PMG_BASE_URL || 'https://demo.invalid:8006' : required('PMG_BASE_URL')).replace(
+      /\/$/,
+      '',
+    ),
     apiPath: process.env.PMG_API_PATH || '/api2/json',
     allowSelfSigned: /^true$/i.test(process.env.PMG_ALLOW_SELF_SIGNED || 'false'),
   },

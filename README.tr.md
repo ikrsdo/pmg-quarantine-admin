@@ -2,7 +2,7 @@
 
 [English](README.md) | Türkçe
 
-**Sürüm:** 0.7.2 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
+**Sürüm:** 0.8.0 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
 
 [Proxmox Mail Gateway](https://www.proxmox.com/en/proxmox-mail-gateway)
 (PMG) için mobil öncelikli, tamamen duyarlı (responsive) bir yönetim
@@ -122,6 +122,32 @@ Uygulama 3000 portunda dinler (hızlı bir yerel kontrol için
 `http://localhost:3000`). Giriş ekranında kendi PMG kullanıcı adı/
 şifrenizle oturum açın.
 
+## Demo modu
+
+Gerçek bir PMG sunucusu olmadan tüm ekranları (Quarantine spam/virus/
+attachment, Tracking Center, Dashboard) denemek mi istiyorsunuz? Depoyu
+ayrı bir klasöre klonlayın, o kopyanın kendi `.env` dosyasında
+`DEMO_MODE=true` ayarlayın ve ayrı bir container olarak çalıştırın:
+
+```bash
+git clone https://github.com/ikrsdo/pmg-quarantine-admin.git pmg-quarantine-admin-demo
+cd pmg-quarantine-admin-demo
+cp .env.example .env
+# .env dosyasını düzenleyin: DEMO_MODE=true ve kendi SESSION_SECRET değerinizi ayarlayın
+docker compose up -d --build
+```
+
+`demo` / `demo` ile giriş yapın. Backend tamamen bellek içi sahte bir
+PMG'ye karşı çalışır - `PMG_BASE_URL` gerekmez, hiçbir şey gerçek bir
+PMG sunucusuna veya ağa dokunmaz. Örnek veri seti (quarantine mailleri,
+tracking kayıtları) gerçekçi ve orta ölçeklidir; quarantine aksiyonları
+(deliver/block vb.) bu veriyi gerçekten değiştirir, böylece demo canlı
+bir sistem gibi davranır - süreç yeniden başladığında veri sıfırlanır.
+Bir demo instance'ın gerçek olanla karıştırılmaması için sidebar/
+header'da bir "DEMO" rozeti gösterilir. Bu, aynı depodan klonlanmış
+gerçek, halihazırda çalışan bir dağıtıma dokunmayan, ayrı ve tamamen
+izole bir instance'dır.
+
 ## Güncelleme
 
 En son sürüme güncellemek için, `docker-compose.yml` dosyasını içeren
@@ -140,7 +166,8 @@ için `.env.example` dosyasına bakın.
 
 | Değişken | Açıklama |
 |---|---|
-| `PMG_BASE_URL` | PMG sunucunuzun temel adresi, örn. `https://pmg.example.local:8006` |
+| `DEMO_MODE` | Gerçek bir PMG yerine bellek içi sahte bir PMG'ye karşı çalışmak için `true` - bkz. [Demo modu](#demo-modu) |
+| `PMG_BASE_URL` | PMG sunucunuzun temel adresi, örn. `https://pmg.example.local:8006` (`DEMO_MODE=true` iken gerekmez) |
 | `PMG_API_PATH` | PMG API yolu, normalde `/api2/json` |
 | `PMG_ALLOW_SELF_SIGNED` | PMG'nin kendinden imzalı sertifikasını kabul etmek için `true` (dahili ağlarda tipik) |
 | `NODE_ENV` | Üretimde `production` - oturum çerezinin HTTPS gerektirip gerektirmediğini de belirler |

@@ -6,12 +6,16 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [demoMode, setDemoMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     authApi
       .fetchMe()
-      .then((res) => setUser(res.username))
+      .then((res) => {
+        setUser(res.username);
+        setDemoMode(!!res.demoMode);
+      })
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false));
   }, []);
@@ -19,6 +23,7 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (username, password) => {
     const res = await authApi.login(username, password);
     setUser(res.username);
+    setDemoMode(!!res.demoMode);
   }, []);
 
   const logout = useCallback(async () => {
@@ -40,7 +45,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, handleUnauthorized }}>
+    <AuthContext.Provider value={{ user, demoMode, isLoading, login, logout, handleUnauthorized }}>
       {children}
     </AuthContext.Provider>
   );

@@ -39,8 +39,16 @@ function mobileNavLinkClass({ isActive }) {
   return mobileNavItemClasses(isActive);
 }
 
+function DemoBadge() {
+  return (
+    <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-500 ring-1 ring-inset ring-amber-500/20">
+      Demo
+    </span>
+  );
+}
+
 export default function AppShell({ children }) {
-  const { user, logout } = useAuth();
+  const { user, demoMode, logout } = useAuth();
   const location = useLocation();
   const isQuarantineActive = location.pathname.startsWith('/quarantine');
   const activeType = new URLSearchParams(location.search).get('type') || DEFAULT_QUARANTINE_TYPE;
@@ -61,9 +69,12 @@ export default function AppShell({ children }) {
     <div className="h-screen overflow-hidden bg-white dark:bg-zinc-950 lg:flex">
       <aside className="hidden lg:flex lg:w-72 lg:shrink-0 lg:flex-col lg:overflow-y-auto lg:border-r lg:border-zinc-200 lg:px-3 lg:py-4 lg:dark:border-zinc-800">
         <div className="px-2">
-          <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            PMG Quarantine Admin
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              PMG Quarantine Admin
+            </p>
+            {demoMode && <DemoBadge />}
+          </div>
           <p className="text-[11px] text-zinc-400 dark:text-zinc-600">v{version}</p>
         </div>
         <p className="mt-3 truncate px-2 text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
@@ -121,8 +132,11 @@ export default function AppShell({ children }) {
       <div className="flex h-screen flex-1 flex-col overflow-hidden">
         <header className="pt-safe z-10 flex shrink-0 items-center justify-between gap-3 border-b border-zinc-200 bg-white/95 px-4 pb-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95 lg:hidden">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              PMG Quarantine Admin <span className="text-zinc-400 dark:text-zinc-600">v{version}</span>
+            <p className="flex items-center gap-2 truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <span className="truncate">
+                PMG Quarantine Admin <span className="text-zinc-400 dark:text-zinc-600">v{version}</span>
+              </span>
+              {demoMode && <DemoBadge />}
             </p>
             <p className="truncate text-xs text-zinc-500 dark:text-zinc-500">{user}</p>
           </div>

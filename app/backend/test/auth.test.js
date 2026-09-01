@@ -25,7 +25,7 @@ describe('auth', () => {
       .send({ username: 'someuser@pmg', password: 'secret' });
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ username: 'someuser@pmg' });
+    expect(res.body).toEqual({ username: 'someuser@pmg', demoMode: false });
     expect(res.headers['set-cookie']).toBeDefined();
   });
 
@@ -75,6 +75,6 @@ describe('auth', () => {
 
     const res = await agent.get('/api/me');
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ username: 'someuser@pmg' });
+    expect(res.body).toEqual({ username: 'someuser@pmg', demoMode: false });
   });
 });
