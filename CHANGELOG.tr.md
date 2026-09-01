@@ -8,7 +8,7 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
-## [Yayınlanmamış]
+## [0.5.0] - 2026-09-01
 
 ### Eklenenler
 
