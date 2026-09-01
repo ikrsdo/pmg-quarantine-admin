@@ -60,6 +60,14 @@ uyumsuz değişiklikler içerebilir.
 
 ### Değişenler
 
+- Dashboard hem mobil hem masaüstünde daha modern görünmesi için
+  yeniden tasarlandı: mevcut widget'ların üstüne "Last 7 days" özet
+  kart şeridi eklendi (Quarantined, Tracked mail, Unique senders, Top
+  status), masaüstünde tek sütun yerine 2 sütunlu widget grid'i
+  kullanılıyor, ve her widget kartı artık renkli bir sol-kenar
+  şeridi, hafif arka plan/gölge ve düz tek renk yerine gradyan bar
+  dolgularıyla gösteriliyor. Veri veya widget içeriği değişmedi,
+  sadece yerleşim ve görsel stil değişti.
 - Dashboard'daki "Quarantine Volume" grafiği artık varsayılan olarak
   7 gün görünümünü gösteriyor (24 saat değil); 24 saat/7 gün geçişi
   aynı şekilde duruyor, kullanıcı isterse değiştirebiliyor.

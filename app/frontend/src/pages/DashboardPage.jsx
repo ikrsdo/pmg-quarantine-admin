@@ -1,30 +1,69 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Inbox, Mail, Users, Activity } from 'lucide-react';
 import { fetchQuarantineList } from '../api/quarantine';
 import { fetchTrackingList } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
 import AppShell from '../components/AppShell';
 import CollapsibleSection from '../components/CollapsibleSection';
-import TrackingStatusBadge from '../components/TrackingStatusBadge';
+import TrackingStatusBadge, { statusLabel } from '../components/TrackingStatusBadge';
 import { SkeletonList } from '../components/Skeleton';
 
 const SEVEN_DAYS_SECONDS = 7 * 24 * 60 * 60;
+
+const STAT_CARD_TONES = {
+  red: 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400',
+  blue: 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400',
+  purple: 'bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400',
+  emerald: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400',
+};
 
 function nowSeconds() {
   return Math.floor(Date.now() / 1000);
 }
 
-function BarRow({ label, count, max, tone = 'bg-blue-600 dark:bg-blue-500' }) {
+function StatCard({ icon: Icon, label, value, tone }) {
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50/60 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/40">
+      <div className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${STAT_CARD_TONES[tone]}`}>
+        <Icon className="size-4.5" />
+      </div>
+      <div className="min-w-0">
+        <p className="truncate text-xs text-zinc-500 dark:text-zinc-500">{label}</p>
+        <p
+          className="truncate tabular-nums text-lg font-semibold text-zinc-900 lg:text-xl dark:text-zinc-100"
+          title={String(value)}
+        >
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const BAR_GRADIENTS = {
+  blue: 'bg-gradient-to-r from-blue-600 to-blue-400',
+  red: 'bg-gradient-to-r from-red-600 to-red-400',
+  purple: 'bg-gradient-to-r from-purple-600 to-purple-400',
+  amber: 'bg-gradient-to-r from-amber-600 to-amber-400',
+};
+
+function BarRow({ label, count, max, tone = 'blue' }) {
   const pct = max > 0 ? Math.max((count / max) * 100, count > 0 ? 2 : 0) : 0;
   return (
-    <div className="flex items-center gap-3">
+    <div className="group flex items-center gap-3 rounded-md px-1 py-0.5 -mx-1 transition-colors hover:bg-zinc-100/70 dark:hover:bg-zinc-800/40">
       <p className="w-40 shrink-0 truncate text-xs text-zinc-600 dark:text-zinc-400" title={label}>
         {label}
       </p>
       <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-900">
-        <div className={`h-full rounded-full ${tone}`} style={{ width: `${pct}%` }} />
+        <div
+          className={`h-full rounded-full ${BAR_GRADIENTS[tone]} transition-[width]`}
+          style={{ width: `${pct}%` }}
+        />
       </div>
-      <p className="w-10 shrink-0 text-right text-xs font-medium text-zinc-900 dark:text-zinc-100">{count}</p>
+      <p className="w-10 shrink-0 text-right text-xs font-medium tabular-nums text-zinc-900 dark:text-zinc-100">
+        {count}
+      </p>
     </div>
   );
 }
@@ -62,6 +101,7 @@ function VolumeChart({ mails }) {
   return (
     <CollapsibleSection
       title="Quarantine Volume"
+      accent="blue"
       right={
         <div className="flex gap-1 rounded-md border border-zinc-300 p-0.5 text-xs dark:border-zinc-700">
           {[
@@ -114,7 +154,7 @@ function TopAddresses({ trackingMails, field, title, tone, emptyText }) {
   const max = Math.max(1, ...top.map(([, count]) => count));
 
   return (
-    <CollapsibleSection title={title}>
+    <CollapsibleSection title={title} accent={tone}>
       {top.length === 0 ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-500">{emptyText}</p>
       ) : (
@@ -146,23 +186,26 @@ function StatusDistribution({ trackingMails }) {
   const max = Math.max(1, ...counts.map(([, count]) => count));
 
   return (
-    <CollapsibleSection title="Message Delivery Status (last 7 days)">
+    <CollapsibleSection title="Message Delivery Status (last 7 days)" accent="amber">
       {counts.length === 0 ? (
         <p className="text-sm text-zinc-500 dark:text-zinc-500">No tracking activity in the last 7 days.</p>
       ) : (
         <div className="flex flex-col gap-2">
           {counts.map(([status, count]) => (
-            <div key={status} className="flex items-center gap-3">
+            <div
+              key={status}
+              className="group flex items-center gap-3 rounded-md px-1 py-0.5 -mx-1 transition-colors hover:bg-zinc-100/70 dark:hover:bg-zinc-800/40"
+            >
               <div className="w-40 shrink-0">
                 <TrackingStatusBadge status={status} />
               </div>
               <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-900">
                 <div
-                  className="h-full rounded-full bg-amber-500 dark:bg-amber-500"
+                  className={`h-full rounded-full ${BAR_GRADIENTS.amber} transition-[width]`}
                   style={{ width: `${Math.max((count / max) * 100, 2)}%` }}
                 />
               </div>
-              <p className="w-10 shrink-0 text-right text-xs font-medium text-zinc-900 dark:text-zinc-100">
+              <p className="w-10 shrink-0 text-right text-xs font-medium tabular-nums text-zinc-900 dark:text-zinc-100">
                 {count}
               </p>
             </div>
@@ -206,6 +249,21 @@ export default function DashboardPage() {
   const mails = quarantineQuery.data || [];
   const trackingMails = trackingQuery.data || [];
 
+  const { uniqueSenders, topStatus } = useMemo(() => {
+    const senderSet = new Set();
+    const statusCounts = new Map();
+    for (const m of trackingMails) {
+      if (m.from) senderSet.add(m.from);
+      const status = m.rstatus || m.dstatus;
+      if (status) statusCounts.set(status, (statusCounts.get(status) || 0) + 1);
+    }
+    const top = Array.from(statusCounts.entries()).sort((a, b) => b[1] - a[1])[0];
+    return {
+      uniqueSenders: senderSet.size,
+      topStatus: top ? `${statusLabel(top[0])} (${top[1]})` : '—',
+    };
+  }, [trackingMails]);
+
   return (
     <AppShell>
       <div className="h-full overflow-auto px-4 py-4">
@@ -215,22 +273,39 @@ export default function DashboardPage() {
 
         {!isLoading && (
           <div className="flex flex-col gap-4">
+            <div>
+              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400 dark:text-zinc-600">
+                Last 7 days
+              </p>
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <StatCard icon={Inbox} label="Quarantined" value={mails.length} tone="red" />
+                <StatCard icon={Mail} label="Tracked mail" value={trackingMails.length} tone="blue" />
+                <StatCard icon={Users} label="Unique senders" value={uniqueSenders} tone="emerald" />
+                <StatCard icon={Activity} label="Top status" value={topStatus} tone="purple" />
+              </div>
+            </div>
+
             <VolumeChart mails={mails} />
-            <TopAddresses
-              trackingMails={trackingMails}
-              field="from"
-              title="Top Senders (last 7 days)"
-              tone="bg-red-500 dark:bg-red-500"
-              emptyText="No mail activity in the last 7 days."
-            />
-            <TopAddresses
-              trackingMails={trackingMails}
-              field="to"
-              title="Top Receivers (last 7 days)"
-              tone="bg-purple-500 dark:bg-purple-500"
-              emptyText="No mail activity in the last 7 days."
-            />
-            <StatusDistribution trackingMails={trackingMails} />
+
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <TopAddresses
+                trackingMails={trackingMails}
+                field="from"
+                title="Top Senders (last 7 days)"
+                tone="red"
+                emptyText="No mail activity in the last 7 days."
+              />
+              <TopAddresses
+                trackingMails={trackingMails}
+                field="to"
+                title="Top Receivers (last 7 days)"
+                tone="purple"
+                emptyText="No mail activity in the last 7 days."
+              />
+              <div className="lg:col-span-2">
+                <StatusDistribution trackingMails={trackingMails} />
+              </div>
+            </div>
           </div>
         )}
       </div>

@@ -1,11 +1,23 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
-export default function CollapsibleSection({ title, right, defaultOpen = true, children }) {
+const ACCENT_BORDERS = {
+  blue: 'border-l-blue-500',
+  red: 'border-l-red-500',
+  purple: 'border-l-purple-500',
+  amber: 'border-l-amber-500',
+  zinc: 'border-l-zinc-300 dark:border-l-zinc-700',
+};
+
+export default function CollapsibleSection({ title, right, defaultOpen = true, accent, children }) {
   const [open, setOpen] = useState(defaultOpen);
 
+  const cardClasses = accent
+    ? `rounded-xl border border-l-4 border-zinc-200 bg-zinc-50/60 p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/40 ${ACCENT_BORDERS[accent]}`
+    : 'rounded-lg border border-zinc-200 p-4 dark:border-zinc-800';
+
   return (
-    <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+    <div className={cardClasses}>
       <div
         role="button"
         tabIndex={0}

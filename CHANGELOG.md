@@ -54,6 +54,14 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Changed
 
+- Dashboard redesigned for a more modern look on both mobile and
+  desktop: a new "Last 7 days" stat-card row (Quarantined, Tracked
+  mail, Unique senders, Top status) above the existing widgets, a
+  2-column widget grid on desktop instead of one full-width column,
+  and each widget card now has a colored left-accent stripe, subtle
+  background/shadow, and gradient bar fills instead of flat single-
+  color bars. No data or widget content changed, only the layout and
+  visual styling.
 - Dashboard's "Quarantine Volume" chart now defaults to the 7-day view
   instead of 24h; the 24h/7d toggle is unchanged, users can still
   switch.
