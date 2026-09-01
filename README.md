@@ -2,7 +2,7 @@
 
 English | [Türkçe](README.tr.md)
 
-**Version:** 0.8.1 · [Changelog](CHANGELOG.md)
+**Version:** 0.8.2 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
@@ -172,8 +172,8 @@ the full template.
 | `PMG_BASE_URL` | Base URL of your PMG server, e.g. `https://pmg.example.local:8006` (not required when `DEMO_MODE=true`) |
 | `PMG_API_PATH` | PMG API path, normally `/api2/json` |
 | `PMG_ALLOW_SELF_SIGNED` | `true` to accept PMG's self-signed certificate (typical for internal networks) |
-| `NODE_ENV` | `production` in deployment - also controls whether the session cookie requires HTTPS |
-| `PORT` | Port the backend listens on (default `3000`) |
+| `NODE_ENV` | `production` (default, recommended) or `development` - also controls whether the session cookie requires HTTPS, see below |
+| `PORT` | Port the backend listens on inside the container (default `3000`) - leave at `3000` unless you also update the port mapping in `docker-compose.yml` |
 | `SESSION_SECRET` | Long random string used to sign session cookies - always set your own |
 
 No PMG username/password ever goes in `.env` - each admin enters their

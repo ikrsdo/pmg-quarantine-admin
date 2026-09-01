@@ -2,7 +2,7 @@
 
 [English](README.md) | Türkçe
 
-**Sürüm:** 0.8.1 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
+**Sürüm:** 0.8.2 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
 
 [Proxmox Mail Gateway](https://www.proxmox.com/en/proxmox-mail-gateway)
 (PMG) için mobil öncelikli, tamamen duyarlı (responsive) bir yönetim
@@ -180,8 +180,8 @@ için `.env.example` dosyasına bakın.
 | `PMG_BASE_URL` | PMG sunucunuzun temel adresi, örn. `https://pmg.example.local:8006` (`DEMO_MODE=true` iken gerekmez) |
 | `PMG_API_PATH` | PMG API yolu, normalde `/api2/json` |
 | `PMG_ALLOW_SELF_SIGNED` | PMG'nin kendinden imzalı sertifikasını kabul etmek için `true` (dahili ağlarda tipik) |
-| `NODE_ENV` | Üretimde `production` - oturum çerezinin HTTPS gerektirip gerektirmediğini de belirler |
-| `PORT` | Backend'in dinlediği port (varsayılan `3000`) |
+| `NODE_ENV` | `production` (varsayılan, önerilen) veya `development` - oturum çerezinin HTTPS gerektirip gerektirmediğini de belirler, aşağıya bakın |
+| `PORT` | Backend'in container içinde dinlediği port (varsayılan `3000`) - `docker-compose.yml`'deki port eşlemesini de güncellemediğiniz sürece `3000` olarak bırakın |
 | `SESSION_SECRET` | Oturum çerezlerini imzalamak için kullanılan uzun, rastgele bir dize - her zaman kendi değerinizi ayarlayın |
 
 PMG kullanıcı adı/şifresi asla `.env` içine yazılmaz - her yönetici

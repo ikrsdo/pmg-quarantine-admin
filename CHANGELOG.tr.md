@@ -8,6 +8,17 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.2] - 2026-09-01
+
+### Değişti
+
+- README/`.env.example`, geçerli iki `NODE_ENV` değerini
+  (`production`/`development`) artık açıkça belirtiyor ve `PORT`
+  değişkeninin yalnızca uygulamanın container içinde dinlediği portu
+  değiştirdiğini netleştiriyor - `docker-compose.yml`'deki `3000:3000`
+  port eşlemesiyle (ve healthcheck URL'iyle) senkron tutulmazsa
+  uygulamaya erişilemez hale gelir.
+
 ## [0.8.1] - 2026-09-01
 
 ### Değişti

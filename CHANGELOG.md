@@ -7,6 +7,16 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.2] - 2026-09-01
+
+### Changed
+
+- README/`.env.example` now spell out the two valid `NODE_ENV` values
+  (`production`/`development`) and clarify that `PORT` only changes the
+  port the app listens on inside the container - it must be kept in
+  sync with the `3000:3000` mapping (and healthcheck URL) in
+  `docker-compose.yml`, or the app becomes unreachable.
+
 ## [0.8.1] - 2026-09-01
 
 ### Changed
