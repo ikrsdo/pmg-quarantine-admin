@@ -8,6 +8,16 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.1] - 2026-09-01
+
+### Değişti
+
+- README/`.env.example`, reverse proxy/tunnel olmadan düz `http://`
+  üzerinden erişildiğinde Demo modunun hâlâ `NODE_ENV=development`
+  gerektirdiğini netleştiriyor - `NODE_ENV=production`'ın güvenli
+  oturum çerezi, gerçek uygulamada olduğu gibi HTTPS gerektirir, aksi
+  halde giriş sessizce kalıcı olmaz.
+
 ## [0.8.0] - 2026-09-01
 
 ### Eklendi

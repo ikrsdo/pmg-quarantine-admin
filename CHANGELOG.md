@@ -7,6 +7,16 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.1] - 2026-09-01
+
+### Changed
+
+- README/`.env.example` now clarify that Demo mode still needs
+  `NODE_ENV=development` if you access it over plain `http://` without
+  a reverse proxy/tunnel - `NODE_ENV=production`'s secure session
+  cookie requires HTTPS, same as the real app, and login would
+  otherwise silently fail to persist.
+
 ## [0.8.0] - 2026-09-01
 
 ### Added

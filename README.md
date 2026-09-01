@@ -2,7 +2,7 @@
 
 English | [Türkçe](README.tr.md)
 
-**Version:** 0.8.0 · [Changelog](CHANGELOG.md)
+**Version:** 0.8.1 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
@@ -141,6 +141,14 @@ is shown in the sidebar/header so a demo instance can never be mistaken
 for a real one. This is a separate, fully isolated instance - it does
 not touch or interfere with a real, already-running deployment cloned
 from the same repo.
+
+> **Trying it over plain `http://` (no reverse proxy/tunnel)?** The
+> session cookie requires HTTPS whenever `NODE_ENV=production` (see
+> [Exposing it outside your local network](#exposing-it-outside-your-local-network))
+> - without it, login won't persist. If you just want a quick local
+> look at `http://<host>:3000` instead of putting the demo behind
+> HTTPS, set `NODE_ENV=development` in that demo copy's `.env`. Safe to
+> do only here: demo mode never holds real PMG credentials.
 
 ## Updating
 

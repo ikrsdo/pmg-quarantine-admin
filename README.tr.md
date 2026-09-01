@@ -2,7 +2,7 @@
 
 [English](README.md) | Türkçe
 
-**Sürüm:** 0.8.0 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
+**Sürüm:** 0.8.1 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
 
 [Proxmox Mail Gateway](https://www.proxmox.com/en/proxmox-mail-gateway)
 (PMG) için mobil öncelikli, tamamen duyarlı (responsive) bir yönetim
@@ -147,6 +147,16 @@ Bir demo instance'ın gerçek olanla karıştırılmaması için sidebar/
 header'da bir "DEMO" rozeti gösterilir. Bu, aynı depodan klonlanmış
 gerçek, halihazırda çalışan bir dağıtıma dokunmayan, ayrı ve tamamen
 izole bir instance'dır.
+
+> **Reverse proxy/tunnel olmadan düz `http://` üzerinden mi
+> deneyeceksiniz?** `NODE_ENV=production` iken oturum çerezi HTTPS
+> gerektirir (bkz.
+> [Yerel ağın dışına açmak](#yerel-ağın-dışına-açmak)) - aksi halde
+> giriş kalıcı olmaz. Demo'yu HTTPS arkasına koymak yerine sadece
+> `http://<host>:3000` üzerinden hızlıca bakmak istiyorsanız, o demo
+> kopyasının `.env` dosyasında `NODE_ENV=development` ayarlayın. Bunu
+> yalnızca burada yapmak güvenlidir: demo modu hiçbir zaman gerçek PMG
+> kimlik bilgisi tutmaz.
 
 ## Güncelleme
 
