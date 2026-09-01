@@ -1,7 +1,7 @@
 {
   "name": "PMG Quarantine Admin",
   "short_name": "PMG Quarantine",
-  "start_url": "/quarantine",
+  "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
   "background_color": "#09090b",

@@ -88,6 +88,13 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Fixed
 
+- The PWA manifest's `start_url` still pointed at `/quarantine` from
+  before the Dashboard redesign; it now points at `/dashboard`, the
+  actual landing page after login.
+- `apple-touch-icon.png`, `icon-192.png`, and `icon-512.png` still
+  contained the old app icon artwork even after `favicon.svg` was
+  updated - they're now regenerated from the same design (the lucide
+  "Shield" icon on a blue rounded background, matching the login page).
 - Dashboard's "Top Senders"/"Top Receivers" and "Quarantine Volume"
   rows truncate long labels (e.g. long email addresses) with an
   ellipsis so they fit the row - on mobile there's no hover to reveal

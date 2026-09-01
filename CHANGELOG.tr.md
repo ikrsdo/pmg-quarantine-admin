@@ -96,6 +96,15 @@ uyumsuz değişiklikler içerebilir.
 
 ### Düzeltmeler
 
+- PWA manifest'indeki `start_url` alanı, Dashboard yeniden
+  tasarımından kalma şekilde hâlâ `/quarantine`'a işaret ediyordu;
+  artık girişten sonraki gerçek ilk açılış sayfası olan
+  `/dashboard`'a işaret ediyor.
+- `apple-touch-icon.png`, `icon-192.png` ve `icon-512.png` dosyaları
+  `favicon.svg` güncellendikten sonra bile hâlâ eski ikon görselini
+  taşıyordu - artık aynı tasarımdan (login sayfasındaki mavi
+  yuvarlatılmış arka plan üzerindeki lucide "Shield" ikonu) yeniden
+  üretildiler.
 - Dashboard'daki "Top Senders"/"Top Receivers" ve "Quarantine Volume"
   satırlarında uzun etiketler (ör. uzun e-posta adresleri) sığması için
   sonuna üç nokta ile kısaltılıyor - mobilde `title` tooltip'ini
