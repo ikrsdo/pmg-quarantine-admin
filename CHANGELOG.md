@@ -7,6 +7,15 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.10] - 2026-09-02
+
+### Changed
+
+- README's "Updating" section now notes that `docker compose up -d
+  --build` leaves the previous image behind as a dangling, unused
+  image, and adds `docker image prune -f` to clean those up after
+  each update.
+
 ## [0.8.9] - 2026-09-02
 
 ### Fixed

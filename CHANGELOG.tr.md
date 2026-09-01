@@ -8,6 +8,15 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.10] - 2026-09-02
+
+### Değişti
+
+- README'nin "Güncelleme" bölümü artık `docker compose up -d --build`
+  komutunun bir önceki imajı dangling (atıl, kullanılmayan) bir imaj
+  olarak sunucuda bıraktığını belirtiyor ve her güncellemeden sonra
+  bunları temizlemek için `docker image prune -f` komutunu ekliyor.
+
 ## [0.8.9] - 2026-09-02
 
 ### Düzeltildi

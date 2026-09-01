@@ -2,7 +2,7 @@
 
 [English](README.md) | Türkçe
 
-**Sürüm:** 0.8.9 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
+**Sürüm:** 0.8.10 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
 
 [Proxmox Mail Gateway](https://www.proxmox.com/en/proxmox-mail-gateway)
 (PMG) için mobil öncelikli, tamamen duyarlı (responsive) bir yönetim
@@ -195,6 +195,20 @@ yeniden derleyin:
 cd pmg-quarantine-admin
 sudo git pull && sudo docker compose up -d --build
 ```
+
+Her yeniden derlemede bir önceki imaj sunucuda kalır ve artık hiçbir
+etikete bağlı olmayan ("dangling") atıl bir imaja dönüşür -
+`docker compose up -d --build` bunları kendiliğinden temizlemez.
+Temizlemek için:
+
+```bash
+sudo docker image prune -f
+```
+
+Bu komut yalnızca dangling (etiketsiz, kullanılmayan) imajları siler,
+bu yüzden her güncellemeden sonra çalıştırmak güvenlidir - şu an
+kullanımda olan imaja veya başka container'lara ait imajlara
+dokunmaz.
 
 ## Yapılandırma
 
