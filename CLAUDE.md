@@ -393,10 +393,23 @@ worth remembering that aren't spelled out in the changelog:
   (`randomTrackingTime`, `mockPmgClient.js`) because its default UI
   filter is a narrow "last hour" window (unlike Quarantine's default
   7-day window) - a uniform 7-day spread would make the demo Tracking
-  Center open empty most of the time. A `demoMode` boolean is threaded
-  from `/api/auth/me` and `/api/login` through `useAuth` to `AppShell`,
-  which shows an amber "DEMO" badge next to the app name so a demo
-  instance can never be mistaken for a real one. Meant to run as a
-  fully separate container/instance (its own `.env`, own
-  `docker compose up`), never alongside a real deployment's data - see
-  README.md > "Demo mode".
+  Center open empty most of the time. Mock syslog lines are built via
+  `logLine()` (`mockPmgClient.js`), which prefixes each line with a
+  classic-syslog timestamp+hostname (`Mon D HH:MM:SS pmg-demo ...`) -
+  without that prefix the frontend's log parser
+  (`trackingLogEvents.js`'s `LINE_RE`) can't categorize the line and
+  the Message Events timeline falls back to "No recognized events".
+  `buildTrackingDataset()` also seeds its first 15 entries from real
+  quarantine mail (same from/to/time, status `Q`) instead of fully
+  independent random data, so the Quarantine <-> Tracking Center
+  cross-link (`trackingSearchFilters` in `QuarantineDetailPage.jsx`,
+  which matches by sender+recipient+/-15min) actually resolves to a
+  match in the demo. A `demoMode` boolean is threaded from
+  `/api/auth/me` and `/api/login` through `useAuth` to `AppShell`,
+  which shows an amber "DEMO" badge next to the app name on desktop
+  and next to the logged-in account name on mobile, so a demo instance
+  can never be mistaken for a real one. Meant to run as a fully
+  separate container/instance (its own `.env`, own `docker compose
+  up`), never alongside a real deployment's data - see README.md >
+  "Demo mode". The README screenshots (`screenshots/desktop`,
+  `screenshots/mobile`) are captured from this mode.
