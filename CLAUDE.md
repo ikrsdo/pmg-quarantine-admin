@@ -111,8 +111,8 @@ default to a generic/random admin-panel look.
   - A search/filter bar at the top; filters open in a bottom sheet.
   - A "selection mode" toggle for bulk actions.
   - In the detail screen, a sticky bottom action bar with Deliver /
-    Whitelist / Block buttons; Block and Deliver require a confirmation
-    step.
+    Whitelist / Block buttons; all three require a confirmation step
+    (`CONFIRM_COPY` in `QuarantineDetailPage.jsx`).
 - **Layout - desktop:**
   - The quarantine list becomes a dense data table instead of mobile's
     card layout: checkbox, sender, subject, recipient, date, spam-score
@@ -296,7 +296,10 @@ you get a 403 with a different role, check this note first.
   sandboxed iframe's `srcDoc`).
 - Every quarantine action is checked against a fixed whitelist of valid
   PMG actions before being forwarded to PMG - see "PMG API Notes"
-  above for the enum.
+  above for the enum. The UI only wires up `deliver`/`whitelist`/
+  `blocklist` (buttons in `QuarantineDetailPage.jsx` and
+  `QuarantineListPage.jsx`); the whitelist itself allows the rest of
+  the enum too, in case they get UI buttons later.
 - The Docker image runs as a non-root user (see `Dockerfile`).
 
 ## Status
