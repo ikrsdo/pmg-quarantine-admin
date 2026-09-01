@@ -8,6 +8,19 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.5] - 2026-09-01
+
+### Düzeltmeler
+
+- Demo modunda Karantina <-> Tracking Center çapraz eşleşmesi hiçbir
+  zaman eşleşme bulamıyordu: iki sahte veri kümesi birbirinden bağımsız,
+  ilgisiz rastgele gönderen/alıcı/zaman değerleriyle üretiliyordu; bu
+  yüzden "Tracking Center'da görüntüle" bağlantısının gönderen+alıcı+
+  15dk penceresi filtresi hiçbir şeyle örtüşmüyordu. `buildTrackingDataset()`
+  artık sahte Tracking Center'ın bir kısmını gerçek karantina kayıtlarından
+  (aynı gönderen/alıcı/zaman, durum `Q`) türetiyor; böylece çapraz bağlantı
+  demoda gerçek bir eşleşmeye çözümleniyor.
+
 ## [0.8.4] - 2026-09-01
 
 ### Düzeltmeler

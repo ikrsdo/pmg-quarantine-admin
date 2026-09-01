@@ -217,14 +217,23 @@ function buildQuarantineDataset() {
 
 const STATUS_CODES = ['2', '2', '2', '2', '4', '5', 'N', 'G', 'A', 'B', 'Q'];
 
-function buildTrackingDataset() {
+// Quarantine Detail's "view in Tracking Center" link (trackingSearchFilters
+// in QuarantineDetailPage.jsx) searches tracking entries by sender+recipient
+// and a +/-15min window around the quarantined mail's time. Since the two
+// mock datasets are otherwise built independently at random, that filter
+// would never find a match - so the first few tracking slots are seeded
+// from real quarantine entries (same from/to/time, status 'Q') to make the
+// cross-link actually resolve to something in the demo.
+function buildTrackingDataset(quarantine) {
   const list = [];
   const detailById = new Map();
+  const linked = [...quarantine.spam, ...quarantine.virus, ...quarantine.attachment].slice(0, 15);
   for (let i = 0; i < 28; i += 1) {
-    const time = randomTrackingTime(i);
-    const from = rand() > 0.3 ? internalAddress() : spamSenderAddress();
-    const to = rand() > 0.3 ? internalAddress() : spamSenderAddress();
-    const status = pick(STATUS_CODES);
+    const linkedMail = linked[i];
+    const time = linkedMail ? linkedMail.time : randomTrackingTime(i);
+    const from = linkedMail ? linkedMail.from : (rand() > 0.3 ? internalAddress() : spamSenderAddress());
+    const to = linkedMail ? linkedMail.receiver : (rand() > 0.3 ? internalAddress() : spamSenderAddress());
+    const status = linkedMail ? 'Q' : pick(STATUS_CODES);
     const id = `${nowSeconds() - i}-${randInt(1000, 9999)}`;
     const qid = `${randInt(10, 99).toString(16).toUpperCase()}${randInt(1000, 9999).toString(16).toUpperCase()}`;
     const relay = pick(['mx1.ourcompany.com[10.0.0.5]', 'mx2.ourcompany.com[10.0.0.6]', 'local']);
@@ -272,7 +281,7 @@ function buildTrackingDataset() {
 }
 
 let quarantineData = buildQuarantineDataset();
-let trackingData = buildTrackingDataset();
+let trackingData = buildTrackingDataset(quarantineData);
 
 function allQuarantine() {
   return [...quarantineData.spam, ...quarantineData.virus, ...quarantineData.attachment];
