@@ -2,6 +2,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUp, ArrowDown, ChevronsUpDown, Send, Ban } from 'lucide-react';
 import SpamScoreBadge from './SpamScoreBadge';
 
+function VirusNameBadge({ name }) {
+  if (!name) return '—';
+  return (
+    <span className="inline-flex max-w-[10rem] items-center truncate rounded-full bg-red-500/10 px-2 py-0.5 font-mono text-xs font-medium text-red-400 ring-1 ring-inset ring-red-500/20">
+      {name}
+    </span>
+  );
+}
+
 function formatTime(unixSeconds) {
   return new Date(unixSeconds * 1000).toLocaleString('en-GB', {
     day: '2-digit',
@@ -38,6 +47,7 @@ function SortableHeader({ label, sortKey, activeKey, dir, onSort, className = ''
 
 export default function QuarantineTable({
   mails,
+  type = 'spam',
   selectedIds,
   selectionMode,
   onToggleSelect,
@@ -71,7 +81,12 @@ export default function QuarantineTable({
             <SortableHeader label="Subject" sortKey="subject" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <SortableHeader label="Recipient" sortKey="receiver" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <SortableHeader label="Date" sortKey="time" activeKey={sortKey} dir={sortDir} onSort={onSort} />
-            <SortableHeader label="Score" sortKey="spamlevel" activeKey={sortKey} dir={sortDir} onSort={onSort} />
+            {type === 'spam' && (
+              <SortableHeader label="Score" sortKey="spamlevel" activeKey={sortKey} dir={sortDir} onSort={onSort} />
+            )}
+            {type === 'virus' && (
+              <SortableHeader label="Virus" sortKey="virusname" activeKey={sortKey} dir={sortDir} onSort={onSort} />
+            )}
             <SortableHeader label="Size" sortKey="bytes" activeKey={sortKey} dir={sortDir} onSort={onSort} />
             <th className="px-3 py-2 text-right">Action</th>
           </tr>
@@ -81,7 +96,7 @@ export default function QuarantineTable({
             <tr
               key={mail.id}
               onClick={() =>
-                navigate(`/quarantine/${encodeURIComponent(mail.id)}`, {
+                navigate(`/quarantine/${encodeURIComponent(mail.id)}?type=${type}`, {
                   state: { backgroundLocation: location },
                 })
               }
@@ -109,9 +124,16 @@ export default function QuarantineTable({
               <td className="whitespace-nowrap px-3 py-2 text-zinc-500 dark:text-zinc-500">
                 {formatTime(mail.time)}
               </td>
-              <td className="px-3 py-2">
-                <SpamScoreBadge score={mail.spamlevel} />
-              </td>
+              {type === 'spam' && (
+                <td className="px-3 py-2">
+                  <SpamScoreBadge score={mail.spamlevel} />
+                </td>
+              )}
+              {type === 'virus' && (
+                <td className="px-3 py-2">
+                  <VirusNameBadge name={mail.virusname} />
+                </td>
+              )}
               <td className="whitespace-nowrap px-3 py-2 text-zinc-500 dark:text-zinc-500">
                 {formatKB(mail.bytes)}
               </td>

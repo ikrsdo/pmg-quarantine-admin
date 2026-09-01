@@ -7,6 +7,23 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.7.0] - 2026-09-01
+
+### Added
+
+- The Quarantine screen now covers all three PMG quarantine types, not
+  just spam: Virus Quarantine and Attachment Quarantine. The
+  "Quarantine" entry in the navigation (a nested group on desktop, a
+  dropdown on mobile) lets you switch between Spam, Virus, and
+  Attachment Quarantine; the active type stays in the URL
+  (`?type=spam|virus|attachment`) so links, back/forward, and refresh
+  all keep working. Lists, cards, and the detail page adapt per type -
+  virus name badge for Virus Quarantine, a blocked-attachments list
+  for Attachment Quarantine (new `GET /quarantine/:id/attachments`
+  endpoint), the existing spam-score badge for Spam Quarantine - and
+  CSV export columns adjust the same way. The Dashboard stays
+  spam-only, unchanged.
+
 ## [0.6.0] - 2026-09-01
 
 ### Added

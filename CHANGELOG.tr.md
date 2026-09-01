@@ -8,6 +8,23 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.7.0] - 2026-09-01
+
+### Eklenenler
+
+- Karantina ekranı artık sadece spam'i değil, PMG'nin üç karantina
+  türünün tamamını kapsıyor: Virus Quarantine ve Attachment
+  Quarantine. Navigasyondaki "Quarantine" girişi (masaüstünde iç içe
+  bir grup, mobilde bir dropdown) Spam, Virus ve Attachment Quarantine
+  arasında geçiş yapmayı sağlıyor; aktif tür URL'de kalıyor
+  (`?type=spam|virus|attachment`), böylece bağlantılar, geri/ileri ve
+  sayfa yenileme hep doğru türü koruyor. Liste, kart ve detay sayfası
+  türe göre uyarlanıyor - Virus Quarantine'de virüs adı rozeti,
+  Attachment Quarantine'de engellenen ek dosyaları listesi (yeni
+  `GET /quarantine/:id/attachments` endpoint'i), Spam Quarantine'de
+  mevcut spam skoru rozeti - ve CSV export sütunları da aynı şekilde
+  uyarlanıyor. Dashboard değişmedi, hâlâ sadece spam gösteriyor.
+
 ## [0.6.0] - 2026-09-01
 
 ### Eklenenler

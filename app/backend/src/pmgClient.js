@@ -72,15 +72,33 @@ async function login(username, password) {
   };
 }
 
-async function getQuarantineList(session, { starttime, endtime, pmail } = {}) {
+const VALID_QUARANTINE_TYPES = new Set(['spam', 'virus', 'attachment']);
+
+async function getQuarantineList(session, { type = 'spam', starttime, endtime, pmail } = {}) {
+  if (!VALID_QUARANTINE_TYPES.has(type)) {
+    const err = new Error(`Invalid quarantine type: ${type}`);
+    err.status = 400;
+    throw err;
+  }
   const params = {};
   if (starttime !== undefined) params.starttime = starttime;
   if (endtime !== undefined) params.endtime = endtime;
   if (pmail !== undefined) params.pmail = pmail;
 
-  const res = await client.get('/quarantine/spam', {
+  const res = await client.get(`/quarantine/${type}`, {
     headers: authHeaders(session),
     params,
+  });
+  if (res.status !== 200) {
+    throw new PmgApiError(res.status, res.data);
+  }
+  return res.data?.data ?? [];
+}
+
+async function getQuarantineAttachments(session, id) {
+  const res = await client.get('/quarantine/listattachments', {
+    headers: authHeaders(session),
+    params: { id },
   });
   if (res.status !== 200) {
     throw new PmgApiError(res.status, res.data);
@@ -201,8 +219,10 @@ async function quarantineAction(session, id, action) {
 module.exports = {
   PmgApiError,
   VALID_ACTIONS,
+  VALID_QUARANTINE_TYPES,
   login,
   getQuarantineList,
+  getQuarantineAttachments,
   getQuarantineContent,
   getQuarantineHtmlPreview,
   quarantineAction,

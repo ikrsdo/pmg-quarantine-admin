@@ -2,7 +2,7 @@
 
 English | [Türkçe](README.tr.md)
 
-**Version:** 0.6.0 · [Changelog](CHANGELOG.md)
+**Version:** 0.7.0 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
@@ -19,9 +19,11 @@ appliance itself, only talks to it over the PMG API.
   quarantine volume, message delivery status, and top senders/receivers,
   plus best-effort cross-linking between a Quarantine message and its
   matching Tracking Center entry (and back).
-- **Quarantine management** - list, search/filter, and act on quarantined
-  mail (deliver, whitelist, block, delete), with a swipeable card list on
-  mobile and a dense data table on desktop.
+- **Quarantine management** - covers all three PMG quarantine types
+  (Spam, Virus, Attachment), switchable from the navigation. List,
+  search/filter, and act on quarantined mail (deliver, whitelist,
+  block, delete), with a swipeable card list on mobile and a dense
+  data table on desktop.
 - **Tracking Center** - look up a message's delivery status and syslog
   trail by sender, recipient, or filter, read-only.
 - **Saved filter presets and CSV export** on both the Quarantine and

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRightLeft, Send, ShieldCheck, Ban, X } from 'lucide-react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, ArrowRightLeft, Send, ShieldCheck, Ban, X, Paperclip } from 'lucide-react';
 import {
+  fetchQuarantineAttachments,
   fetchQuarantineDetail,
   fetchQuarantinePreviewHtml,
   performQuarantineAction,
@@ -16,6 +17,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import CopyButton from '../components/CopyButton';
 import { SkeletonCard } from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
+import { DEFAULT_QUARANTINE_TYPE } from '../constants/quarantineTypes';
 
 function formatTime(unixSeconds) {
   if (!unixSeconds) return '';
@@ -103,6 +105,35 @@ function SpamInfoBreakdown({ spaminfo }) {
   );
 }
 
+function AttachmentsList({ id }) {
+  const { data: attachments, isLoading } = useQuery({
+    queryKey: ['quarantine', 'attachments', id],
+    queryFn: () => fetchQuarantineAttachments(id),
+  });
+
+  if (isLoading) {
+    return <p className="text-sm text-zinc-500 dark:text-zinc-500">Loading attachments…</p>;
+  }
+  if (!attachments || attachments.length === 0) {
+    return <p className="text-sm text-zinc-500 dark:text-zinc-500">No attachment details available.</p>;
+  }
+  return (
+    <ul className="flex flex-col gap-2">
+      {attachments.map((att) => (
+        <li key={att.id} className="flex items-start gap-2 text-sm">
+          <Paperclip className="mt-0.5 size-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
+          <div className="min-w-0">
+            <p className="truncate font-mono text-xs text-zinc-900 dark:text-zinc-100">{att.name}</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-500">
+              {att['content-type']} · {formatBytes(att.size)}
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function ContentTabs({ id, mail }) {
   const [tab, setTab] = useState('preview');
 
@@ -177,6 +208,8 @@ function ContentTabs({ id, mail }) {
 export default function QuarantineDetailPage({ overlay = false }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get('type') || DEFAULT_QUARANTINE_TYPE;
   const { handleUnauthorized } = useAuth();
   const { showToast } = useToast();
   const queryClient = useQueryClient();
@@ -205,7 +238,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
     if (overlay) {
       navigate(-1);
     } else {
-      navigate('/quarantine');
+      navigate(`/quarantine?type=${type}`);
     }
   }
 
@@ -292,7 +325,18 @@ export default function QuarantineDetailPage({ overlay = false }) {
       {mail && (
         <div className={`flex flex-col gap-6 ${overlay ? '' : 'lg:flex-row lg:items-start'}`}>
           <div className={`flex flex-col gap-4 ${overlay ? '' : 'lg:w-80 lg:shrink-0'}`}>
-            <CollapsibleSection title="Spam Score" right={<SpamScoreBadge score={mail.spamlevel} />}>
+            <CollapsibleSection
+              title={type === 'spam' ? 'Spam Score' : type === 'virus' ? 'Virus Details' : 'Attachment Details'}
+              right={
+                type === 'spam' ? (
+                  <SpamScoreBadge score={mail.spamlevel} />
+                ) : type === 'virus' && mail.virusname ? (
+                  <span className="rounded-full bg-red-500/10 px-2 py-0.5 font-mono text-xs font-medium text-red-400 ring-1 ring-inset ring-red-500/20">
+                    {mail.virusname}
+                  </span>
+                ) : null
+              }
+            >
               <div className="flex flex-col gap-3">
                 <MetaRow label="From" value={mail.sender || mail.from} />
                 <MetaRow label="Envelope Sender" value={mail.envelope_sender} />
@@ -312,14 +356,22 @@ export default function QuarantineDetailPage({ overlay = false }) {
               </div>
             </CollapsibleSection>
 
-            <CollapsibleSection title="Spam Test Details" defaultOpen={false}>
-              {mail.spaminfo?.length > 0 && (
-                <div className="mb-3 flex items-center gap-1.5">
-                  <CopyButton text={formatSpamInfo(mail.spaminfo)} label="Copy" />
-                </div>
-              )}
-              <SpamInfoBreakdown spaminfo={mail.spaminfo} />
-            </CollapsibleSection>
+            {type === 'spam' && (
+              <CollapsibleSection title="Spam Test Details" defaultOpen={false}>
+                {mail.spaminfo?.length > 0 && (
+                  <div className="mb-3 flex items-center gap-1.5">
+                    <CopyButton text={formatSpamInfo(mail.spaminfo)} label="Copy" />
+                  </div>
+                )}
+                <SpamInfoBreakdown spaminfo={mail.spaminfo} />
+              </CollapsibleSection>
+            )}
+
+            {type === 'attachment' && (
+              <CollapsibleSection title="Blocked Attachments">
+                <AttachmentsList id={id} />
+              </CollapsibleSection>
+            )}
           </div>
 
           <div className="min-w-0 flex-1">

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal, CheckSquare, RefreshCw, Download } from 'lucide-react';
 import { fetchQuarantineDetail, fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
@@ -15,6 +15,7 @@ import FilterSheet from '../components/FilterSheet';
 import SelectionBar from '../components/SelectionBar';
 import ConfirmDialog from '../components/ConfirmDialog';
 import AppShell from '../components/AppShell';
+import { DEFAULT_QUARANTINE_TYPE, quarantineTypeLabel } from '../constants/quarantineTypes';
 
 function toUnixSeconds(datetimeLocal) {
   if (!datetimeLocal) return undefined;
@@ -72,6 +73,8 @@ export default function QuarantineListPage() {
   const { showToast } = useToast();
   const queryClient = useQueryClient();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get('type') || DEFAULT_QUARANTINE_TYPE;
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState(defaultFilters);
@@ -89,6 +92,7 @@ export default function QuarantineListPage() {
     setAppliedFilters(merged);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [pendingAction, setPendingAction] = useState(null); // { type: 'deliver' | 'blocklist', target: id or 'bulk' }
@@ -96,12 +100,22 @@ export default function QuarantineListPage() {
   const [sortDir, setSortDir] = useState('desc');
   const [exporting, setExporting] = useState(false);
 
+  // Switching quarantine type (Spam/Virus/Attachment) via the nav should
+  // drop any selection/search state left over from the previous type's list.
+  useEffect(() => {
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+    setSearchTerm('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type]);
+
   const queryParams = useMemo(
     () => ({
+      type,
       starttime: toUnixSeconds(appliedFilters.starttimeLocal),
       endtime: toUnixSeconds(appliedFilters.endtimeLocal),
     }),
-    [appliedFilters],
+    [type, appliedFilters],
   );
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery({
@@ -203,14 +217,21 @@ export default function QuarantineListPage() {
         timeDisplay: formatCsvTime(mail.time),
         sizeDisplay: formatCsvKB(mail.bytes),
       }));
-      downloadCsv(`quarantine-${new Date().toISOString().slice(0, 10)}.csv`, rows, [
+      const typeColumn =
+        type === 'spam'
+          ? { key: 'spamlevel', label: 'Spam Score' }
+          : type === 'virus'
+            ? { key: 'virusname', label: 'Virus Name' }
+            : null;
+
+      downloadCsv(`quarantine-${type}-${new Date().toISOString().slice(0, 10)}.csv`, rows, [
         { key: 'from', label: 'From' },
         { key: 'envelopeSender', label: 'Envelope Sender' },
         { key: 'receiver', label: 'Recipient' },
         { key: 'subject', label: 'Subject' },
         { key: 'timeDisplay', label: 'Time' },
         { key: 'sizeDisplay', label: 'Size' },
-        { key: 'spamlevel', label: 'Spam Score' },
+        ...(typeColumn ? [typeColumn] : []),
         { key: 'id', label: 'ID' },
       ]);
     } catch {
@@ -223,6 +244,11 @@ export default function QuarantineListPage() {
   return (
     <AppShell>
       <div className="flex h-full flex-col overflow-hidden">
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-zinc-200 px-4 pt-3 dark:border-zinc-800">
+          <h1 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+            {quarantineTypeLabel(type)}
+          </h1>
+        </div>
         <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <div className="relative min-w-0 flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" />
@@ -284,7 +310,7 @@ export default function QuarantineListPage() {
 
           {!isLoading && filtered.length === 0 && (
             <EmptyState
-              title="Quarantine is empty"
+              title={`${quarantineTypeLabel(type)} is empty`}
               description="No message matches your filters."
             />
           )}
@@ -294,6 +320,7 @@ export default function QuarantineListPage() {
               <div className="hidden lg:block">
                 <QuarantineTable
                   mails={filtered}
+                  type={type}
                   selectedIds={selectedIds}
                   selectionMode={selectionMode}
                   onToggleSelect={toggleSelect}
@@ -311,6 +338,7 @@ export default function QuarantineListPage() {
                   <QuarantineCard
                     key={mail.id}
                     mail={mail}
+                    type={type}
                     selected={selectedIds.has(mail.id)}
                     selectionMode={selectionMode}
                     onToggleSelect={toggleSelect}

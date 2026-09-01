@@ -22,9 +22,18 @@ function handlePmgError(err, res) {
 
 router.get('/', async (req, res) => {
   try {
-    const { starttime, endtime, pmail } = req.query;
-    const list = await pmgClient.getQuarantineList(req.session, { starttime, endtime, pmail });
+    const { type, starttime, endtime, pmail } = req.query;
+    const list = await pmgClient.getQuarantineList(req.session, { type, starttime, endtime, pmail });
     res.json({ data: list });
+  } catch (err) {
+    handlePmgError(err, res);
+  }
+});
+
+router.get('/:id/attachments', async (req, res) => {
+  try {
+    const attachments = await pmgClient.getQuarantineAttachments(req.session, req.params.id);
+    res.json({ data: attachments });
   } catch (err) {
     handlePmgError(err, res);
   }

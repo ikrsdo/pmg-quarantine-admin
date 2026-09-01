@@ -138,9 +138,10 @@ Base: `https://<pmg-host>:8006/api2/json`
 |---|---|
 | Login (get ticket) | `POST /access/ticket` (form-urlencoded: username, password) |
 | Version/health | `GET /version` |
-| Quarantine list (spam) | `GET /quarantine/spam` (`starttime`/`endtime` unix timestamp, `pmail` optional) |
+| Quarantine list | `GET /quarantine/spam\|virus\|attachment` (`starttime`/`endtime` unix timestamp, `pmail` optional) |
 | Quarantine content | `GET /quarantine/content?id=&raw=1` |
 | Quarantine action | `POST /quarantine/content` (`id`, `action`) |
+| Quarantine attachments | `GET /quarantine/listattachments?id=` (Attachment Quarantine detail; returns `[{id, size, name, content-type}]`) |
 | Tracking center | `GET /nodes/{node}/tracker` (`starttime`/`endtime`, `xfilter`, `from`, `target`, `ndr`, `greylist`, `limit` optional) |
 | Tracking center detail | `GET /nodes/{node}/tracker/{id}` (returns that mail's syslog entries) |
 | Global welcomelist | `GET /config/welcomelist/objects`, add via `POST .../email\|domain\|regex`, delete via `DELETE .../objects/{id}` (OUT OF SCOPE - no Policies screen is being built, kept here for reference only) |
@@ -346,6 +347,23 @@ worth remembering that aren't spelled out in the changelog:
   `/api/*` routes and the static frontend (with SPA fallback) - no
   separate containers. `docker-compose.yml` has a simple healthcheck
   (`GET /api/health`).
+- **Quarantine type-awareness:** the Quarantine screen group covers
+  all three PMG quarantine types (spam/virus/attachment), not just
+  spam. The selected type lives in the URL (`?type=spam|virus|
+  attachment`, default `spam`) via `useSearchParams` on both the list
+  and detail pages - not component state - so it survives navigation,
+  back/forward, and refresh. `pmgClient.getQuarantineList` validates
+  `type` against `VALID_QUARANTINE_TYPES` before forwarding to PMG's
+  `/quarantine/spam|virus|attachment`. Desktop nav shows "Quarantine"
+  as an expandable sidebar group with the three sub-links; mobile
+  shows a dropdown under the "Quarantine" tab; both compute active
+  state manually (`pathname` + the `type` query param) rather than
+  relying on `NavLink`'s path-only matching, since that would mark all
+  three type links "active" simultaneously. List/card/detail
+  components branch on `type`: virus name badge, blocked-attachments
+  list (via the new `listattachments` endpoint, see "PMG API Notes"),
+  or the existing spam-score badge. The Dashboard is unaffected and
+  stays spam-only by design.
 - **Update-check banner (the one direct browser→external-API call):**
   `UpdateBanner.jsx`, mounted in `AppShell.jsx` (so it shows on
   Dashboard/Quarantine/Tracking, not the two standalone detail pages,

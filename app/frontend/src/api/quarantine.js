@@ -1,7 +1,8 @@
 import { apiFetch } from './client';
 
-export async function fetchQuarantineList({ starttime, endtime, pmail } = {}) {
+export async function fetchQuarantineList({ type, starttime, endtime, pmail } = {}) {
   const params = new URLSearchParams();
+  if (type) params.set('type', type);
   if (starttime !== undefined && starttime !== '') params.set('starttime', starttime);
   if (endtime !== undefined && endtime !== '') params.set('endtime', endtime);
   if (pmail) params.set('pmail', pmail);
@@ -13,6 +14,11 @@ export async function fetchQuarantineList({ starttime, endtime, pmail } = {}) {
 
 export async function fetchQuarantineDetail(id) {
   const res = await apiFetch(`/quarantine/${encodeURIComponent(id)}`);
+  return res.data;
+}
+
+export async function fetchQuarantineAttachments(id) {
+  const res = await apiFetch(`/quarantine/${encodeURIComponent(id)}/attachments`);
   return res.data;
 }
 

@@ -1,17 +1,13 @@
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, ShieldAlert, Activity, LogOut } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { LayoutDashboard, ShieldAlert, Activity, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ThemeToggle from '../theme/ThemeToggle';
 import UpdateBanner from './UpdateBanner';
+import { QUARANTINE_TYPES, DEFAULT_QUARANTINE_TYPE } from '../constants/quarantineTypes';
 import { version } from '../../package.json';
 
-const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/quarantine', label: 'Quarantine', icon: ShieldAlert },
-  { to: '/tracking', label: 'Tracking Center', icon: Activity },
-];
-
-function navLinkClass({ isActive }) {
+function navItemClasses(isActive) {
   return `flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${
     isActive
       ? 'bg-blue-600/10 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
@@ -19,7 +15,19 @@ function navLinkClass({ isActive }) {
   }`;
 }
 
-function mobileNavLinkClass({ isActive }) {
+function navLinkClass({ isActive }) {
+  return navItemClasses(isActive);
+}
+
+function subNavItemClasses(isActive) {
+  return `block rounded-md px-3 py-1.5 text-sm ${
+    isActive
+      ? 'bg-blue-600/10 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
+      : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900'
+  }`;
+}
+
+function mobileNavItemClasses(isActive) {
   return `flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap border-b-2 px-1 py-2.5 text-center text-xs font-medium ${
     isActive
       ? 'border-blue-600 text-blue-600 dark:text-blue-400'
@@ -27,8 +35,27 @@ function mobileNavLinkClass({ isActive }) {
   }`;
 }
 
+function mobileNavLinkClass({ isActive }) {
+  return mobileNavItemClasses(isActive);
+}
+
 export default function AppShell({ children }) {
   const { user, logout } = useAuth();
+  const location = useLocation();
+  const isQuarantineActive = location.pathname.startsWith('/quarantine');
+  const activeType = new URLSearchParams(location.search).get('type') || DEFAULT_QUARANTINE_TYPE;
+
+  const [groupOpen, setGroupOpen] = useState(isQuarantineActive);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileDropdownOpen) return;
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') setMobileDropdownOpen(false);
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [mobileDropdownOpen]);
 
   return (
     <div className="h-screen overflow-hidden bg-white dark:bg-zinc-950 lg:flex">
@@ -52,12 +79,42 @@ export default function AppShell({ children }) {
           </button>
         </div>
         <nav className="mt-6 flex flex-col gap-1">
-          {NAV_ITEMS.map((item) => (
-            <NavLink key={item.to} to={item.to} className={navLinkClass}>
-              <item.icon className="size-4" />
-              {item.label}
-            </NavLink>
-          ))}
+          <NavLink to="/dashboard" className={navLinkClass}>
+            <LayoutDashboard className="size-4" />
+            Dashboard
+          </NavLink>
+
+          <div>
+            <button
+              type="button"
+              onClick={() => setGroupOpen((v) => !v)}
+              className={`${navItemClasses(isQuarantineActive)} w-full`}
+            >
+              <ShieldAlert className="size-4" />
+              Quarantine
+              <ChevronDown
+                className={`ml-auto size-4 shrink-0 transition-transform ${groupOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+            {groupOpen && (
+              <div className="ml-6 mt-1 flex flex-col gap-1 border-l border-zinc-200 pl-3 dark:border-zinc-800">
+                {QUARANTINE_TYPES.map((t) => (
+                  <Link
+                    key={t.value}
+                    to={`/quarantine?type=${t.value}`}
+                    className={subNavItemClasses(isQuarantineActive && activeType === t.value)}
+                  >
+                    {t.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <NavLink to="/tracking" className={navLinkClass}>
+            <Activity className="size-4" />
+            Tracking Center
+          </NavLink>
         </nav>
       </aside>
 
@@ -82,12 +139,50 @@ export default function AppShell({ children }) {
         </header>
 
         <nav className="flex shrink-0 border-b border-zinc-200 dark:border-zinc-800 lg:hidden">
-          {NAV_ITEMS.map((item) => (
-            <NavLink key={item.to} to={item.to} className={mobileNavLinkClass}>
-              <item.icon className="size-4" />
-              {item.label}
-            </NavLink>
-          ))}
+          <NavLink to="/dashboard" className={mobileNavLinkClass}>
+            <LayoutDashboard className="size-4" />
+            Dashboard
+          </NavLink>
+
+          <div className="relative flex flex-1">
+            <button
+              type="button"
+              onClick={() => setMobileDropdownOpen((v) => !v)}
+              className={`${mobileNavItemClasses(isQuarantineActive)} w-full`}
+            >
+              <ShieldAlert className="size-4" />
+              Quarantine
+            </button>
+            {mobileDropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-20"
+                  onClick={() => setMobileDropdownOpen(false)}
+                />
+                <div className="absolute left-1/2 top-full z-30 mt-1 w-52 -translate-x-1/2 rounded-md border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
+                  {QUARANTINE_TYPES.map((t) => (
+                    <Link
+                      key={t.value}
+                      to={`/quarantine?type=${t.value}`}
+                      onClick={() => setMobileDropdownOpen(false)}
+                      className={`block px-3 py-2 text-sm ${
+                        isQuarantineActive && activeType === t.value
+                          ? 'bg-blue-600/10 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
+                          : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      {t.label}
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          <NavLink to="/tracking" className={mobileNavLinkClass}>
+            <Activity className="size-4" />
+            Tracking Center
+          </NavLink>
         </nav>
 
         <div className="min-h-0 flex-1">{children}</div>

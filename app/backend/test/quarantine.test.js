@@ -45,6 +45,76 @@ describe('quarantine routes', () => {
     expect(res.body.data[0].subject).toBe('Test mail');
   });
 
+  test('GET /api/quarantine?type=virus routes to the PMG virus list', async () => {
+    const app = createApp();
+    const agent = await loginAgent(app);
+
+    nock(PMG_ORIGIN)
+      .get('/api2/json/quarantine/virus')
+      .query(true)
+      .reply(200, { data: [{ id: 'C1R2T1700000001', virusname: 'Eicar-Test-Signature' }] });
+
+    const res = await agent.get('/api/quarantine?type=virus');
+    expect(res.status).toBe(200);
+    expect(res.body.data[0].virusname).toBe('Eicar-Test-Signature');
+  });
+
+  test('GET /api/quarantine?type=attachment routes to the PMG attachment list', async () => {
+    const app = createApp();
+    const agent = await loginAgent(app);
+
+    nock(PMG_ORIGIN)
+      .get('/api2/json/quarantine/attachment')
+      .query(true)
+      .reply(200, { data: [{ id: 'C1R2T1700000002', subject: 'Blocked file' }] });
+
+    const res = await agent.get('/api/quarantine?type=attachment');
+    expect(res.status).toBe(200);
+    expect(res.body.data[0].subject).toBe('Blocked file');
+  });
+
+  test('GET /api/quarantine?type=invalid is rejected', async () => {
+    const app = createApp();
+    const agent = await loginAgent(app);
+
+    const res = await agent.get('/api/quarantine?type=invalid');
+    expect(res.status).toBe(400);
+  });
+
+  test('GET /api/quarantine/:id/attachments requires auth', async () => {
+    const app = createApp();
+    const res = await request(app).get('/api/quarantine/C1R2T1700000000/attachments');
+    expect(res.status).toBe(401);
+  });
+
+  test('GET /api/quarantine/:id/attachments returns attachment list', async () => {
+    const app = createApp();
+    const agent = await loginAgent(app);
+
+    nock(PMG_ORIGIN)
+      .get('/api2/json/quarantine/listattachments')
+      .query({ id: 'C1R2T1700000000' })
+      .reply(200, { data: [{ id: '1', size: 1024, name: 'invoice.exe', 'content-type': 'application/x-msdownload' }] });
+
+    const res = await agent.get('/api/quarantine/C1R2T1700000000/attachments');
+    expect(res.status).toBe(200);
+    expect(res.body.data[0].name).toBe('invoice.exe');
+  });
+
+  test('GET /api/quarantine/:id/attachments propagates PMG errors', async () => {
+    const app = createApp();
+    const agent = await loginAgent(app);
+
+    nock(PMG_ORIGIN)
+      .get('/api2/json/quarantine/listattachments')
+      .query({ id: 'C1R2T1700000000' })
+      .reply(401, {});
+
+    const res = await agent.get('/api/quarantine/C1R2T1700000000/attachments');
+    expect(res.status).toBe(401);
+    expect(res.body.error).toBe('pmg_ticket_expired');
+  });
+
   test('GET /api/quarantine/:id returns message content', async () => {
     const app = createApp();
     const agent = await loginAgent(app);

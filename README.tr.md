@@ -2,7 +2,7 @@
 
 [English](README.md) | Türkçe
 
-**Sürüm:** 0.6.0 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
+**Sürüm:** 0.7.0 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
 
 [Proxmox Mail Gateway](https://www.proxmox.com/en/proxmox-mail-gateway)
 (PMG) için mobil öncelikli, tamamen duyarlı (responsive) bir yönetim
@@ -20,9 +20,11 @@ hiç dokunmaz, onunla yalnızca PMG API üzerinden konuşur.
   karantina hacmi, mesaj teslimat durumu ve en çok görülen gönderen/
   alıcılar; ayrıca bir Karantina kaydı ile eşleşen Tracking Center
   kaydı arasında (ve tersi yönde) en-iyi-çaba çapraz bağlantı.
-- **Karantina yönetimi** - karantinadaki postaları listele, ara/filtrele
-  ve işlem yap (teslim et, beyaz listeye al, engelle, sil); mobilde
-  kaydırmalı (swipe) kart listesi, masaüstünde yoğun bir veri tablosu.
+- **Karantina yönetimi** - PMG'nin üç karantina türünü de kapsar (Spam,
+  Virus, Attachment), navigasyondan geçiş yapılabilir. Karantinadaki
+  postaları listele, ara/filtrele ve işlem yap (teslim et, beyaz
+  listeye al, engelle, sil); mobilde kaydırmalı (swipe) kart listesi,
+  masaüstünde yoğun bir veri tablosu.
 - **Tracking Center** - bir postanın teslimat durumunu ve syslog
   kaydını gönderene, alıcıya veya filtreye göre sorgula, salt okunur.
 - **Saved Filters ön ayarları ve CSV export**, hem Karantina hem

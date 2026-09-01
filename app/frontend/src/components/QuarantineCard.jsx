@@ -3,6 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
 import SpamScoreBadge from './SpamScoreBadge';
 
+function VirusNameBadge({ name }) {
+  if (!name) return null;
+  return (
+    <span className="inline-flex max-w-[10rem] items-center truncate rounded-full bg-red-500/10 px-2 py-0.5 font-mono text-xs font-medium text-red-400 ring-1 ring-inset ring-red-500/20">
+      {name}
+    </span>
+  );
+}
+
+function TypeBadge({ type, mail }) {
+  if (type === 'virus') return <VirusNameBadge name={mail.virusname} />;
+  if (type === 'attachment') return null;
+  return <SpamScoreBadge score={mail.spamlevel} />;
+}
+
 const REVEAL_WIDTH = 96; // px each action panel opens to
 const SWIPE_THRESHOLD = 48; // px of drag before it snaps open
 
@@ -23,7 +38,7 @@ function formatBytes(bytes) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-export default function QuarantineCard({ mail, selected, selectionMode, onToggleSelect, onDeliver, onBlock }) {
+export default function QuarantineCard({ mail, type = 'spam', selected, selectionMode, onToggleSelect, onDeliver, onBlock }) {
   const navigate = useNavigate();
   const [dragX, setDragX] = useState(0);
   const [open, setOpen] = useState(null); // 'left' | 'right' | null
@@ -99,7 +114,7 @@ export default function QuarantineCard({ mail, selected, selectionMode, onToggle
             onToggleSelect(mail.id);
             return;
           }
-          navigate(`/quarantine/${encodeURIComponent(mail.id)}`);
+          navigate(`/quarantine/${encodeURIComponent(mail.id)}?type=${type}`);
         }}
         className="relative flex items-center gap-3 bg-white px-4 py-3 dark:bg-zinc-950"
         style={{
@@ -119,7 +134,7 @@ export default function QuarantineCard({ mail, selected, selectionMode, onToggle
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <p className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-500">{from}</p>
-            <SpamScoreBadge score={mail.spamlevel} />
+            <TypeBadge type={type} mail={mail} />
           </div>
           <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
             {mail.subject || '(no subject)'}
