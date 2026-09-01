@@ -16,11 +16,17 @@ hiç dokunmaz, onunla yalnızca PMG API üzerinden konuşur.
 
 ## Özellikler
 
+- **Dashboard** - girişten sonraki ilk açılış sayfası: son 7 güne ait
+  karantina hacmi, mesaj teslimat durumu ve en çok görülen gönderen/
+  alıcılar; ayrıca bir Karantina kaydı ile eşleşen Tracking Center
+  kaydı arasında (ve tersi yönde) en-iyi-çaba çapraz bağlantı.
 - **Karantina yönetimi** - karantinadaki postaları listele, ara/filtrele
   ve işlem yap (teslim et, beyaz listeye al, engelle, sil); mobilde
   kaydırmalı (swipe) kart listesi, masaüstünde yoğun bir veri tablosu.
 - **Tracking Center** - bir postanın teslimat durumunu ve syslog
   kaydını gönderene, alıcıya veya filtreye göre sorgula, salt okunur.
+- **Saved Filters ön ayarları ve CSV export**, hem Karantina hem
+  Tracking Center liste sayfalarında.
 - **Yönetici başına PMG girişi** - her yönetici kendi PMG hesabıyla
   (Help Desk rolü) giriş yapar, böylece PMG'nin kendi denetim
   kaydındaki işlemler ortak bir servis hesabı yerine doğru şekilde o
