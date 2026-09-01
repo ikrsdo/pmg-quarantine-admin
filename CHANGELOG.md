@@ -61,7 +61,10 @@ project is in `0.x`, minor bumps may still include breaking changes.
   and each widget card now has a colored left-accent stripe, subtle
   background/shadow, and gradient bar fills instead of flat single-
   color bars. No data or widget content changed, only the layout and
-  visual styling.
+  visual styling. "Quarantine Volume" and "Message Delivery Status"
+  now sit side by side on desktop, and the "Top status" stat card
+  shows just the status name (e.g. "Delivered") instead of "Name
+  (count)", which was getting truncated on narrow mobile widths.
 - Dashboard's "Quarantine Volume" chart now defaults to the 7-day view
   instead of 24h; the 24h/7d toggle is unchanged, users can still
   switch.
