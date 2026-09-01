@@ -96,6 +96,12 @@ uyumsuz değişiklikler içerebilir.
 
 ### Düzeltmeler
 
+- Dashboard'daki "Top Senders"/"Top Receivers" ve "Quarantine Volume"
+  satırlarında uzun etiketler (ör. uzun e-posta adresleri) sığması için
+  sonuna üç nokta ile kısaltılıyor - mobilde `title` tooltip'ini
+  gösterecek bir hover özelliği olmadığından, artık kısaltılmış bir
+  etikete dokununca tam adresi gösteren küçük bir kutu açılıyor; başka
+  bir yere dokunmak kutuyu kapatıyor.
 - Favicon/uygulama ikonu URL'leri (`favicon.svg`, `apple-touch-icon.png`
   ve manifest'teki `icon-192.png`/`icon-512.png`) artık `?v=2` cache-bust
   sorgu parametresi taşıyor - mobil tarayıcılar site verisi tamamen

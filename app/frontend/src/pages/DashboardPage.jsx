@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Inbox, Mail, Users, Activity } from 'lucide-react';
 import { fetchQuarantineList } from '../api/quarantine';
@@ -48,12 +48,37 @@ const BAR_GRADIENTS = {
 };
 
 function BarRow({ label, count, max, tone = 'blue' }) {
+  const [showFull, setShowFull] = useState(false);
+  const rowRef = useRef(null);
   const pct = max > 0 ? Math.max((count / max) * 100, count > 0 ? 2 : 0) : 0;
+
+  useEffect(() => {
+    if (!showFull) return undefined;
+    function handleOutsideClick(e) {
+      if (rowRef.current && !rowRef.current.contains(e.target)) setShowFull(false);
+    }
+    document.addEventListener('pointerdown', handleOutsideClick);
+    return () => document.removeEventListener('pointerdown', handleOutsideClick);
+  }, [showFull]);
+
   return (
-    <div className="group flex items-center gap-3 rounded-md px-1 py-0.5 -mx-1 transition-colors hover:bg-zinc-100/70 dark:hover:bg-zinc-800/40">
-      <p className="w-40 shrink-0 truncate text-xs text-zinc-600 dark:text-zinc-400" title={label}>
+    <div
+      ref={rowRef}
+      className="group relative flex items-center gap-3 rounded-md px-1 py-0.5 -mx-1 transition-colors hover:bg-zinc-100/70 dark:hover:bg-zinc-800/40"
+    >
+      <button
+        type="button"
+        onClick={() => setShowFull((v) => !v)}
+        className="w-40 shrink-0 truncate text-left text-xs text-zinc-600 dark:text-zinc-400"
+        title={label}
+      >
         {label}
-      </p>
+      </button>
+      {showFull && (
+        <div className="absolute left-0 top-full z-10 mt-1 max-w-[min(20rem,calc(100vw-2rem))] break-all rounded-md border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
+          {label}
+        </div>
+      )}
       <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-900">
         <div
           className={`h-full rounded-full ${BAR_GRADIENTS[tone]} transition-[width]`}

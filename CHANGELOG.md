@@ -88,6 +88,12 @@ project is in `0.x`, minor bumps may still include breaking changes.
 
 ### Fixed
 
+- Dashboard's "Top Senders"/"Top Receivers" and "Quarantine Volume"
+  rows truncate long labels (e.g. long email addresses) with an
+  ellipsis so they fit the row - on mobile there's no hover to reveal
+  the full text via the `title` tooltip, so tapping a truncated label
+  now opens a small popover showing the full address; tapping
+  anywhere else closes it.
 - Favicon/app-icon URLs (`favicon.svg`, `apple-touch-icon.png`, and
   the manifest's `icon-192.png`/`icon-512.png`) now carry a `?v=2`
   cache-busting query string, since mobile browsers were still
