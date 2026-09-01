@@ -19,7 +19,7 @@ function navLinkClass({ isActive }) {
 }
 
 function mobileNavLinkClass({ isActive }) {
-  return `flex flex-1 items-center justify-center gap-1.5 border-b-2 px-3 py-2.5 text-center text-sm font-medium ${
+  return `flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap border-b-2 px-1 py-2.5 text-center text-xs font-medium ${
     isActive
       ? 'border-blue-600 text-blue-600 dark:text-blue-400'
       : 'border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300'

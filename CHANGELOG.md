@@ -7,6 +7,14 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [Unreleased]
+
+### Fixed
+
+- The mobile tab bar's "Tracking Center" label wrapped onto two lines
+  on narrow phone screens, throwing off the tab bar's height. It now
+  stays on one line (smaller text, no wrapping, tighter padding).
+
 ## [0.5.0] - 2026-09-01
 
 ### Added

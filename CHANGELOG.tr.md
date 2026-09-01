@@ -8,6 +8,15 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [Yayınlanmamış]
+
+### Düzeltmeler
+
+- Mobil sekme çubuğundaki "Tracking Center" etiketi dar telefon
+  ekranlarında iki satıra bölünüyor ve sekme çubuğunun yüksekliğini
+  bozuyordu. Artık tek satırda kalıyor (daha küçük yazı, satır kaydırma
+  yok, daha sıkı boşluk).
+
 ## [0.5.0] - 2026-09-01
 
 ### Eklenenler
