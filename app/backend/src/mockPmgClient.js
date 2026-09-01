@@ -91,6 +91,22 @@ function randomRecentTime() {
   return nowSeconds() - randInt(0, SEVEN_DAYS);
 }
 
+const SYSLOG_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// Classic syslog line prefix ("Mon D HH:MM:SS host "), matching the format
+// the frontend's log parser requires (trackingLogEvents.js's LINE_RE) -
+// without a recognized leading timestamp+host, every generated line falls
+// into the generic "Log" category and gets filtered out of the Message
+// Events timeline entirely.
+function logLine(unixSeconds, text) {
+  const d = new Date(unixSeconds * 1000);
+  const day = String(d.getDate()).padStart(2, ' ');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  return `${SYSLOG_MONTHS[d.getMonth()]} ${day} ${hh}:${mm}:${ss} ${DEMO_NODE} ${text}`;
+}
+
 // The Tracking Center's default filter is a narrow "last hour" window
 // (unlike Quarantine's default 7-day window), so most tracking entries
 // need a recent timestamp or the demo would open to an empty list.
@@ -229,26 +245,26 @@ function buildTrackingDataset() {
     list.push(entry);
 
     const logs = [
-      `postfix/smtpd[${randInt(1000, 9999)}]: connect from ${client}`,
-      `postfix/cleanup[${randInt(1000, 9999)}]: ${qid}: message-id=${entry.msgid}`,
-      `postfix/qmgr[${randInt(1000, 9999)}]: ${qid}: from=<${from}>, size=${entry.size}, nrcpt=1 (queue active)`,
+      logLine(entry.time, `postfix/smtpd[${randInt(1000, 9999)}]: connect from ${client}`),
+      logLine(entry.time + 1, `postfix/cleanup[${randInt(1000, 9999)}]: ${qid}: message-id=${entry.msgid}`),
+      logLine(entry.time + 1, `postfix/qmgr[${randInt(1000, 9999)}]: ${qid}: from=<${from}>, size=${entry.size}, nrcpt=1 (queue active)`),
     ];
     if (status === 'G') {
-      logs.push(`postgrey[${randInt(1000, 9999)}]: action=greylist, reason=new, client_name=${client}, client_address=${client}, sender=${from}, recipient=${to}`);
+      logs.push(logLine(entry.time + 2, `postgrey[${randInt(1000, 9999)}]: action=greylist, reason=new, client_name=${client}, client_address=${client}, sender=${from}, recipient=${to}`));
     }
     if (status === 'N' || status === 'B') {
-      logs.push(`pmg-smtp-filter[${randInt(1000, 9999)}]: ${qid}: reject: RCPT from ${client}: 554 5.7.1 blocked (rule: Blocklist - Known Spam Source)`);
+      logs.push(logLine(entry.time + 2, `pmg-smtp-filter[${randInt(1000, 9999)}]: ${qid}: reject: RCPT from ${client}: 554 5.7.1 blocked (rule: Blocklist - Known Spam Source)`));
     } else {
-      logs.push(`pmg-smtp-filter[${randInt(1000, 9999)}]: ${qid}: (rule: Default Antispam Policy)`);
+      logs.push(logLine(entry.time + 2, `pmg-smtp-filter[${randInt(1000, 9999)}]: ${qid}: (rule: Default Antispam Policy)`));
     }
     if (status === '2') {
-      logs.push(`postfix/smtp[${randInt(1000, 9999)}]: ${qid}: to=<${to}>, relay=${relay}, delay=${(rand() * 2).toFixed(2)}, status=sent (250 2.0.0 Ok: queued)`);
+      logs.push(logLine(entry.time + 3, `postfix/smtp[${randInt(1000, 9999)}]: ${qid}: to=<${to}>, relay=${relay}, delay=${(rand() * 2).toFixed(2)}, status=sent (250 2.0.0 Ok: queued)`));
     } else if (status === '4') {
-      logs.push(`postfix/smtp[${randInt(1000, 9999)}]: ${qid}: to=<${to}>, relay=${relay}, status=deferred (connection timed out)`);
+      logs.push(logLine(entry.time + 3, `postfix/smtp[${randInt(1000, 9999)}]: ${qid}: to=<${to}>, relay=${relay}, status=deferred (connection timed out)`));
     } else if (status === '5') {
-      logs.push(`postfix/smtp[${randInt(1000, 9999)}]: ${qid}: to=<${to}>, relay=${relay}, status=bounced (host ${relay} said: 550 5.1.1 unknown user)`);
+      logs.push(logLine(entry.time + 3, `postfix/smtp[${randInt(1000, 9999)}]: ${qid}: to=<${to}>, relay=${relay}, status=bounced (host ${relay} said: 550 5.1.1 unknown user)`));
     } else if (status === 'Q') {
-      logs.push(`pmg-smtp-filter[${randInt(1000, 9999)}]: ${qid}: quarantine: message quarantined (rule: Default Antispam Policy)`);
+      logs.push(logLine(entry.time + 3, `pmg-smtp-filter[${randInt(1000, 9999)}]: ${qid}: quarantine: message quarantined (rule: Default Antispam Policy)`));
     }
     detailById.set(id, { ...entry, logs });
   }

@@ -8,6 +8,20 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.4] - 2026-09-01
+
+### Düzeltmeler
+
+- Demo modunda Tracking Center her zaman yapılandırılmış bir Message
+  Events zaman çizelgesi yerine "No recognized events - see the raw
+  log for the full trail." mesajını gösteriyordu. `mockPmgClient.js`
+  tarafından üretilen sahte log satırlarında başta zaman damgası/
+  hostname öneki yoktu; bu yüzden önyüzün log ayrıştırıcısı
+  (`trackingLogEvents.js`) her satırı genel `Log` kategorisine
+  düşürüyordu ve zaman çizelgesi bunları tamamen filtreliyordu. Sahte
+  log satırları artık gerçek PMG API'sinin döndürdüğü formatla eşleşen
+  klasik syslog önekini (`Ay Gün SS:DD:SS <host> ...`) taşıyor.
+
 ## [0.8.3] - 2026-09-01
 
 ### Değişti
