@@ -24,16 +24,15 @@ function nowSeconds() {
 
 function StatCard({ icon: Icon, label, value, tone }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-zinc-200 bg-zinc-50/60 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/40">
+    <div className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50/60 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/40">
       <div className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${STAT_CARD_TONES[tone]}`}>
         <Icon className="size-4.5" />
       </div>
       <div className="min-w-0">
-        <p className="truncate text-xs text-zinc-500 dark:text-zinc-500">{label}</p>
-        <p
-          className="break-words text-base font-semibold leading-snug text-zinc-900 lg:text-xl dark:text-zinc-100"
-          title={String(value)}
-        >
+        <p className="truncate text-xs text-zinc-500 dark:text-zinc-500" title={label}>
+          {label}
+        </p>
+        <p className="truncate tabular-nums text-lg font-semibold text-zinc-900 lg:text-xl dark:text-zinc-100">
           {value}
         </p>
       </div>
@@ -249,7 +248,7 @@ export default function DashboardPage() {
   const mails = quarantineQuery.data || [];
   const trackingMails = trackingQuery.data || [];
 
-  const { uniqueSenders, topStatus } = useMemo(() => {
+  const { uniqueSenders, topStatusLabel, topStatusCount } = useMemo(() => {
     const senderSet = new Set();
     const statusCounts = new Map();
     for (const m of trackingMails) {
@@ -260,7 +259,8 @@ export default function DashboardPage() {
     const top = Array.from(statusCounts.entries()).sort((a, b) => b[1] - a[1])[0];
     return {
       uniqueSenders: senderSet.size,
-      topStatus: top ? statusLabel(top[0]) : '—',
+      topStatusLabel: top ? statusLabel(top[0]) : 'Top status',
+      topStatusCount: top ? top[1] : 0,
     };
   }, [trackingMails]);
 
@@ -281,7 +281,7 @@ export default function DashboardPage() {
                 <StatCard icon={Inbox} label="Quarantined" value={mails.length} tone="red" />
                 <StatCard icon={Mail} label="Tracked mail" value={trackingMails.length} tone="blue" />
                 <StatCard icon={Users} label="Unique senders" value={uniqueSenders} tone="emerald" />
-                <StatCard icon={Activity} label="Top status" value={topStatus} tone="purple" />
+                <StatCard icon={Activity} label={topStatusLabel} value={topStatusCount} tone="purple" />
               </div>
             </div>
 

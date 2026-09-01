@@ -69,9 +69,10 @@ uyumsuz değişiklikler içerebilir.
   dolgularıyla gösteriliyor. Veri veya widget içeriği değişmedi,
   sadece yerleşim ve görsel stil değişti. "Quarantine Volume" ve
   "Message Delivery Status" artık masaüstünde yan yana gösteriliyor,
-  ve "Top status" özet kartı artık "İsim (sayı)" yerine sadece durum
-  adını gösteriyor (örn. "Delivered") - dar mobil ekranlarda metin
-  kesiliyordu.
+  ve "Top status" özet kartı diğer kartlarla tutarlı olacak şekilde
+  artık etiket alanında durum adını (örn. "Delivered"), değer
+  alanında ise sayıyı gösteriyor - önceki "İsim (sayı)" biçimi dar
+  mobil ekranlarda kesiliyordu.
 - Dashboard'daki "Quarantine Volume" grafiği artık varsayılan olarak
   7 gün görünümünü gösteriyor (24 saat değil); 24 saat/7 gün geçişi
   aynı şekilde duruyor, kullanıcı isterse değiştirebiliyor.
