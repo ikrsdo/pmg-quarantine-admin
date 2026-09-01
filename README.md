@@ -2,7 +2,7 @@
 
 English | [Türkçe](README.tr.md)
 
-**Version:** 0.8.8 · [Changelog](CHANGELOG.md)
+**Version:** 0.8.9 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
@@ -20,9 +20,9 @@ appliance itself, only talks to it over the PMG API.
 - **Quarantine management** - covers all three PMG quarantine types
   (Spam, Virus, Attachment), switchable from the navigation. List,
   search/filter, and act on quarantined mail (deliver, whitelist,
-  block, delete), with a swipeable card list and multi-select bulk
-  actions on mobile, and a dense data table on desktop. Destructive
-  actions (block, delete) require a confirmation step.
+  block), with a swipeable card list and multi-select bulk actions on
+  mobile, and a dense data table on desktop. The block action requires
+  a confirmation step.
 - **Tracking Center** - look up a message's delivery status by sender,
   recipient, or filter, read-only. Each entry's syslog trail is shown
   as a structured, expandable Message Events timeline instead of raw
@@ -242,6 +242,10 @@ anything reachable from outside a trusted network.
 - Every quarantine action is checked against a fixed whitelist of valid
   PMG actions (`deliver`, `delete`, `whitelist`, `blocklist`, etc.)
   before it's forwarded to PMG - arbitrary action strings are rejected.
+  The app's current UI only exposes `deliver`, `whitelist`, and
+  `blocklist`; the whitelist also allows the other PMG actions the API
+  supports (`delete`, `mark-seen`, `mark-unseen`, `welcomelist`,
+  `blacklist`), which may get UI buttons in a future version.
 - Security headers (via [Helmet](https://helmetjs.github.io/)) are set
   on every response: `X-Frame-Options`, `X-Content-Type-Options`,
   `Referrer-Policy`, and removal of the `X-Powered-By` header, among

@@ -7,6 +7,19 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.9] - 2026-09-02
+
+### Fixed
+
+- README's Features and Security Notes sections claimed a `delete`
+  quarantine action existed in the UI (with its own confirmation
+  step) - it doesn't; the UI only exposes `deliver`, `whitelist`, and
+  `blocklist`. The whitelist itself is unaffected by this - it still
+  validates against all PMG-supported actions - but the docs now say
+  which of those the UI actually uses today, and note the rest
+  (`delete`, `mark-seen`, `mark-unseen`, `welcomelist`, `blacklist`)
+  may get UI buttons in a future version.
+
 ## [0.8.8] - 2026-09-02
 
 ### Changed

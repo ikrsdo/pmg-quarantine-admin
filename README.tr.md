@@ -2,7 +2,7 @@
 
 [English](README.md) | Türkçe
 
-**Sürüm:** 0.8.8 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
+**Sürüm:** 0.8.9 · [Değişiklik Günlüğü](CHANGELOG.tr.md)
 
 [Proxmox Mail Gateway](https://www.proxmox.com/en/proxmox-mail-gateway)
 (PMG) için mobil öncelikli, tamamen duyarlı (responsive) bir yönetim
@@ -22,9 +22,9 @@ hiç dokunmaz, onunla yalnızca PMG API üzerinden konuşur.
 - **Karantina yönetimi** - PMG'nin üç karantina türünü de kapsar (Spam,
   Virus, Attachment), navigasyondan geçiş yapılabilir. Karantinadaki
   postaları listele, ara/filtrele ve işlem yap (teslim et, beyaz
-  listeye al, engelle, sil); mobilde kaydırmalı (swipe) kart listesi ve
-  çoklu seçimle toplu işlem, masaüstünde yoğun bir veri tablosu. Yıkıcı
-  işlemler (engelle, sil) bir onay adımı gerektirir.
+  listeye al, engelle); mobilde kaydırmalı (swipe) kart listesi ve
+  çoklu seçimle toplu işlem, masaüstünde yoğun bir veri tablosu. Engelle
+  işlemi bir onay adımı gerektirir.
 - **Tracking Center** - bir postanın teslimat durumunu gönderene,
   alıcıya veya filtreye göre sorgula, salt okunur. Her kaydın syslog
   kaydı, ham log satırları yerine yapılandırılmış, genişletilebilir bir
@@ -256,6 +256,11 @@ doğrulama katmanı (örn. Cloudflare Access) eklemek önerilir.
 - Her karantina işlemi, PMG'ye iletilmeden önce sabit bir geçerli PMG
   aksiyonu listesine göre kontrol edilir (`deliver`, `delete`,
   `whitelist`, `blocklist`, vb.) - keyfi aksiyon dizeleri reddedilir.
+  Uygulamanın mevcut arayüzü yalnızca `deliver`, `whitelist` ve
+  `blocklist` aksiyonlarını sunar; beyaz liste, API'nin desteklediği
+  diğer PMG aksiyonlarına da (`delete`, `mark-seen`, `mark-unseen`,
+  `welcomelist`, `blacklist`) izin verir - bunlar ilerideki bir
+  versiyonda arayüze eklenebilir.
 - Güvenlik başlıkları ([Helmet](https://helmetjs.github.io/)
   aracılığıyla) her yanıtta ayarlanır: `X-Frame-Options`,
   `X-Content-Type-Options`, `Referrer-Policy`, ve `X-Powered-By`

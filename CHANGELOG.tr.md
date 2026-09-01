@@ -8,6 +8,21 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.9] - 2026-09-02
+
+### Düzeltildi
+
+- README'nin Özellikler ve Güvenlik Notları bölümleri, arayüzde bir
+  `delete` (sil) karantina aksiyonu ve buna ait bir onay adımı
+  varmış gibi anlatıyordu - böyle bir şey yok; arayüz yalnızca
+  `deliver`, `whitelist` ve `blocklist` aksiyonlarını sunuyor. Beyaz
+  liste mekanizmasının kendisi bundan etkilenmiyor - hâlâ PMG'nin
+  desteklediği tüm aksiyonlara göre kontrol yapıyor - ama artık
+  dokümantasyon arayüzün bugün gerçekten hangilerini kullandığını
+  söylüyor ve kalanların (`delete`, `mark-seen`, `mark-unseen`,
+  `welcomelist`, `blacklist`) ilerideki bir versiyonda arayüze
+  eklenebileceğini not ediyor.
+
 ## [0.8.8] - 2026-09-02
 
 ### Değişti
