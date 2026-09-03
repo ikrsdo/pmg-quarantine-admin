@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRightLeft, Send, ShieldCheck, Ban, X, Paperclip } from 'lucide-react';
+import { ArrowLeft, ArrowRightLeft, Send, ShieldCheck, Ban, EyeOff, X, Paperclip } from 'lucide-react';
 import {
   fetchQuarantineAttachments,
   fetchQuarantineDetail,
@@ -234,6 +234,39 @@ export default function QuarantineDetailPage({ overlay = false }) {
     },
   });
 
+  // Separate from actionMutation: this never closes the drawer/page (unlike
+  // deliver/whitelist/blocklist), and the automatic mark-seen-on-open below
+  // stays silent (no toast) so opening a message doesn't spam a
+  // notification every time.
+  const seenMutation = useMutation({
+    mutationFn: (action) => performQuarantineAction(id, action),
+    onSuccess: (_data, action) => {
+      queryClient.setQueryData(['quarantine', 'detail', id], (old) =>
+        old ? { ...old, seen: action === 'mark-seen' } : old,
+      );
+      queryClient.invalidateQueries({ queryKey: ['quarantine'] });
+      if (action === 'mark-unseen') {
+        const { tone, message } = quarantineActionToast(action);
+        showToast(message, tone);
+      }
+    },
+    onError: (err) => {
+      if (!handleUnauthorized(err)) showToast('Action failed', 'danger');
+    },
+  });
+
+  // Auto-mark-seen on open, silently - mirrors PMG's own "opening a message
+  // marks it seen" behavior. Keyed on id (not mail.seen) so it fires once per
+  // opened message and doesn't re-fire - and re-mark it seen - after the user
+  // manually clicks "Mark unseen" on the still-open message.
+  const autoMarkedIdRef = useRef(null);
+  useEffect(() => {
+    if (!mail || autoMarkedIdRef.current === mail.id) return;
+    autoMarkedIdRef.current = mail.id;
+    if (mail.seen !== true) seenMutation.mutate('mark-seen');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mail?.id]);
+
   function close() {
     if (overlay) {
       navigate(-1);
@@ -305,6 +338,16 @@ export default function QuarantineDetailPage({ overlay = false }) {
           <Ban className="size-4" />
           Block
         </button>
+        {mail.seen === true && (
+          <button
+            type="button"
+            onClick={() => seenMutation.mutate('mark-unseen')}
+            className={`flex items-center justify-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900 ${widthClass}`}
+          >
+            <EyeOff className="size-4" />
+            Mark unseen
+          </button>
+        )}
       </div>
     );
   }

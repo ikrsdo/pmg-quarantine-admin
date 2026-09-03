@@ -145,6 +145,26 @@ export default function QuarantineListPage() {
     },
   });
 
+  // Separate from actionMutation: mark-seen/mark-unseen is a lightweight,
+  // no-confirmation toggle a user can fire from anywhere in the list, and
+  // shouldn't drop an in-progress bulk selection the way actionMutation's
+  // onSuccess does.
+  const toggleSeenMutation = useMutation({
+    mutationFn: ({ id, action }) => performQuarantineAction(id, action),
+    onSuccess: (_data, { action }) => {
+      queryClient.invalidateQueries({ queryKey: ['quarantine'] });
+      const { tone, message } = quarantineActionToast(action);
+      showToast(message, tone);
+    },
+    onError: (err) => {
+      if (!handleUnauthorized(err)) showToast('Action failed', 'danger');
+    },
+  });
+
+  function toggleSeen(id, currentlySeen) {
+    toggleSeenMutation.mutate({ id, action: currentlySeen ? 'mark-unseen' : 'mark-seen' });
+  }
+
   if (isError && handleUnauthorized(error)) {
     return null; // AuthProvider flips `user` to null, App redirects to /login
   }
@@ -335,6 +355,7 @@ export default function QuarantineListPage() {
                   onToggleSelectAll={toggleSelectAll}
                   onDeliverRequest={(id) => setPendingAction({ type: 'deliver', target: id })}
                   onBlockRequest={(id) => setPendingAction({ type: 'blocklist', target: id })}
+                  onToggleSeenRequest={toggleSeen}
                   sortKey={sortKey}
                   sortDir={sortDir}
                   onSort={toggleSort}
@@ -352,6 +373,7 @@ export default function QuarantineListPage() {
                     onToggleSelect={toggleSelect}
                     onDeliver={() => setPendingAction({ type: 'deliver', target: mail.id })}
                     onBlock={() => setPendingAction({ type: 'blocklist', target: mail.id })}
+                    onToggleSeen={toggleSeen}
                   />
                 ))}
               </div>

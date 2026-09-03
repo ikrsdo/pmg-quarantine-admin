@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
+import { Eye, EyeOff } from 'lucide-react';
 import SpamScoreBadge from './SpamScoreBadge';
 
 function VirusNameBadge({ name }) {
@@ -38,7 +39,16 @@ function formatBytes(bytes) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-export default function QuarantineCard({ mail, type = 'spam', selected, selectionMode, onToggleSelect, onDeliver, onBlock }) {
+export default function QuarantineCard({
+  mail,
+  type = 'spam',
+  selected,
+  selectionMode,
+  onToggleSelect,
+  onDeliver,
+  onBlock,
+  onToggleSeen,
+}) {
   const navigate = useNavigate();
   const [dragX, setDragX] = useState(0);
   const [open, setOpen] = useState(null); // 'left' | 'right' | null
@@ -146,9 +156,21 @@ export default function QuarantineCard({ mail, type = 'spam', selected, selectio
             <span>{formatTime(mail.time)}</span>
             <span>·</span>
             <span>{formatBytes(mail.bytes)}</span>
-            {mail.seen === false && (
-              <span className="ml-auto inline-block size-1.5 rounded-full bg-blue-500" title="Unread" />
-            )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSeen(mail.id, mail.seen === true);
+              }}
+              title={mail.seen === true ? 'Mark as unseen' : 'Mark as seen'}
+              className="ml-auto shrink-0 rounded p-0.5 text-zinc-400 hover:bg-zinc-200 dark:text-zinc-500 dark:hover:bg-zinc-800"
+            >
+              {mail.seen === true ? (
+                <Eye className="size-3.5" />
+              ) : (
+                <EyeOff className="size-3.5 text-blue-500" />
+              )}
+            </button>
           </div>
         </div>
       </div>

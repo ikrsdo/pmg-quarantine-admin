@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowUp, ArrowDown, ChevronsUpDown, Send, Ban } from 'lucide-react';
+import { ArrowUp, ArrowDown, ChevronsUpDown, Send, Ban, Eye, EyeOff } from 'lucide-react';
 import SpamScoreBadge from './SpamScoreBadge';
 
 function VirusNameBadge({ name }) {
@@ -54,6 +54,7 @@ export default function QuarantineTable({
   onToggleSelectAll,
   onDeliverRequest,
   onBlockRequest,
+  onToggleSeenRequest,
   sortKey,
   sortDir,
   onSort,
@@ -139,6 +140,18 @@ export default function QuarantineTable({
               </td>
               <td className="px-3 py-2 text-right" onClick={(e) => e.stopPropagation()}>
                 <div className="inline-flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => onToggleSeenRequest(mail.id, mail.seen === true)}
+                    title={mail.seen === true ? 'Mark as unseen' : 'Mark as seen'}
+                    className={`inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium ${
+                      mail.seen === true
+                        ? 'text-zinc-500 hover:bg-zinc-500/10 dark:text-zinc-400'
+                        : 'text-blue-600 hover:bg-blue-500/10 dark:text-blue-400'
+                    }`}
+                  >
+                    {mail.seen === true ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+                  </button>
                   <button
                     type="button"
                     onClick={() => onDeliverRequest(mail.id)}

@@ -5,6 +5,11 @@ const ACTION_TOAST = {
     label: (n) => (n > 1 ? `${n} senders blocked, messages deleted` : 'Sender blocked, message deleted'),
   },
   whitelist: { tone: 'info', label: () => 'Sender added to welcome list and message delivered' },
+  'mark-seen': { tone: 'success', label: (n) => (n > 1 ? `${n} messages marked as seen` : 'Message marked as seen') },
+  'mark-unseen': {
+    tone: 'info',
+    label: (n) => (n > 1 ? `${n} messages marked as unseen` : 'Message marked as unseen'),
+  },
 };
 
 export function quarantineActionToast(action, count = 1) {

@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.0] - 2026-09-03
+
+### Added
+
+- Seen/unseen message tracking on top of PMG's own `seen` field.
+  Opening a message's detail screen silently marks it seen (no toast),
+  mirroring PMG's own behavior. A tappable Eye/EyeOff icon on mobile
+  cards and desktop table rows toggles seen/unseen directly from the
+  list, and the detail screen's action bar gains a "Mark unseen"
+  button, shown only when the message is currently seen.
+
 ## [0.8.11] - 2026-09-03
 
 ### Fixed

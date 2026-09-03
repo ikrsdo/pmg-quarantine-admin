@@ -8,6 +8,19 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.0] - 2026-09-03
+
+### Eklendi
+
+- PMG'nin kendi `seen` alanının üzerine görüldü/görülmedi takibi.
+  Bir mesajın detay ekranı açıldığında, PMG'nin kendi davranışına
+  benzer şekilde mesaj sessizce (bildirim göstermeden) görüldü olarak
+  işaretlenir. Mobilde kart, masaüstünde tablo satırlarındaki
+  dokunulabilir Göz/GözKapalı simgesi listeden doğrudan görüldü/
+  görülmedi durumunu değiştirir; detay ekranının aksiyon çubuğuna da
+  yalnızca mesaj görüldü durumundayken görünen bir "Görülmedi işaretle"
+  butonu eklendi.
+
 ## [0.8.11] - 2026-09-03
 
 ### Düzeltildi

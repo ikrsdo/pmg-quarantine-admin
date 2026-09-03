@@ -108,11 +108,17 @@ default to a generic/random admin-panel look.
 - **Layout - mobile (priority):**
   - Quarantine list: not a table, a card-based list. Swiping a card
     reveals "Deliver" (right/green) and "Block" (left/red) actions.
+    A separate tap-only Eye/EyeOff icon on each card toggles
+    seen/unseen (not a third swipe direction - swipe is already
+    saturated with Deliver/Block).
   - A search/filter bar at the top; filters open in a bottom sheet.
   - A "selection mode" toggle for bulk actions.
   - In the detail screen, a sticky bottom action bar with Deliver /
     Whitelist / Block buttons; all three require a confirmation step
-    (`CONFIRM_COPY` in `QuarantineDetailPage.jsx`).
+    (`CONFIRM_COPY` in `QuarantineDetailPage.jsx`). A "Mark unseen"
+    button also appears in this bar, but only when the message is
+    currently seen - opening a message auto-marks it seen (silently,
+    no toast), mirroring PMG's own behavior.
 - **Layout - desktop:**
   - The quarantine list becomes a dense data table instead of mobile's
     card layout: checkbox, sender, subject, recipient, date, spam-score
@@ -296,10 +302,13 @@ you get a 403 with a different role, check this note first.
   sandboxed iframe's `srcDoc`).
 - Every quarantine action is checked against a fixed whitelist of valid
   PMG actions before being forwarded to PMG - see "PMG API Notes"
-  above for the enum. The UI only wires up `deliver`/`whitelist`/
+  above for the enum. The UI wires up `deliver`/`whitelist`/
   `blocklist` (buttons in `QuarantineDetailPage.jsx` and
-  `QuarantineListPage.jsx`); the whitelist itself allows the rest of
-  the enum too, in case they get UI buttons later.
+  `QuarantineListPage.jsx`) plus `mark-seen`/`mark-unseen` (the
+  Eye/EyeOff toggle on `QuarantineCard.jsx`/`QuarantineTable.jsx` rows
+  and the detail screen's "Mark unseen" action bar button); the
+  whitelist itself allows the rest of the enum too, in case they get
+  UI buttons later.
 - The Docker image runs as a non-root user (see `Dockerfile`).
 
 ## Status

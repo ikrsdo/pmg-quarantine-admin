@@ -2,7 +2,7 @@
 
 English | [Türkçe](README.tr.md)
 
-**Version:** 0.8.11 · [Changelog](CHANGELOG.md)
+**Version:** 0.9.0 · [Changelog](CHANGELOG.md)
 
 A mobile-first, fully responsive admin console for [Proxmox Mail
 Gateway](https://www.proxmox.com/en/proxmox-mail-gateway) (PMG). It gives
