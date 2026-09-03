@@ -30,7 +30,15 @@ function toDatetimeLocal(date) {
 function defaultFilters() {
   const now = new Date();
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  return { pmail: '', starttimeLocal: toDatetimeLocal(weekAgo), endtimeLocal: toDatetimeLocal(now) };
+  // endtimeLocal is frozen into component state at mount (see
+  // QuarantineListPage's useState(defaultFilters)) and reused as-is by the
+  // Refresh button's refetch(), so pinning it to "now" would hide any mail
+  // that arrived after mount. Pin it to the next midnight instead (same
+  // approach as TrackingListPage's defaultFilters) so it stays a wide-open
+  // upper bound for the rest of the day and Refresh actually picks up new
+  // mail.
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  return { pmail: '', starttimeLocal: toDatetimeLocal(weekAgo), endtimeLocal: toDatetimeLocal(midnight) };
 }
 
 function formatCsvTime(unixSeconds) {

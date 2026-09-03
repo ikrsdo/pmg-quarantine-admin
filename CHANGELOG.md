@@ -7,6 +7,19 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.8.11] - 2026-09-03
+
+### Fixed
+
+- Quarantine's Refresh button never showed mail that arrived after the
+  page was first opened. Its time filter's upper bound was pinned to
+  "now" at mount and then reused as-is by every `refetch()`, so newer
+  mail fell outside the window (only navigating away and back, which
+  remounts the page and recomputes the bound, picked it up). Pinned it
+  to the next midnight instead - same approach Tracking Center's
+  filter already used, which is why Tracking Center didn't have this
+  problem.
+
 ## [0.8.10] - 2026-09-02
 
 ### Changed

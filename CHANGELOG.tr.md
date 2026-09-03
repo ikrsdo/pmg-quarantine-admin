@@ -8,6 +8,21 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.8.11] - 2026-09-03
+
+### Düzeltildi
+
+- Karantina sayfasındaki Refresh butonu, sayfa ilk açıldıktan sonra
+  gelen mailleri hiç göstermiyordu. Zaman filtresinin üst sınırı
+  sayfa mount edildiği anda "şimdi"ye sabitleniyor ve her
+  `refetch()` çağrısında aynen kullanılıyordu; bu yüzden daha yeni
+  mailler pencerenin dışında kalıyordu (yalnızca başka sayfaya gidip
+  geri gelmek, sayfayı yeniden mount edip sınırı yeniden hesapladığı
+  için maili gösteriyordu). Üst sınır artık bir sonraki gece yarısına
+  sabitleniyor - Tracking Center'ın filtresinde zaten kullanılan
+  yaklaşımın aynısı; Tracking Center'da bu sorunun görünmemesinin
+  sebebi de buydu.
+
 ## [0.8.10] - 2026-09-02
 
 ### Değişti
