@@ -241,10 +241,17 @@ export default function QuarantineDetailPage({ overlay = false }) {
   const seenMutation = useMutation({
     mutationFn: (action) => performQuarantineAction(id, action),
     onSuccess: (_data, action) => {
-      queryClient.setQueryData(['quarantine', 'detail', id], (old) =>
-        old ? { ...old, seen: action === 'mark-seen' } : old,
+      // Apply the known-correct result locally instead of invalidating the
+      // detail query too: PMG's quarantine content response doesn't
+      // reliably echo back `seen` (see CLAUDE.md > "PMG API Notes" - it's
+      // only documented on the list endpoint), so refetching this query
+      // right after would silently clobber this update with stale data.
+      const seen = action === 'mark-seen';
+      queryClient.setQueryData(['quarantine', 'detail', id], (old) => (old ? { ...old, seen } : old));
+      queryClient.setQueriesData(
+        { queryKey: ['quarantine'], predicate: (query) => query.queryKey[1] !== 'detail' },
+        (old) => (Array.isArray(old) ? old.map((m) => (m.id === id ? { ...m, seen } : m)) : old),
       );
-      queryClient.invalidateQueries({ queryKey: ['quarantine'] });
       if (action === 'mark-unseen') {
         const { tone, message } = quarantineActionToast(action);
         showToast(message, tone);

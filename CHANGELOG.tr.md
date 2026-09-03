@@ -8,6 +8,18 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.1] - 2026-09-04
+
+### Düzeltildi
+
+- Görüldü/görülmedi geçişleri (liste satırlarındaki Göz/GözKapalı
+  simgesi ve detay ekranının "Görülmedi yap" butonu), uygulandıktan
+  hemen sonra karantina içerik uç noktasını artık yeniden çekmiyor -
+  o yanıt `seen` alanını güvenilir şekilde içermiyor, bu yüzden yeniden
+  çekme az önce uygulanan durumu sessizce eziyor, detay ekranındaki
+  butonun kaybolmasına ve listedeki geçişin hiçbir etkisi yokmuş gibi
+  görünmesine yol açıyordu.
+
 ## [0.9.0] - 2026-09-03
 
 ### Eklendi

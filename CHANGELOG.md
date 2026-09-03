@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.1] - 2026-09-04
+
+### Fixed
+
+- Seen/unseen toggles (the Eye/EyeOff icon on list rows and the detail
+  screen's "Mark unseen" button) no longer refetch the quarantine
+  content endpoint right after applying - that response doesn't
+  reliably include `seen`, so the refetch could silently overwrite the
+  just-applied state, making the detail screen's button disappear and
+  the list's toggle look like it had no effect.
+
 ## [0.9.0] - 2026-09-03
 
 ### Added

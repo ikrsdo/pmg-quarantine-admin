@@ -309,6 +309,18 @@ you get a 403 with a different role, check this note first.
   and the detail screen's "Mark unseen" action bar button); the
   whitelist itself allows the rest of the enum too, in case they get
   UI buttons later.
+  - `mark-seen`/`mark-unseen`'s mutations (`seenMutation` in
+    `QuarantineDetailPage.jsx`, `toggleSeenMutation` in
+    `QuarantineListPage.jsx`) apply the new `seen` value straight into
+    the React Query cache (list + detail) and deliberately do NOT
+    `invalidateQueries`/refetch afterwards - the quarantine content
+    (detail) response doesn't reliably echo back `seen` (it's only
+    documented on the list endpoint, see "PMG API Notes" above), so a
+    refetch there would silently clobber the just-applied state with
+    data that's missing the field, making the toggle look like a
+    no-op. The other three actions (deliver/whitelist/blocklist) still
+    invalidate as normal since those actually remove the item from the
+    list.
 - The Docker image runs as a non-root user (see `Dockerfile`).
 
 ## Status
