@@ -215,7 +215,6 @@ export default function QuarantineDetailPage({ overlay = false }) {
   const queryClient = useQueryClient();
   const [pendingAction, setPendingAction] = useState(null); // 'deliver' | 'blocklist' | null
   const [drawerVisible, setDrawerVisible] = useState(!overlay);
-  const [actionsMenuOpen, setActionsMenuOpen] = useState(false);
 
   const { data: mail, isLoading, isError, error } = useQuery({
     queryKey: ['quarantine', 'detail', id],
@@ -326,24 +325,6 @@ export default function QuarantineDetailPage({ overlay = false }) {
     }
   }
 
-  // Single "Actions" trigger everywhere the action set is shown (desktop
-  // header, drawer header, mobile sticky bar) instead of a row/grid of
-  // buttons - keeps the trigger a constant size no matter how many actions
-  // exist, so adding a new action later is just one more row in the menu.
-  function ActionsTrigger({ full = false }) {
-    if (!mail) return null;
-    return (
-      <button
-        type="button"
-        onClick={() => setActionsMenuOpen(true)}
-        className={`inline-flex items-center justify-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900 ${full ? 'w-full' : ''}`}
-      >
-        <ListChecks className="size-4" />
-        Actions
-      </button>
-    );
-  }
-
   const ACTIONS_MENU_ITEMS = [
     { action: 'deliver', label: 'Deliver', icon: Send, className: 'text-emerald-600 dark:text-emerald-400' },
     { action: 'whitelist', label: 'Whitelist', icon: ShieldCheck, className: 'text-blue-600 dark:text-blue-400' },
@@ -357,53 +338,71 @@ export default function QuarantineDetailPage({ overlay = false }) {
     },
   ];
 
-  function ActionsMenu() {
-    useEffect(() => {
-      if (!actionsMenuOpen) return;
-      function handleKeyDown(e) {
-        if (e.key === 'Escape') setActionsMenuOpen(false);
-      }
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
-    }, []);
+  // Single "Actions" trigger everywhere the action set is shown (desktop
+  // header, drawer header, mobile sticky bar) instead of a row/grid of
+  // buttons - keeps the trigger a constant size no matter how many actions
+  // exist, so adding a new action later is just one more row in the dropdown.
+  // Each instance owns its own open/anchor state, so the dropdown opens
+  // right next to whichever trigger was clicked rather than a single shared
+  // centered modal.
+  function ActionsTrigger({ full = false, direction = 'down' }) {
+    const [open, setOpen] = useState(false);
+    const containerRef = useRef(null);
 
-    if (!actionsMenuOpen || !mail) return null;
+    useEffect(() => {
+      if (!open) return;
+      function handleClickOutside(e) {
+        if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
+      }
+      function handleKeyDown(e) {
+        if (e.key === 'Escape') setOpen(false);
+      }
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('keydown', handleKeyDown);
+      };
+    }, [open]);
+
+    if (!mail) return null;
 
     const items = ACTIONS_MENU_ITEMS.filter((item) => !item.show || item.show(mail));
 
     return (
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-        // iOS Safari silently skips backdrop-filter on a `fixed` element
-        // unless it has its own compositing layer - forcing one here is what
-        // makes the blur actually render on mobile Safari.
-        style={{ transform: 'translateZ(0)' }}
-        onClick={() => setActionsMenuOpen(false)}
-      >
-        <div
-          className="w-full max-w-xs overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950"
-          onClick={(e) => e.stopPropagation()}
+      <div ref={containerRef} className={`relative ${full ? 'w-full' : ''}`}>
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className={`inline-flex items-center justify-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900 ${full ? 'w-full' : ''}`}
         >
-          <p className="border-b border-zinc-200 px-4 py-3 text-sm font-medium text-zinc-900 dark:border-zinc-800 dark:text-zinc-100">
-            Actions
-          </p>
-          <div className="flex flex-col p-1.5">
-            {items.map(({ action, label, icon: Icon, className }) => (
-              <button
-                key={action}
-                type="button"
-                onClick={() => {
-                  setActionsMenuOpen(false);
-                  handleActionsMenuSelect(action);
-                }}
-                className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 ${className}`}
-              >
-                <Icon className="size-4" />
-                {label}
-              </button>
-            ))}
+          <ListChecks className="size-4" />
+          Actions
+        </button>
+        {open && (
+          <div
+            className={`absolute right-0 z-20 w-48 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950 ${
+              direction === 'up' ? 'bottom-full mb-2' : 'top-full mt-2'
+            }`}
+          >
+            <div className="flex flex-col p-1.5">
+              {items.map(({ action, label, icon: Icon, className }) => (
+                <button
+                  key={action}
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    handleActionsMenuSelect(action);
+                  }}
+                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 ${className}`}
+                >
+                  <Icon className="size-4" />
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -560,7 +559,6 @@ export default function QuarantineDetailPage({ overlay = false }) {
         </div>
 
         {confirmDialog}
-        <ActionsMenu />
       </div>
     );
   }
@@ -588,12 +586,11 @@ export default function QuarantineDetailPage({ overlay = false }) {
 
       {mail && (
         <div className="pb-safe fixed inset-x-0 bottom-0 z-10 border-t border-zinc-200 bg-white px-4 pt-4 dark:border-zinc-800 dark:bg-zinc-950 lg:hidden">
-          <ActionsTrigger full />
+          <ActionsTrigger full direction="up" />
         </div>
       )}
 
       {confirmDialog}
-      <ActionsMenu />
     </div>
   );
 }

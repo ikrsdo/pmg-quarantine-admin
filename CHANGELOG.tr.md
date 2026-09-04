@@ -8,6 +8,17 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.4] - 2026-09-04
+
+### Değiştirildi
+
+- "Actions" (Aksiyonlar) menüsü (mobil alt çubuk, masaüstü başlığı,
+  masaüstü çekmece başlığı) artık ortalanmış bir modal yerine
+  tetikleyici butona bağlı bir dropdown olarak açılıyor - dışarı
+  tıklanınca veya Escape'e basılınca kapanıyor. Mobil tetikleyici alt
+  çubukta olduğu için dropdown'ı yukarı doğru açıyor; diğerleri aşağı
+  doğru açıyor.
+
 ## [0.9.3] - 2026-09-04
 
 ### Değiştirildi

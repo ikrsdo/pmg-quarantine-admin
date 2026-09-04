@@ -7,6 +7,16 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.4] - 2026-09-04
+
+### Changed
+
+- The "Actions" menu (mobile sticky bar, desktop header, desktop
+  drawer header) now opens as a dropdown anchored to the trigger
+  button instead of a centered modal - closes on an outside click or
+  Escape. The mobile trigger opens its dropdown upward since it sits
+  in a bottom bar; the others open downward.
+
 ## [0.9.3] - 2026-09-04
 
 ### Changed

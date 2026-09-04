@@ -116,15 +116,18 @@ default to a generic/random admin-panel look.
   - In the detail screen, a sticky bottom bar holds a single "Actions"
     trigger button (not individual Deliver/Whitelist/Block buttons -
     an earlier per-button row/grid layout didn't fit a constrained
-    mobile screen and was replaced). Tapping it opens a centered modal
-    menu (`ActionsMenu` in `QuarantineDetailPage.jsx`, styled like
-    `FilterSheet.jsx`) listing Deliver/Whitelist/Block (still routed
-    through the existing confirmation step, `CONFIRM_COPY`) plus "Mark
-    unseen" (direct mutation, no confirmation), shown only when the
-    message is currently seen - opening a message auto-marks it seen
-    (silently, no toast), mirroring PMG's own behavior. Adding a new
-    action later means adding one row to `ACTIONS_MENU_ITEMS`, not
-    fitting another button into the trigger.
+    mobile screen and was replaced). Tapping it opens a dropdown
+    anchored to the trigger (`ActionsTrigger` in
+    `QuarantineDetailPage.jsx`, self-contained: owns its own open
+    state, closes on outside click or Escape) listing Deliver/
+    Whitelist/Block (still routed through the existing confirmation
+    step, `CONFIRM_COPY`) plus "Mark unseen" (direct mutation, no
+    confirmation), shown only when the message is currently seen -
+    opening a message auto-marks it seen (silently, no toast),
+    mirroring PMG's own behavior. The mobile trigger opens the dropdown
+    upward (`direction="up"`) since it sits in a bottom sticky bar.
+    Adding a new action later means adding one row to
+    `ACTIONS_MENU_ITEMS`, not fitting another button into the trigger.
 - **Layout - desktop:**
   - The quarantine list becomes a dense data table instead of mobile's
     card layout: checkbox, sender, subject, recipient, date, spam-score
@@ -132,11 +135,11 @@ default to a generic/random admin-panel look.
   - A fixed left-hand navigation (Quarantine / Tracking Center).
   - Two-column detail screen: metadata + spam score breakdown on the
     left, email preview/header tabs on the right. Same single
-    "Actions" trigger + menu pattern as mobile (not a button group) at
-    the top of the page, and in the drawer/overlay variant's header
-    too - kept consistent across all three places the action set
-    appears so the trigger stays a constant size regardless of how
-    many actions exist.
+    "Actions" trigger + anchored dropdown pattern as mobile (not a
+    button group), opening downward, at the top of the page and in the
+    drawer/overlay variant's header too - kept consistent across all
+    three places the action set appears so the trigger stays a
+    constant size regardless of how many actions exist.
 - **Components:** status badges, swipeable list rows, tabbed content
   views (e.g. Preview / Headers), empty states and loading (skeleton)
   states designed separately for each main screen.
