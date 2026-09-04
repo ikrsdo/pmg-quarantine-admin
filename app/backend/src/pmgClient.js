@@ -92,7 +92,13 @@ async function getQuarantineList(session, { type = 'spam', starttime, endtime, p
   if (res.status !== 200) {
     throw new PmgApiError(res.status, res.data);
   }
-  return res.data?.data ?? [];
+  const list = res.data?.data ?? [];
+  // Temporary diagnostic (see the mark-seen/mark-unseen log in
+  // quarantineAction): confirms whether PMG's list read actually reflects
+  // seen=true for these ids, or whether our read path is the one losing it.
+  // eslint-disable-next-line no-console
+  console.log(`[quarantine] list type=${type} seen-map=${JSON.stringify(list.map((m) => [m.id, m.seen]))}`);
+  return list;
 }
 
 async function getQuarantineAttachments(session, id) {
@@ -114,6 +120,9 @@ async function getQuarantineContent(session, id) {
   if (res.status !== 200) {
     throw new PmgApiError(res.status, res.data);
   }
+  // Temporary diagnostic, same purpose as getQuarantineList's above.
+  // eslint-disable-next-line no-console
+  console.log(`[quarantine] detail id=${id} seen=${res.data?.data?.seen}`);
   return res.data?.data;
 }
 
