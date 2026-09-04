@@ -345,7 +345,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
   // Each instance owns its own open/anchor state, so the dropdown opens
   // right next to whichever trigger was clicked rather than a single shared
   // centered modal.
-  function ActionsTrigger({ full = false, direction = 'down' }) {
+  function ActionsTrigger({ full = false, direction = 'down', align = 'right' }) {
     const [open, setOpen] = useState(false);
     const containerRef = useRef(null);
 
@@ -383,7 +383,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
           <div
             className={`absolute z-20 w-48 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950 ${
               direction === 'up' ? 'bottom-full mb-2' : 'top-full mt-2'
-            } ${full ? 'left-1/2 -translate-x-1/2' : 'right-0'}`}
+            } ${full ? 'left-1/2 -translate-x-1/2' : align === 'left' ? 'left-0' : 'right-0'}`}
           >
             <div className="flex flex-col p-1.5">
               {items.map(({ action, label, icon: Icon, className }) => (
@@ -551,7 +551,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
 
           {mail && (
             <div className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-              <ActionsTrigger />
+              <ActionsTrigger align="left" />
             </div>
           )}
 

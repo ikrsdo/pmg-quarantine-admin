@@ -7,6 +7,19 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.7] - 2026-09-04
+
+### Fixed
+
+- The drawer's Actions dropdown was right-aligned to the trigger, so
+  it extended leftward and overlapped content to the button's left
+  instead of sitting under/right of it, unlike the desktop full-page
+  header where the trigger sits at the far right and extending left
+  is correct. `ActionsTrigger` now takes an `align` prop; the drawer
+  variant passes `align="left"` so its dropdown extends rightward
+  from the trigger's left edge, while the desktop header keeps the
+  previous right-aligned behavior.
+
 ## [0.9.6] - 2026-09-04
 
 ### Fixed

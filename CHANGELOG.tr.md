@@ -8,6 +8,19 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.7] - 2026-09-04
+
+### Düzeltildi
+
+- Çekmecedeki Actions dropdown'ı tetikleyiciye sağa hizalıydı, bu da
+  butonun altında/sağında değil soluna doğru genişleyip oradaki
+  içeriğin üzerine binmesine yol açıyordu; oysa masaüstü tam sayfa
+  header'da tetikleyici ekranın en sağında olduğu için sola doğru
+  açılması doğruydu. `ActionsTrigger` artık bir `align` prop'u
+  alıyor; çekmece varyantı `align="left"` kullanıyor, böylece
+  dropdown tetikleyicinin sol kenarından sağa doğru açılıyor; masaüstü
+  header ise önceki sağa hizalı davranışını koruyor.
+
 ## [0.9.6] - 2026-09-04
 
 ### Düzeltildi
