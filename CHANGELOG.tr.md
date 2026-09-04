@@ -8,6 +8,32 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.9] - 2026-09-04
+
+### Düzeltildi
+
+- Karantina seen/unseen durumu gerçek bir PMG sunucusunda sessizce
+  eski haline dönüyordu (demo modda hiç tekrarlanamıyordu) ve detay
+  ekranındaki "Mark unseen" aksiyonu ilk kullanımdan sonra Actions
+  menüsünden kayboluyordu. Kök neden: PMG'nin gerçek API'si `seen`
+  alanını boolean değil JSON sayısı (`0`/`1`) olarak döndürüyordu,
+  ancak frontend her yerde `mail.seen === true` şeklinde katı bir
+  karşılaştırma yapıyordu - bu kontrol yalnızca kendi mutasyonlarımız
+  cache'e gerçek bir boolean yazdığı anda geçiyordu; PMG'den gelen
+  sonraki her gerçek okuma ham `0`/`1` değerini geri getirip kontrolü
+  sessizce başarısız kılıyor, zaten görülmüş postayı tekrar görülmedi
+  olarak gösteriyordu. Demo mock'u zaten gerçek boolean ürettiği için
+  bu sorun orada hiç tekrarlanamıyordu. PMG verisinin uygulamaya
+  girdiği tek noktada (`pmgClient.js`) `seen`'i gerçek bir boolean'a
+  normalize ederek kalıcı olarak düzeltildi.
+- Detay sorgusunda, liste sorgusunda zaten bulunan ve aynı fire-and-
+  forget mark-seen-on-open yarış durumuna karşı eklenmiş olan
+  `refetchOnMount: false` eksikti.
+- Detay ekranının Actions menüsünde sadece "Mark unseen" seçeneği
+  vardı; sayfadan çıkmadan bu seçenek kullanıldığında menüde hiç
+  seen/unseen seçeneği kalmıyordu. Mesaj görülmedi durumundayken
+  gösterilen simetrik bir "Mark as seen" seçeneği eklendi.
+
 ## [0.9.8] - 2026-09-04
 
 ### Düzeltildi

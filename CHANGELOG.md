@@ -7,6 +7,30 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.9] - 2026-09-04
+
+### Fixed
+
+- Quarantine seen/unseen state silently reverted on a real PMG server
+  (never reproducible in demo mode), and the detail page's "Mark
+  unseen" action would disappear from the Actions menu after its
+  first use. Root cause: PMG's real API serializes the `seen` field as
+  a JSON number (`0`/`1`), not a boolean, but the frontend compared
+  `mail.seen === true` everywhere - that strict check only ever passed
+  right after our own mutations optimistically wrote a real boolean
+  into the cache, so any subsequent genuine fetch from PMG
+  reintroduced the raw `0`/`1` and silently failed the check, making
+  already-seen mail render as unseen again. The demo mock already
+  generates real booleans, which is why this was never reproducible
+  there. Fixed once at the boundary where PMG data enters the app
+  (`pmgClient.js`), normalizing `seen` to a real boolean.
+- The detail query lacked the `refetchOnMount: false` the list query
+  already had for the same fire-and-forget mark-seen-on-open race.
+- The detail page's Actions menu only had a "Mark unseen" item; after
+  using it without leaving the page, the menu had no seen/unseen
+  option left at all. Added a symmetric "Mark as seen" item, shown
+  when the message isn't seen.
+
 ## [0.9.8] - 2026-09-04
 
 ### Fixed
