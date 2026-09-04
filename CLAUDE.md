@@ -170,7 +170,16 @@ API reference" below):**
 - Each mail object returned by `GET /quarantine/spam` has `id`, `bytes`,
   `from`, `sender` (optional), `receiver`, `subject`, `time` (unix
   timestamp), `spamlevel` (spam score, number), `score-positive`/
-  `score-negative` (optional), `seen` (boolean, optional).
+  `score-negative` (optional), `seen` (boolean, optional). `GET
+  /quarantine/content` (the detail endpoint) also always includes `seen`
+  - verified against pmg-api's `Quarantine.pm` source: both endpoints
+  build their response through the same `parse_header_info` helper,
+  which always sets `seen` to `0`/`1`, never omits it. `mark-seen`/
+  `mark-unseen` (`POST /quarantine/content`) really does persist to the
+  database (`PMG::Quarantine::set_quarantined_mail_seen`), it's not a
+  no-op - see the note on React Query `refetchOnMount`/cache-patching
+  below for the actual reason the frontend avoids refetching after a
+  seen toggle.
 - There's a separate formatter for a sanitized HTML mail view:
   `/api2/htmlmail/quarantine/content` (instead of the usual
   `/api2/json/...`).
@@ -313,14 +322,22 @@ you get a 403 with a different role, check this note first.
     `QuarantineDetailPage.jsx`, `toggleSeenMutation` in
     `QuarantineListPage.jsx`) apply the new `seen` value straight into
     the React Query cache (list + detail) and deliberately do NOT
-    `invalidateQueries`/refetch afterwards - the quarantine content
-    (detail) response doesn't reliably echo back `seen` (it's only
-    documented on the list endpoint, see "PMG API Notes" above), so a
-    refetch there would silently clobber the just-applied state with
-    data that's missing the field, making the toggle look like a
-    no-op. The other three actions (deliver/whitelist/blocklist) still
-    invalidate as normal since those actually remove the item from the
-    list.
+    `invalidateQueries`/refetch afterwards. The other three actions
+    (deliver/whitelist/blocklist) still invalidate as normal since those
+    actually remove the item from the list.
+  - The quarantine list's `useQuery` (`QuarantineListPage.jsx`) also sets
+    `refetchOnMount: false`. Reason for both: PMG really does persist
+    `seen` immediately (see "PMG API Notes" above), but the mark-seen/
+    mark-unseen POST is fire-and-forget from an effect (auto-mark on
+    open) or a tap (the list toggle) - if the user navigates back to the
+    list quickly enough, React Query's default remount refetch can land
+    a response that predates that write completing server-side, silently
+    reverting the toggle right after it visibly applied. Since the
+    cache is already kept correct by these explicit patches (and by
+    `invalidateQueries` for the actions that need a real refetch),
+    letting the list implicitly refetch on every remount only reintroduces
+    that race - the Refresh button (`refetch()`) is the deliberate,
+    user-controlled way to pull in new mail instead.
 - The Docker image runs as a non-root user (see `Dockerfile`).
 
 ## Status

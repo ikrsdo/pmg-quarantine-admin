@@ -129,6 +129,15 @@ export default function QuarantineListPage() {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery({
     queryKey: ['quarantine', queryParams],
     queryFn: () => fetchQuarantineList(queryParams),
+    // Don't auto-refetch every time this page remounts (e.g. navigating
+    // back from a message's detail screen): the cache is already kept
+    // correct by explicit updates (actionMutation invalidates it,
+    // toggleSeenMutation/seenMutation patch it directly), and an implicit
+    // refetch here can race a just-fired mark-seen/mark-unseen request -
+    // if the refetch's response reflects the pre-action state, it
+    // silently reverts the toggle right after it visibly applied. The
+    // Refresh button (refetch()) still works for pulling in new mail.
+    refetchOnMount: false,
   });
 
   const actionMutation = useMutation({
@@ -153,10 +162,10 @@ export default function QuarantineListPage() {
     mutationFn: ({ id, action }) => performQuarantineAction(id, action),
     onSuccess: (_data, { id, action }) => {
       // Apply the known-correct result locally instead of invalidating and
-      // refetching: PMG's quarantine content (detail) response doesn't
-      // reliably echo back `seen`, so a refetch here can silently clobber
-      // this update with stale/incomplete data (see CLAUDE.md > "PMG API
-      // Notes" - `seen` is only documented on the list endpoint).
+      // refetching: this POST is fire-and-forget from the user's tap, so a
+      // refetch right after can race the write actually committing
+      // server-side and land a response that still shows the old value,
+      // silently reverting this update (see CLAUDE.md's PMG API Notes).
       const seen = action === 'mark-seen';
       queryClient.setQueriesData(
         { queryKey: ['quarantine'], predicate: (query) => query.queryKey[1] !== 'detail' },

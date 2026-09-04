@@ -8,6 +8,23 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.2] - 2026-09-04
+
+### Düzeltildi
+
+- Mobilde detay ekranının alt sabit aksiyon çubuğunda Deliver/
+  Whitelist/Block/Mark unseen tek satıra sıkışıyor, "Mark unseen"
+  etiketi kırpılıyordu. Artık mobilde 2x2 grid düzeninde gösteriliyor,
+  dört buton da tam görünüyor.
+- Mobilde karantina listesinden bir mesajın detayına girip geri
+  çıkıldığında, karttaki Göz/GözKapalı simgesi bir anlığına doğru
+  duruma geçip sonra eski haline dönebiliyordu. Kök neden: liste
+  sorgusunun varsayılan yeniden-mount'ta yeniden çekmesi, sunucu
+  tarafında henüz tamamlanmamış (fire-and-forget) mark-seen/mark-unseen
+  yazımından önceki bir yanıtı alıp zaten doğru olan önbelleği
+  eziyordu. Liste sorgusunda mount'ta yeniden çekmeyi kapatıp mevcut
+  önbellek yamalarına (ve manuel Yenile butonuna) güvenerek çözüldü.
+
 ## [0.9.1] - 2026-09-04
 
 ### Düzeltildi
@@ -15,10 +32,10 @@ uyumsuz değişiklikler içerebilir.
 - Görüldü/görülmedi geçişleri (liste satırlarındaki Göz/GözKapalı
   simgesi ve detay ekranının "Görülmedi yap" butonu), uygulandıktan
   hemen sonra karantina içerik uç noktasını artık yeniden çekmiyor -
-  o yanıt `seen` alanını güvenilir şekilde içermiyor, bu yüzden yeniden
-  çekme az önce uygulanan durumu sessizce eziyor, detay ekranındaki
-  butonun kaybolmasına ve listedeki geçişin hiçbir etkisi yokmuş gibi
-  görünmesine yol açıyordu.
+  mutasyonun fire-and-forget yazımı, yeniden-mount sırasında oluşan bir
+  yeniden çekmeyle yarışabiliyor ve sessizce eziliyordu, bu da detay
+  ekranındaki butonun kaybolmasına ve listedeki geçişin hiçbir etkisi
+  yokmuş gibi görünmesine yol açıyordu.
 
 ## [0.9.0] - 2026-09-03
 

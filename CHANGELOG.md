@@ -7,16 +7,33 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.2] - 2026-09-04
+
+### Fixed
+
+- On mobile, the detail screen's sticky bottom action bar squeezed
+  Deliver/Whitelist/Block/Mark unseen into a single row, clipping the
+  "Mark unseen" label. It now lays out as a 2x2 grid on mobile so all
+  four buttons stay fully visible.
+- On mobile, navigating from the quarantine list into a message and
+  back could briefly flash the card's Eye/EyeOff icon to the correct
+  state and then revert it. Root cause: the list query's default
+  remount refetch could land a response that predates the
+  fire-and-forget mark-seen/mark-unseen write completing server-side,
+  overwriting the already-correct cache. Fixed by disabling refetch-on-
+  mount for the quarantine list query and relying on the existing
+  cache patches (and the manual Refresh button) to keep it current.
+
 ## [0.9.1] - 2026-09-04
 
 ### Fixed
 
 - Seen/unseen toggles (the Eye/EyeOff icon on list rows and the detail
   screen's "Mark unseen" button) no longer refetch the quarantine
-  content endpoint right after applying - that response doesn't
-  reliably include `seen`, so the refetch could silently overwrite the
-  just-applied state, making the detail screen's button disappear and
-  the list's toggle look like it had no effect.
+  content endpoint right after applying - the mutation's fire-and-forget
+  write could otherwise race a remount refetch and get silently
+  overwritten, making the detail screen's button disappear and the
+  list's toggle look like it had no effect.
 
 ## [0.9.0] - 2026-09-03
 

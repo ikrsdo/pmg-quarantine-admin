@@ -241,11 +241,12 @@ export default function QuarantineDetailPage({ overlay = false }) {
   const seenMutation = useMutation({
     mutationFn: (action) => performQuarantineAction(id, action),
     onSuccess: (_data, action) => {
-      // Apply the known-correct result locally instead of invalidating the
-      // detail query too: PMG's quarantine content response doesn't
-      // reliably echo back `seen` (see CLAUDE.md > "PMG API Notes" - it's
-      // only documented on the list endpoint), so refetching this query
-      // right after would silently clobber this update with stale data.
+      // Apply the known-correct result locally instead of invalidating:
+      // this POST is fire-and-forget (fired from the auto-mark-on-open
+      // effect, or the user's tap), so a refetch right after can race the
+      // write actually committing server-side and land a response that
+      // still shows the old value, silently reverting this update (see
+      // CLAUDE.md's PMG API Notes).
       const seen = action === 'mark-seen';
       queryClient.setQueryData(['quarantine', 'detail', id], (old) => (old ? { ...old, seen } : old));
       queryClient.setQueriesData(
@@ -316,11 +317,11 @@ export default function QuarantineDetailPage({ overlay = false }) {
     actionMutation.mutate(action);
   }
 
-  function ActionButtons({ wide = false }) {
+  function ActionButtons({ wide = false, stacked = false }) {
     if (!mail) return null;
-    const widthClass = wide ? 'flex-1' : 'flex-1 lg:flex-none';
+    const widthClass = stacked ? '' : wide ? 'flex-1' : 'flex-1 lg:flex-none';
     return (
-      <div className="flex items-center gap-2">
+      <div className={stacked ? 'grid grid-cols-2 gap-2' : 'flex items-center gap-2'}>
         <button
           type="button"
           onClick={() => requestAction('deliver')}
@@ -538,7 +539,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
 
       {mail && (
         <div className="pb-safe fixed inset-x-0 bottom-0 z-10 border-t border-zinc-200 bg-white px-4 pt-4 dark:border-zinc-800 dark:bg-zinc-950 lg:hidden">
-          <ActionButtons />
+          <ActionButtons stacked />
         </div>
       )}
 
