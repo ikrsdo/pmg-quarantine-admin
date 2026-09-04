@@ -7,6 +7,19 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.8] - 2026-09-04
+
+### Fixed
+
+- Docker image builds were re-downloading every npm dependency from
+  scratch on every release, since bumping `version` in
+  `package.json`/`package-lock.json` changes the content of the
+  `COPY` step that precedes `npm ci`, invalidating Docker's layer
+  cache regardless of whether any dependency actually changed. Both
+  `npm ci` steps in `app/Dockerfile` now use a BuildKit cache mount
+  (`--mount=type=cache,target=/root/.npm`) so npm's own package cache
+  persists across builds even when the lockfile's content changes.
+
 ## [0.9.7] - 2026-09-04
 
 ### Fixed

@@ -8,6 +8,21 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.8] - 2026-09-04
+
+### Düzeltildi
+
+- Docker imaj build'leri her release'de tüm npm bağımlılıklarını
+  sıfırdan yeniden indiriyordu; çünkü `package.json`/
+  `package-lock.json` içindeki `version` alanını değiştirmek,
+  `npm ci`'dan önceki `COPY` adımının içeriğini değiştiriyor ve
+  bağımlılıklar aslında hiç değişmese bile Docker'ın katman cache'ini
+  geçersiz kılıyordu. `app/Dockerfile`'daki her iki `npm ci` adımı
+  artık bir BuildKit cache mount kullanıyor
+  (`--mount=type=cache,target=/root/.npm`), böylece lockfile'ın
+  içeriği değişse bile npm'in kendi paket önbelleği build'ler arasında
+  kalıcı oluyor.
+
 ## [0.9.7] - 2026-09-04
 
 ### Düzeltildi
