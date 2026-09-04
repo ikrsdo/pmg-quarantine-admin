@@ -7,6 +7,20 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.6] - 2026-09-04
+
+### Fixed
+
+- The Actions dropdown in the message detail drawer opened at the far
+  right of the drawer instead of under the trigger button. The
+  trigger's positioning wrapper is a plain block element, and inside
+  the drawer's flex column it was being stretched to the drawer's
+  full width by the default flex `align-items: stretch`, so the
+  dropdown's `right-0` anchored to that stretched width rather than
+  the button itself. The wrapper is now `inline-block` for the
+  compact (non-full-width) trigger variant, so it always sizes to
+  its content regardless of the parent layout.
+
 ## [0.9.5] - 2026-09-04
 
 ### Fixed

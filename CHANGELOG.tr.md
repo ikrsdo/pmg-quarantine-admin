@@ -8,6 +8,20 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.6] - 2026-09-04
+
+### Düzeltildi
+
+- Mesaj detay çekmecesindeki Actions dropdown'ı, tetikleyici butonun
+  altında değil çekmecenin en sağında açılıyordu. Tetikleyicinin
+  konumlandırma sarmalayıcısı düz bir blok elemandı ve çekmecenin
+  flex-column yapısı içinde, varsayılan `align-items: stretch`
+  nedeniyle çekmecenin tam genişliğine geriliyordu; bu da
+  dropdown'ın `right-0` konumunu butona değil bu gerilmiş genişliğe
+  göre hizalıyordu. Kompakt (tam genişlikli olmayan) tetikleyici
+  varyantı artık `inline-block`, böylece üst düzen ne olursa olsun
+  her zaman içeriğine göre boyutlanıyor.
+
 ## [0.9.5] - 2026-09-04
 
 ### Düzeltildi

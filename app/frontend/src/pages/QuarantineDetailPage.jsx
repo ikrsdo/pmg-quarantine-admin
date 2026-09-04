@@ -370,7 +370,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
     const items = ACTIONS_MENU_ITEMS.filter((item) => !item.show || item.show(mail));
 
     return (
-      <div ref={containerRef} className={`relative ${full ? 'w-full' : ''}`}>
+      <div ref={containerRef} className={`relative ${full ? 'w-full' : 'inline-block'}`}>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
