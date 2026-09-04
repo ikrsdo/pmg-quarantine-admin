@@ -93,12 +93,19 @@ async function getQuarantineList(session, { type = 'spam', starttime, endtime, p
     throw new PmgApiError(res.status, res.data);
   }
   const list = res.data?.data ?? [];
-  // Temporary diagnostic (see the mark-seen/mark-unseen log in
-  // quarantineAction): confirms whether PMG's list read actually reflects
-  // seen=true for these ids, or whether our read path is the one losing it.
-  // eslint-disable-next-line no-console
-  console.log(`[quarantine] list type=${type} seen-map=${JSON.stringify(list.map((m) => [m.id, m.seen]))}`);
-  return list;
+  // PMG's real API serializes `seen` as a JSON number (0/1), not a
+  // boolean - confirmed via diagnostic logging against a live server. The
+  // frontend compares `mail.seen === true` everywhere (QuarantineCard,
+  // QuarantineTable, QuarantineDetailPage's auto-mark-seen effect and
+  // "Mark unseen" menu item), which only ever matched right after our own
+  // mutations optimistically wrote a real boolean into the cache - any
+  // fresh fetch from PMG re-introduced the raw 0/1 and silently failed
+  // that strict check, making already-seen mail look unseen again and
+  // hiding "Mark unseen" from the actions menu. The demo mock
+  // (mockPmgClient.js) already generates real booleans, which is why this
+  // never showed up there. Normalize once here, at the boundary where real
+  // PMG data enters the app.
+  return list.map((m) => ({ ...m, seen: Boolean(m.seen) }));
 }
 
 async function getQuarantineAttachments(session, id) {
@@ -120,10 +127,9 @@ async function getQuarantineContent(session, id) {
   if (res.status !== 200) {
     throw new PmgApiError(res.status, res.data);
   }
-  // Temporary diagnostic, same purpose as getQuarantineList's above.
-  // eslint-disable-next-line no-console
-  console.log(`[quarantine] detail id=${id} seen=${res.data?.data?.seen}`);
-  return res.data?.data;
+  // See getQuarantineList's comment above - PMG serializes seen as 0/1.
+  const data = res.data?.data;
+  return data ? { ...data, seen: Boolean(data.seen) } : data;
 }
 
 async function getQuarantineHtmlPreview(session, id) {
@@ -219,15 +225,6 @@ async function quarantineAction(session, id, action) {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   });
-  if (action === 'mark-seen' || action === 'mark-unseen') {
-    // Temporary diagnostic: users have reported seen/unseen state silently
-    // reverting on a real PMG server (not reproducible in demo mode). This
-    // logs PMG's actual raw response for these two actions so a recurrence
-    // can be checked against what PMG really returned, instead of guessing.
-    // Remove once the root cause is confirmed and the fix is verified.
-    // eslint-disable-next-line no-console
-    console.log(`[quarantine] ${action} id=${id} -> status=${res.status} body=${JSON.stringify(res.data)}`);
-  }
   if (res.status !== 200) {
     throw new PmgApiError(res.status, res.data);
   }
