@@ -7,6 +7,16 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.5] - 2026-09-04
+
+### Fixed
+
+- On mobile, the Actions dropdown was right-aligned against the full-
+  width trigger button, landing at the far right edge of the screen
+  instead of near the (centered) "Actions" label. It now centers under
+  the trigger when the trigger is full-width; the compact desktop/
+  drawer triggers are unaffected (still right-aligned to the button).
+
 ## [0.9.4] - 2026-09-04
 
 ### Changed

@@ -381,9 +381,9 @@ export default function QuarantineDetailPage({ overlay = false }) {
         </button>
         {open && (
           <div
-            className={`absolute right-0 z-20 w-48 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950 ${
+            className={`absolute z-20 w-48 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950 ${
               direction === 'up' ? 'bottom-full mb-2' : 'top-full mt-2'
-            }`}
+            } ${full ? 'left-1/2 -translate-x-1/2' : 'right-0'}`}
           >
             <div className="flex flex-col p-1.5">
               {items.map(({ action, label, icon: Icon, className }) => (

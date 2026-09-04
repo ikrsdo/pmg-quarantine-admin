@@ -1,6 +1,6 @@
 {
   "name": "pmg-quarantine-admin-backend",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "private": true,
   "type": "commonjs",
   "main": "src/server.js",

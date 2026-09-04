@@ -8,6 +8,16 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.5] - 2026-09-04
+
+### Düzeltildi
+
+- Mobilde Actions dropdown'ı tam genişlikli tetikleyici butona göre
+  sağa hizalanıyordu, bu da ortalanmış "Actions" etiketinden uzakta,
+  ekranın en sağ kenarında açılmasına yol açıyordu. Artık tetikleyici
+  tam genişlikli olduğunda dropdown ortalanıyor; masaüstü/çekmecedeki
+  kompakt tetikleyiciler etkilenmedi (hâlâ butona sağa hizalı).
+
 ## [0.9.4] - 2026-09-04
 
 ### Değiştirildi
