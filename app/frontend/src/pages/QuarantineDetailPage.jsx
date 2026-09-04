@@ -219,6 +219,14 @@ export default function QuarantineDetailPage({ overlay = false }) {
   const { data: mail, isLoading, isError, error } = useQuery({
     queryKey: ['quarantine', 'detail', id],
     queryFn: () => fetchQuarantineDetail(id),
+    // Same race as the list query's refetchOnMount:false (see
+    // QuarantineListPage.jsx / CLAUDE.md's PMG API Notes): this page's own
+    // mark-seen-on-open effect below fires a fire-and-forget POST right at
+    // mount, and an implicit remount refetch can land a response that
+    // predates that write completing server-side, reverting the seen
+    // toggle right after it applied. The cache is already kept correct by
+    // seenMutation's explicit setQueryData below.
+    refetchOnMount: false,
   });
 
   const actionMutation = useMutation({

@@ -210,6 +210,15 @@ async function quarantineAction(session, id, action) {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   });
+  if (action === 'mark-seen' || action === 'mark-unseen') {
+    // Temporary diagnostic: users have reported seen/unseen state silently
+    // reverting on a real PMG server (not reproducible in demo mode). This
+    // logs PMG's actual raw response for these two actions so a recurrence
+    // can be checked against what PMG really returned, instead of guessing.
+    // Remove once the root cause is confirmed and the fix is verified.
+    // eslint-disable-next-line no-console
+    console.log(`[quarantine] ${action} id=${id} -> status=${res.status} body=${JSON.stringify(res.data)}`);
+  }
   if (res.status !== 200) {
     throw new PmgApiError(res.status, res.data);
   }
