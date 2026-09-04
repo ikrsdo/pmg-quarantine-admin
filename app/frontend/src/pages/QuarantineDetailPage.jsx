@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRightLeft, Send, ShieldCheck, Ban, EyeOff, X, Paperclip } from 'lucide-react';
+import { ArrowLeft, ArrowRightLeft, ListChecks, Send, ShieldCheck, Ban, EyeOff, X, Paperclip } from 'lucide-react';
 import {
   fetchQuarantineAttachments,
   fetchQuarantineDetail,
@@ -215,6 +215,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
   const queryClient = useQueryClient();
   const [pendingAction, setPendingAction] = useState(null); // 'deliver' | 'blocklist' | null
   const [drawerVisible, setDrawerVisible] = useState(!overlay);
+  const [actionsMenuOpen, setActionsMenuOpen] = useState(false);
 
   const { data: mail, isLoading, isError, error } = useQuery({
     queryKey: ['quarantine', 'detail', id],
@@ -317,45 +318,92 @@ export default function QuarantineDetailPage({ overlay = false }) {
     actionMutation.mutate(action);
   }
 
-  function ActionButtons({ wide = false, stacked = false }) {
+  function handleActionsMenuSelect(action) {
+    if (action === 'mark-unseen') {
+      seenMutation.mutate('mark-unseen');
+    } else {
+      requestAction(action);
+    }
+  }
+
+  // Single "Actions" trigger everywhere the action set is shown (desktop
+  // header, drawer header, mobile sticky bar) instead of a row/grid of
+  // buttons - keeps the trigger a constant size no matter how many actions
+  // exist, so adding a new action later is just one more row in the menu.
+  function ActionsTrigger({ full = false }) {
     if (!mail) return null;
-    const widthClass = stacked ? '' : wide ? 'flex-1' : 'flex-1 lg:flex-none';
     return (
-      <div className={stacked ? 'grid grid-cols-2 gap-2' : 'flex items-center gap-2'}>
-        <button
-          type="button"
-          onClick={() => requestAction('deliver')}
-          className={`flex items-center justify-center gap-1.5 rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500 ${widthClass}`}
+      <button
+        type="button"
+        onClick={() => setActionsMenuOpen(true)}
+        className={`inline-flex items-center justify-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900 ${full ? 'w-full' : ''}`}
+      >
+        <ListChecks className="size-4" />
+        Actions
+      </button>
+    );
+  }
+
+  const ACTIONS_MENU_ITEMS = [
+    { action: 'deliver', label: 'Deliver', icon: Send, className: 'text-emerald-600 dark:text-emerald-400' },
+    { action: 'whitelist', label: 'Whitelist', icon: ShieldCheck, className: 'text-blue-600 dark:text-blue-400' },
+    { action: 'blocklist', label: 'Block', icon: Ban, className: 'text-red-600 dark:text-red-400' },
+    {
+      action: 'mark-unseen',
+      label: 'Mark unseen',
+      icon: EyeOff,
+      className: 'text-zinc-600 dark:text-zinc-400',
+      show: (m) => m.seen === true,
+    },
+  ];
+
+  function ActionsMenu() {
+    useEffect(() => {
+      if (!actionsMenuOpen) return;
+      function handleKeyDown(e) {
+        if (e.key === 'Escape') setActionsMenuOpen(false);
+      }
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    if (!actionsMenuOpen || !mail) return null;
+
+    const items = ACTIONS_MENU_ITEMS.filter((item) => !item.show || item.show(mail));
+
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+        // iOS Safari silently skips backdrop-filter on a `fixed` element
+        // unless it has its own compositing layer - forcing one here is what
+        // makes the blur actually render on mobile Safari.
+        style={{ transform: 'translateZ(0)' }}
+        onClick={() => setActionsMenuOpen(false)}
+      >
+        <div
+          className="w-full max-w-xs overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950"
+          onClick={(e) => e.stopPropagation()}
         >
-          <Send className="size-4" />
-          Deliver
-        </button>
-        <button
-          type="button"
-          onClick={() => requestAction('whitelist')}
-          className={`flex items-center justify-center gap-1.5 rounded-md border border-blue-600 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-500/10 dark:text-blue-400 ${widthClass}`}
-        >
-          <ShieldCheck className="size-4" />
-          Whitelist
-        </button>
-        <button
-          type="button"
-          onClick={() => requestAction('blocklist')}
-          className={`flex items-center justify-center gap-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500 ${widthClass}`}
-        >
-          <Ban className="size-4" />
-          Block
-        </button>
-        {mail.seen === true && (
-          <button
-            type="button"
-            onClick={() => seenMutation.mutate('mark-unseen')}
-            className={`flex items-center justify-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-900 ${widthClass}`}
-          >
-            <EyeOff className="size-4" />
-            Mark unseen
-          </button>
-        )}
+          <p className="border-b border-zinc-200 px-4 py-3 text-sm font-medium text-zinc-900 dark:border-zinc-800 dark:text-zinc-100">
+            Actions
+          </p>
+          <div className="flex flex-col p-1.5">
+            {items.map(({ action, label, icon: Icon, className }) => (
+              <button
+                key={action}
+                type="button"
+                onClick={() => {
+                  setActionsMenuOpen(false);
+                  handleActionsMenuSelect(action);
+                }}
+                className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 ${className}`}
+              >
+                <Icon className="size-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -504,7 +552,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
 
           {mail && (
             <div className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-              <ActionButtons wide />
+              <ActionsTrigger />
             </div>
           )}
 
@@ -512,6 +560,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
         </div>
 
         {confirmDialog}
+        <ActionsMenu />
       </div>
     );
   }
@@ -531,7 +580,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
           {mail?.subject || 'Message details'}
         </p>
         <div className="ml-auto hidden lg:block">
-          <ActionButtons />
+          <ActionsTrigger />
         </div>
       </header>
 
@@ -539,11 +588,12 @@ export default function QuarantineDetailPage({ overlay = false }) {
 
       {mail && (
         <div className="pb-safe fixed inset-x-0 bottom-0 z-10 border-t border-zinc-200 bg-white px-4 pt-4 dark:border-zinc-800 dark:bg-zinc-950 lg:hidden">
-          <ActionButtons stacked />
+          <ActionsTrigger full />
         </div>
       )}
 
       {confirmDialog}
+      <ActionsMenu />
     </div>
   );
 }

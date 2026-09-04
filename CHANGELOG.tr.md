@@ -8,6 +8,20 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.9.3] - 2026-09-04
+
+### Değiştirildi
+
+- Detay ekranındaki tek tek aksiyon buton sırası (mobil alt çubuk,
+  masaüstü başlığı, masaüstü çekmece başlığı) tek bir "Actions"
+  (Aksiyonlar) tetikleyicisiyle değiştirildi; tıklanınca menü açılıyor
+  (Deliver/Whitelist/Block/Mark unseen). Önceki satır/grid düzeni
+  kısıtlı ekrana sığdırmak için tekrar tekrar revize gerektiriyordu;
+  sabit boyutlu tetikleyici yeni aksiyonlar eklense de düzen
+  değişikliği gerektirmiyor. Altta yatan davranış (deliver/whitelist/
+  block için onay adımı, mark-seen/unseen için doğrudan mutasyon)
+  değişmedi.
+
 ## [0.9.2] - 2026-09-04
 
 ### Düzeltildi

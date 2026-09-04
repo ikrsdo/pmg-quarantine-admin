@@ -113,20 +113,30 @@ default to a generic/random admin-panel look.
     saturated with Deliver/Block).
   - A search/filter bar at the top; filters open in a bottom sheet.
   - A "selection mode" toggle for bulk actions.
-  - In the detail screen, a sticky bottom action bar with Deliver /
-    Whitelist / Block buttons; all three require a confirmation step
-    (`CONFIRM_COPY` in `QuarantineDetailPage.jsx`). A "Mark unseen"
-    button also appears in this bar, but only when the message is
-    currently seen - opening a message auto-marks it seen (silently,
-    no toast), mirroring PMG's own behavior.
+  - In the detail screen, a sticky bottom bar holds a single "Actions"
+    trigger button (not individual Deliver/Whitelist/Block buttons -
+    an earlier per-button row/grid layout didn't fit a constrained
+    mobile screen and was replaced). Tapping it opens a centered modal
+    menu (`ActionsMenu` in `QuarantineDetailPage.jsx`, styled like
+    `FilterSheet.jsx`) listing Deliver/Whitelist/Block (still routed
+    through the existing confirmation step, `CONFIRM_COPY`) plus "Mark
+    unseen" (direct mutation, no confirmation), shown only when the
+    message is currently seen - opening a message auto-marks it seen
+    (silently, no toast), mirroring PMG's own behavior. Adding a new
+    action later means adding one row to `ACTIONS_MENU_ITEMS`, not
+    fitting another button into the trigger.
 - **Layout - desktop:**
   - The quarantine list becomes a dense data table instead of mobile's
     card layout: checkbox, sender, subject, recipient, date, spam-score
     badge, quick action icons at the end of the row.
   - A fixed left-hand navigation (Quarantine / Tracking Center).
   - Two-column detail screen: metadata + spam score breakdown on the
-    left, email preview/header tabs on the right. Action buttons as a
-    button group at the top of the page, not a sticky bottom bar.
+    left, email preview/header tabs on the right. Same single
+    "Actions" trigger + menu pattern as mobile (not a button group) at
+    the top of the page, and in the drawer/overlay variant's header
+    too - kept consistent across all three places the action set
+    appears so the trigger stays a constant size regardless of how
+    many actions exist.
 - **Components:** status badges, swipeable list rows, tabbed content
   views (e.g. Preview / Headers), empty states and loading (skeleton)
   states designed separately for each main screen.

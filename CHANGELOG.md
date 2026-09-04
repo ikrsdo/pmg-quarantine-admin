@@ -7,6 +7,18 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.9.3] - 2026-09-04
+
+### Changed
+
+- Replaced the detail screen's per-button action row (mobile sticky
+  bar, desktop header, desktop drawer header) with a single "Actions"
+  trigger that opens a menu (Deliver/Whitelist/Block/Mark unseen). The
+  previous row/grid layout kept needing rework to fit a constrained
+  screen; a fixed-size trigger scales to more actions without further
+  layout changes. Underlying behavior (confirmation step for deliver/
+  whitelist/block, direct mutation for mark-seen/unseen) is unchanged.
+
 ## [0.9.2] - 2026-09-04
 
 ### Fixed
