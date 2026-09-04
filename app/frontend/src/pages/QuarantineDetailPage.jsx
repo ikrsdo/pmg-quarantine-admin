@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRightLeft, ListChecks, Send, ShieldCheck, Ban, EyeOff, X, Paperclip } from 'lucide-react';
+import { ArrowLeft, ArrowRightLeft, ListChecks, Send, ShieldCheck, Ban, Eye, EyeOff, X, Paperclip } from 'lucide-react';
 import {
   fetchQuarantineAttachments,
   fetchQuarantineDetail,
@@ -247,8 +247,8 @@ export default function QuarantineDetailPage({ overlay = false }) {
   // stays silent (no toast) so opening a message doesn't spam a
   // notification every time.
   const seenMutation = useMutation({
-    mutationFn: (action) => performQuarantineAction(id, action),
-    onSuccess: (_data, action) => {
+    mutationFn: ({ action }) => performQuarantineAction(id, action),
+    onSuccess: (_data, { action, silent }) => {
       // Apply the known-correct result locally instead of invalidating:
       // this POST is fire-and-forget (fired from the auto-mark-on-open
       // effect, or the user's tap), so a refetch right after can race the
@@ -261,7 +261,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
         { queryKey: ['quarantine'], predicate: (query) => query.queryKey[1] !== 'detail' },
         (old) => (Array.isArray(old) ? old.map((m) => (m.id === id ? { ...m, seen } : m)) : old),
       );
-      if (action === 'mark-unseen') {
+      if (!silent) {
         const { tone, message } = quarantineActionToast(action);
         showToast(message, tone);
       }
@@ -279,7 +279,7 @@ export default function QuarantineDetailPage({ overlay = false }) {
   useEffect(() => {
     if (!mail || autoMarkedIdRef.current === mail.id) return;
     autoMarkedIdRef.current = mail.id;
-    if (mail.seen !== true) seenMutation.mutate('mark-seen');
+    if (mail.seen !== true) seenMutation.mutate({ action: 'mark-seen', silent: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mail?.id]);
 
@@ -326,8 +326,8 @@ export default function QuarantineDetailPage({ overlay = false }) {
   }
 
   function handleActionsMenuSelect(action) {
-    if (action === 'mark-unseen') {
-      seenMutation.mutate('mark-unseen');
+    if (action === 'mark-unseen' || action === 'mark-seen') {
+      seenMutation.mutate({ action });
     } else {
       requestAction(action);
     }
@@ -343,6 +343,17 @@ export default function QuarantineDetailPage({ overlay = false }) {
       icon: EyeOff,
       className: 'text-zinc-600 dark:text-zinc-400',
       show: (m) => m.seen === true,
+    },
+    {
+      // Symmetric counterpart to mark-unseen above: without this, marking a
+      // message unseen from this same menu (without leaving the page) left
+      // the menu with no seen/unseen option at all on the next open, since
+      // the mark-unseen item's own `show` condition no longer matched.
+      action: 'mark-seen',
+      label: 'Mark as seen',
+      icon: Eye,
+      className: 'text-zinc-600 dark:text-zinc-400',
+      show: (m) => m.seen !== true,
     },
   ];
 
