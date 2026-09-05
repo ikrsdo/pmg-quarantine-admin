@@ -8,6 +8,17 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.10.0] - 2026-09-05
+
+### Eklendi
+
+- Karantina ve Tracking Center liste sayfaları artık 60 saniyede bir
+  otomatik yenileniyor, böylece yeni mailler/kayıtlar Yenile butonuna
+  el atmadan görünüyor. Karantina liste sayfasında, toplu seçim veya
+  bir onay diyaloğu açıkken otomatik yenileme duraklıyor - aksi halde
+  listenin arkadan değişmesi seçimi ya da onaylanmakta olan öğeyi
+  sessizce geçersiz kılabilirdi.
+
 ## [0.9.9] - 2026-09-04
 
 ### Düzeltildi

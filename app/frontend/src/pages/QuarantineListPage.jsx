@@ -138,6 +138,11 @@ export default function QuarantineListPage() {
     // silently reverts the toggle right after it visibly applied. The
     // Refresh button (refetch()) still works for pulling in new mail.
     refetchOnMount: false,
+    // Auto-refresh every 60s so new mail shows up without a manual tap on
+    // Refresh - paused while the user has a bulk selection or a
+    // confirmation dialog open, since a list reshuffling underneath would
+    // silently invalidate the selection or the item being confirmed on.
+    refetchInterval: selectionMode || pendingAction ? false : 60000,
   });
 
   const actionMutation = useMutation({

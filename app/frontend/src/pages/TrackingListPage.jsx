@@ -113,6 +113,10 @@ export default function TrackingListPage() {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery({
     queryKey: ['tracking', queryParams],
     queryFn: () => fetchTrackingList(queryParams),
+    // Auto-refresh every 60s so new tracking entries show up without a
+    // manual tap on Refresh - safe here since this list is read-only (no
+    // selection mode, no in-flight actions to disturb).
+    refetchInterval: 60000,
   });
 
   if (isError && handleUnauthorized(error)) {

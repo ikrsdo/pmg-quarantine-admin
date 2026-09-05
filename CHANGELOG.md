@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.10.0] - 2026-09-05
+
+### Added
+
+- Quarantine and Tracking Center list pages now auto-refresh every 60
+  seconds, so new mail/entries show up without a manual tap on
+  Refresh. On the Quarantine list, auto-refresh pauses while a bulk
+  selection or a confirmation dialog is open, since a list reshuffling
+  underneath would silently invalidate the selection or the item being
+  confirmed on.
+
 ## [0.9.9] - 2026-09-04
 
 ### Fixed
