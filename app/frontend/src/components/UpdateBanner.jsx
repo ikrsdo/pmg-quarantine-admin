@@ -21,6 +21,19 @@ function isNewer(a, b) {
 
 export default function UpdateBanner() {
   const [latestVersion, setLatestVersion] = useState(null);
+  const [swUpdateReady, setSwUpdateReady] = useState(false);
+
+  // Fired by main.jsx when the service worker has swapped in a new version
+  // of the app in the background (see sw.js). Takes priority over the
+  // GitHub-tag banner below since reloading is the actual fix, not just
+  // a notice.
+  useEffect(() => {
+    function handleSwUpdate() {
+      setSwUpdateReady(true);
+    }
+    window.addEventListener('pmg:sw-update-ready', handleSwUpdate);
+    return () => window.removeEventListener('pmg:sw-update-ready', handleSwUpdate);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,6 +76,21 @@ export default function UpdateBanner() {
       cancelled = true;
     };
   }, []);
+
+  if (swUpdateReady) {
+    return (
+      <div className="pb-safe fixed inset-x-0 bottom-0 z-20 flex items-center justify-center gap-3 border-t border-blue-800 bg-blue-950 px-4 py-3 text-sm text-blue-100 shadow-lg">
+        <p className="min-w-0">A new version has loaded in the background.</p>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="shrink-0 rounded-md bg-blue-800 px-3 py-1 font-semibold hover:bg-blue-700"
+        >
+          Reload
+        </button>
+      </div>
+    );
+  }
 
   if (!latestVersion) return null;
 

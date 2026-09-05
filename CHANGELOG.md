@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.11.0] - 2026-09-05
+
+### Added
+
+- Installed PWAs (notably iOS home-screen installs) now pick up a new
+  deploy automatically instead of requiring a manual browser cache/history
+  clear. A service worker forces every page load to bypass the cache,
+  the server sends proper cache headers (never cache `index.html`,
+  cache hashed build assets forever), and a "new version loaded -
+  Reload" prompt appears once an update has loaded in the background.
+
 ## [0.10.0] - 2026-09-05
 
 ### Added

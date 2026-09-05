@@ -8,6 +8,18 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.11.0] - 2026-09-05
+
+### Eklendi
+
+- Yüklenmiş PWA'lar (özellikle iOS ana ekran uygulamaları) artık yeni bir
+  dağıtımı, manuel tarayıcı önbelleği/geçmiş temizliği gerekmeden otomatik
+  olarak yakalıyor. Bir service worker her sayfa yüklemesini önbelleği
+  atlamaya zorluyor, sunucu doğru önbellek başlıklarını gönderiyor
+  (`index.html` hiç önbelleklenmiyor, hash'li build dosyaları süresiz
+  önbelleklenebiliyor) ve arka planda bir güncelleme yüklendiğinde
+  "Yeni sürüm yüklendi - Yenile" uyarısı çıkıyor.
+
 ## [0.10.0] - 2026-09-05
 
 ### Eklendi

@@ -68,10 +68,27 @@ function createApp() {
   app.use('/api/tracking', trackingRoutes);
 
   if (fs.existsSync(STATIC_DIR)) {
-    app.use(express.static(STATIC_DIR));
+    // index.html and sw.js must always be revalidated - installed iOS PWAs
+    // in particular can hold onto a cached index.html indefinitely
+    // otherwise, never picking up a new deploy's hashed asset filenames.
+    // Vite's other build output (dist/assets/*) is content-hashed per
+    // build, so it's safe to cache aggressively/immutably.
+    app.use(
+      express.static(STATIC_DIR, {
+        setHeaders: (res, filePath) => {
+          const base = path.basename(filePath);
+          if (base === 'index.html' || base === 'sw.js') {
+            res.setHeader('Cache-Control', 'no-cache');
+          } else {
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          }
+        },
+      }),
+    );
     // SPA fallback: any non-API GET route serves index.html, letting
     // react-router-dom handle the path client-side.
     app.get(/^(?!\/api).*/, (req, res) => {
+      res.set('Cache-Control', 'no-cache');
       res.sendFile(path.join(STATIC_DIR, 'index.html'));
     });
   }

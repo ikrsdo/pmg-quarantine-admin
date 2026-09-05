@@ -418,6 +418,28 @@ worth remembering that aren't spelled out in the changelog:
   list (via the new `listattachments` endpoint, see "PMG API Notes"),
   or the existing spam-score badge. The Dashboard is unaffected and
   stays spam-only by design.
+- **Forced PWA update (service worker):** `app/frontend/public/sw.js`,
+  registered from `main.jsx`. Installed home-screen PWAs (iOS Safari in
+  particular) can hold onto a stale `index.html` indefinitely, still
+  pointing at old, no-longer-served hashed JS/CSS filenames - the app
+  previously required a manual Safari cache/history clear to pick up a
+  new deploy. The fix has two parts: `server.js`'s static file serving
+  now sends `Cache-Control: no-cache` for `index.html` and `sw.js`
+  (always revalidated) and `public, max-age=31536000, immutable` for
+  everything else (Vite's `dist/assets/*` output is content-hashed per
+  build, safe to cache forever); and `sw.js` itself does no offline
+  caching (this app always needs the network - it proxies live PMG
+  data) but intercepts every navigation request and forces a
+  `cache: 'no-store'` fetch, plus calls `skipWaiting()`/
+  `clients.claim()` so a new version takes over immediately instead of
+  waiting for every tab to close. `main.jsx` listens for
+  `controllerchange` and - only when the page was already controlled by
+  a service worker before (`wasControlled`, skipping the very first
+  install) - dispatches a `pmg:sw-update-ready` window event.
+  `UpdateBanner.jsx` listens for that event and swaps its usual
+  GitHub-tag-comparison banner for a "new version loaded in the
+  background - Reload" prompt, so the update is visible and
+  user-triggered rather than silently reloading mid-session.
 - **Update-check banner (the one direct browser→external-API call):**
   `UpdateBanner.jsx`, mounted in `AppShell.jsx` (so it shows on
   Dashboard/Quarantine/Tracking, not the two standalone detail pages,
