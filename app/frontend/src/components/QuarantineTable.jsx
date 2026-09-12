@@ -1,5 +1,16 @@
+import { Fragment } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowUp, ArrowDown, ChevronsUpDown, Send, Ban, Eye, EyeOff } from 'lucide-react';
+import {
+  ArrowUp,
+  ArrowDown,
+  ChevronsUpDown,
+  ChevronDown,
+  ChevronRight,
+  Send,
+  Ban,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
 import SpamScoreBadge from './SpamScoreBadge';
 
 function VirusNameBadge({ name }) {
@@ -47,6 +58,10 @@ function SortableHeader({ label, sortKey, activeKey, dir, onSort, className = ''
 
 export default function QuarantineTable({
   mails,
+  groups,
+  collapsedDates,
+  onToggleDateCollapse,
+  onToggleSelectGroup,
   type = 'spam',
   selectedIds,
   selectionMode,
@@ -61,7 +76,127 @@ export default function QuarantineTable({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const allSelected = mails.length > 0 && mails.every((m) => selectedIds.has(m.id));
+  const allMails = groups ? groups.flatMap((g) => g.items) : mails;
+  const allSelected = allMails.length > 0 && allMails.every((m) => selectedIds.has(m.id));
+  const columnCount =
+    (selectionMode ? 1 : 0) + 4 + (type === 'spam' || type === 'virus' ? 1 : 0) + 2;
+
+  function renderRow(mail) {
+    return (
+      <tr
+        key={mail.id}
+        onClick={() =>
+          navigate(`/quarantine/${encodeURIComponent(mail.id)}?type=${type}`, {
+            state: { backgroundLocation: location },
+          })
+        }
+        className="cursor-pointer border-b border-zinc-100 odd:bg-white even:bg-zinc-50 last:border-0 hover:bg-blue-50 dark:border-zinc-900 dark:odd:bg-zinc-950 dark:even:bg-zinc-900/40 dark:hover:bg-zinc-800"
+      >
+        {selectionMode && (
+          <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
+            <input
+              type="checkbox"
+              checked={selectedIds.has(mail.id)}
+              onChange={() => onToggleSelect(mail.id)}
+              className="size-4 accent-blue-600"
+            />
+          </td>
+        )}
+        <td className="max-w-[200px] truncate px-3 py-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+          {mail.sender || mail.from}
+        </td>
+        <td className="max-w-[280px] truncate px-3 py-2 text-zinc-900 dark:text-zinc-100">
+          {mail.subject || '(no subject)'}
+        </td>
+        <td className="max-w-[200px] truncate px-3 py-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+          {mail.receiver}
+        </td>
+        <td className="whitespace-nowrap px-3 py-2 text-zinc-500 dark:text-zinc-500">
+          {formatTime(mail.time)}
+        </td>
+        {type === 'spam' && (
+          <td className="px-3 py-2">
+            <SpamScoreBadge score={mail.spamlevel} />
+          </td>
+        )}
+        {type === 'virus' && (
+          <td className="px-3 py-2">
+            <VirusNameBadge name={mail.virusname} />
+          </td>
+        )}
+        <td className="whitespace-nowrap px-3 py-2 text-zinc-500 dark:text-zinc-500">
+          {formatKB(mail.bytes)}
+        </td>
+        <td className="px-3 py-2 text-right" onClick={(e) => e.stopPropagation()}>
+          <div className="inline-flex gap-1">
+            <button
+              type="button"
+              onClick={() => onToggleSeenRequest(mail.id, mail.seen === true)}
+              title={mail.seen === true ? 'Mark as unseen' : 'Mark as seen'}
+              className={`inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium ${
+                mail.seen === true
+                  ? 'text-zinc-500 hover:bg-zinc-500/10 dark:text-zinc-400'
+                  : 'text-blue-600 hover:bg-blue-500/10 dark:text-blue-400'
+              }`}
+            >
+              {mail.seen === true ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => onDeliverRequest(mail.id)}
+              className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
+            >
+              <Send className="size-3.5" />
+              Deliver
+            </button>
+            <button
+              type="button"
+              onClick={() => onBlockRequest(mail.id)}
+              className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-500/10 dark:text-red-400"
+            >
+              <Ban className="size-3.5" />
+              Block
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  }
+
+  function renderGroupHeader(group) {
+    const groupIds = group.items.map((m) => m.id);
+    const groupAllSelected = groupIds.length > 0 && groupIds.every((id) => selectedIds.has(id));
+    const collapsed = collapsedDates.has(group.dateKey);
+    return (
+      <tr
+        key={`${group.dateKey}-header`}
+        className="border-b border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900/60"
+      >
+        <td colSpan={columnCount} className="px-3 py-1.5">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onToggleDateCollapse(group.dateKey)}
+              className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+            >
+              {collapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
+            </button>
+            {selectionMode && (
+              <input
+                type="checkbox"
+                checked={groupAllSelected}
+                onChange={() => onToggleSelectGroup(groupIds)}
+                className="size-4 accent-blue-600"
+              />
+            )}
+            <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+              Date: {group.dateLabel} ({group.items.length})
+            </span>
+          </div>
+        </td>
+      </tr>
+    );
+  }
 
   return (
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800">
@@ -93,85 +228,14 @@ export default function QuarantineTable({
           </tr>
         </thead>
         <tbody>
-          {mails.map((mail) => (
-            <tr
-              key={mail.id}
-              onClick={() =>
-                navigate(`/quarantine/${encodeURIComponent(mail.id)}?type=${type}`, {
-                  state: { backgroundLocation: location },
-                })
-              }
-              className="cursor-pointer border-b border-zinc-100 odd:bg-white even:bg-zinc-50 last:border-0 hover:bg-blue-50 dark:border-zinc-900 dark:odd:bg-zinc-950 dark:even:bg-zinc-900/40 dark:hover:bg-zinc-800"
-            >
-              {selectionMode && (
-                <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.has(mail.id)}
-                    onChange={() => onToggleSelect(mail.id)}
-                    className="size-4 accent-blue-600"
-                  />
-                </td>
-              )}
-              <td className="max-w-[200px] truncate px-3 py-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
-                {mail.sender || mail.from}
-              </td>
-              <td className="max-w-[280px] truncate px-3 py-2 text-zinc-900 dark:text-zinc-100">
-                {mail.subject || '(no subject)'}
-              </td>
-              <td className="max-w-[200px] truncate px-3 py-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
-                {mail.receiver}
-              </td>
-              <td className="whitespace-nowrap px-3 py-2 text-zinc-500 dark:text-zinc-500">
-                {formatTime(mail.time)}
-              </td>
-              {type === 'spam' && (
-                <td className="px-3 py-2">
-                  <SpamScoreBadge score={mail.spamlevel} />
-                </td>
-              )}
-              {type === 'virus' && (
-                <td className="px-3 py-2">
-                  <VirusNameBadge name={mail.virusname} />
-                </td>
-              )}
-              <td className="whitespace-nowrap px-3 py-2 text-zinc-500 dark:text-zinc-500">
-                {formatKB(mail.bytes)}
-              </td>
-              <td className="px-3 py-2 text-right" onClick={(e) => e.stopPropagation()}>
-                <div className="inline-flex gap-1">
-                  <button
-                    type="button"
-                    onClick={() => onToggleSeenRequest(mail.id, mail.seen === true)}
-                    title={mail.seen === true ? 'Mark as unseen' : 'Mark as seen'}
-                    className={`inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium ${
-                      mail.seen === true
-                        ? 'text-zinc-500 hover:bg-zinc-500/10 dark:text-zinc-400'
-                        : 'text-blue-600 hover:bg-blue-500/10 dark:text-blue-400'
-                    }`}
-                  >
-                    {mail.seen === true ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onDeliverRequest(mail.id)}
-                    className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
-                  >
-                    <Send className="size-3.5" />
-                    Deliver
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onBlockRequest(mail.id)}
-                    className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-500/10 dark:text-red-400"
-                  >
-                    <Ban className="size-3.5" />
-                    Block
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+          {groups
+            ? groups.map((group) => (
+                <Fragment key={group.dateKey}>
+                  {renderGroupHeader(group)}
+                  {!collapsedDates.has(group.dateKey) && group.items.map((mail) => renderRow(mail))}
+                </Fragment>
+              ))
+            : mails.map((mail) => renderRow(mail))}
         </tbody>
       </table>
     </div>

@@ -418,6 +418,22 @@ worth remembering that aren't spelled out in the changelog:
   list (via the new `listattachments` endpoint, see "PMG API Notes"),
   or the existing spam-score badge. The Dashboard is unaffected and
   stays spam-only by design.
+- **PMG-style date grouping on list pages:** `utils/dateGrouping.js`'s
+  `groupByDate(items, getTime)` buckets an already-sorted list into
+  per-calendar-day groups, preserving order. Both `QuarantineListPage.jsx`
+  and `TrackingListPage.jsx` compute `groups` only when `sortKey === 'time'`
+  (grouping while sorted by any other column would scatter same-date rows
+  apart, so it's simply disabled then - falls back to the prior flat
+  list). Rendered as a collapsible `Date: DD/MM/YYYY (N)` section header
+  above each date's rows/cards, on both the desktop table
+  (`QuarantineTable.jsx`, and inline in `TrackingListPage.jsx`'s table)
+  and mobile card view; collapsed state is a per-page `Set<dateKey>`
+  kept as ordinary component state, independent of query data, so it
+  isn't disturbed by the 60s auto-refresh poll (same reasoning as
+  `selectionMode`/`pendingAction` below). On Quarantine only, each date
+  header also carries a "select all in this date" checkbox wired into
+  the existing `selectedIds` bulk-selection Set; Tracking Center has no
+  selection mode (read-only, per scope) so its header is label-only.
 - **Active PMG ticket check on `/api/auth/me`:** `requireAuth`
   (`middleware/requireAuth.js`) only proves the app's own Express session
   (4h `maxAge`) hasn't expired - it never checked whether PMG's own

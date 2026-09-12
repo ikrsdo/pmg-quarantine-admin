@@ -8,6 +8,17 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.13.0] - 2026-09-12
+
+### Eklendi
+
+- Karantina ve Tracking Center liste sayfaları artık PMG'nin kendi
+  karantina arayüzüne benzer şekilde, satırları "Date: GG/AA/YYYY (N)"
+  başlıklı katlanabilir tarih bölümleri altında gruplandırıyor - liste
+  zamana göre sıralıyken (varsayılan) aktif, hem masaüstü tablo hem
+  mobil kart görünümünde. Karantina'da her tarih başlığında, mevcut
+  toplu seçim moduna bağlı "bu tarihteki tümünü seç" onay kutusu da var.
+
 ## [0.12.0] - 2026-09-12
 
 ### Eklendi

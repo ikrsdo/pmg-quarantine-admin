@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { Search, SlidersHorizontal, CheckSquare, RefreshCw, Download } from 'lucide-react';
+import { Search, SlidersHorizontal, CheckSquare, RefreshCw, Download, ChevronDown, ChevronRight } from 'lucide-react';
 import { fetchQuarantineDetail, fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { quarantineActionToast } from '../utils/quarantineActionToast';
 import { downloadCsv } from '../utils/csvExport';
+import { groupByDate } from '../utils/dateGrouping';
 import QuarantineCard from '../components/QuarantineCard';
 import QuarantineTable from '../components/QuarantineTable';
 import EmptyState from '../components/EmptyState';
@@ -107,6 +108,7 @@ export default function QuarantineListPage() {
   const [sortKey, setSortKey] = useState('time');
   const [sortDir, setSortDir] = useState('desc');
   const [exporting, setExporting] = useState(false);
+  const [collapsedDates, setCollapsedDates] = useState(new Set());
 
   // Switching quarantine type (Spam/Virus/Attachment) via the nav should
   // drop any selection/search state left over from the previous type's list.
@@ -244,6 +246,30 @@ export default function QuarantineListPage() {
     );
   }
 
+  function toggleSelectGroup(ids) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      const allSelected = ids.every((id) => next.has(id));
+      ids.forEach((id) => (allSelected ? next.delete(id) : next.add(id)));
+      return next;
+    });
+  }
+
+  function toggleDateCollapse(dateKey) {
+    setCollapsedDates((prev) => {
+      const next = new Set(prev);
+      next.has(dateKey) ? next.delete(dateKey) : next.add(dateKey);
+      return next;
+    });
+  }
+
+  // Date grouping only makes visual sense sorted by time - grouping while
+  // sorted by another column would scatter same-date rows apart.
+  const groups = useMemo(
+    () => (sortKey === 'time' ? groupByDate(filtered, (m) => m.time) : null),
+    [filtered, sortKey],
+  );
+
   function confirmPendingAction() {
     const { type, target } = pendingAction;
     const ids = target === 'bulk' ? Array.from(selectedIds) : target;
@@ -372,6 +398,10 @@ export default function QuarantineListPage() {
               <div className="hidden lg:block">
                 <QuarantineTable
                   mails={filtered}
+                  groups={groups}
+                  collapsedDates={collapsedDates}
+                  onToggleDateCollapse={toggleDateCollapse}
+                  onToggleSelectGroup={toggleSelectGroup}
                   type={type}
                   selectedIds={selectedIds}
                   selectionMode={selectionMode}
@@ -386,20 +416,69 @@ export default function QuarantineListPage() {
                 />
               </div>
 
-              <div className="flex flex-col gap-2 py-3 lg:hidden">
-                {filtered.map((mail) => (
-                  <QuarantineCard
-                    key={mail.id}
-                    mail={mail}
-                    type={type}
-                    selected={selectedIds.has(mail.id)}
-                    selectionMode={selectionMode}
-                    onToggleSelect={toggleSelect}
-                    onDeliver={() => setPendingAction({ type: 'deliver', target: mail.id })}
-                    onBlock={() => setPendingAction({ type: 'blocklist', target: mail.id })}
-                    onToggleSeen={toggleSeen}
-                  />
-                ))}
+              <div className="flex flex-col gap-3 py-3 lg:hidden">
+                {groups
+                  ? groups.map((group) => {
+                      const groupIds = group.items.map((m) => m.id);
+                      const groupAllSelected =
+                        groupIds.length > 0 && groupIds.every((id) => selectedIds.has(id));
+                      const collapsed = collapsedDates.has(group.dateKey);
+                      return (
+                        <div key={group.dateKey} className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2 px-1">
+                            <button
+                              type="button"
+                              onClick={() => toggleDateCollapse(group.dateKey)}
+                              className="text-zinc-500 dark:text-zinc-400"
+                            >
+                              {collapsed ? (
+                                <ChevronRight className="size-4" />
+                              ) : (
+                                <ChevronDown className="size-4" />
+                              )}
+                            </button>
+                            {selectionMode && (
+                              <input
+                                type="checkbox"
+                                checked={groupAllSelected}
+                                onChange={() => toggleSelectGroup(groupIds)}
+                                className="size-4 accent-blue-600"
+                              />
+                            )}
+                            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                              Date: {group.dateLabel} ({group.items.length})
+                            </span>
+                          </div>
+                          {!collapsed &&
+                            group.items.map((mail) => (
+                              <QuarantineCard
+                                key={mail.id}
+                                mail={mail}
+                                type={type}
+                                selected={selectedIds.has(mail.id)}
+                                selectionMode={selectionMode}
+                                onToggleSelect={toggleSelect}
+                                onDeliver={() => setPendingAction({ type: 'deliver', target: mail.id })}
+                                onBlock={() => setPendingAction({ type: 'blocklist', target: mail.id })}
+                                onToggleSeen={toggleSeen}
+                              />
+                            ))}
+                        </div>
+                      );
+                    })
+                  : filtered.map((mail) => (
+                      <QuarantineCard
+                        key={mail.id}
+                        mail={mail}
+                        type={type}
+                        selected={selectedIds.has(mail.id)}
+                        selectionMode={selectionMode}
+                        onToggleSelect={toggleSelect}
+                        onDeliver={() => setPendingAction({ type: 'deliver', target: mail.id })}
+                        onBlock={() => setPendingAction({ type: 'blocklist', target: mail.id })}
+                        onToggleSeen={toggleSeen}
+                      />
+                    ))}
               </div>
             </>
           )}

@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.13.0] - 2026-09-12
+
+### Added
+
+- Quarantine and Tracking Center lists now group rows under collapsible
+  "Date: DD/MM/YYYY (N)" section headers, matching PMG's own quarantine
+  UI - active whenever the list is sorted by time (the default), on
+  both desktop table and mobile card views. On Quarantine, each date
+  header also has a "select all in this date" checkbox wired into the
+  existing bulk-selection mode.
+
 ## [0.12.0] - 2026-09-12
 
 ### Added

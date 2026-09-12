@@ -1,10 +1,21 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Search, SlidersHorizontal, ArrowUp, ArrowDown, ChevronsUpDown, RefreshCw, Download } from 'lucide-react';
+import {
+  Search,
+  SlidersHorizontal,
+  ArrowUp,
+  ArrowDown,
+  ChevronsUpDown,
+  ChevronDown,
+  ChevronRight,
+  RefreshCw,
+  Download,
+} from 'lucide-react';
 import { fetchTrackingList } from '../api/tracking';
 import { useAuth } from '../hooks/useAuth';
 import { downloadCsv } from '../utils/csvExport';
+import { groupByDate } from '../utils/dateGrouping';
 import AppShell from '../components/AppShell';
 import TrackingStatusBadge, { statusLabel } from '../components/TrackingStatusBadge';
 import TrackingFilterSheet from '../components/TrackingFilterSheet';
@@ -83,6 +94,7 @@ export default function TrackingListPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortKey, setSortKey] = useState('time');
   const [sortDir, setSortDir] = useState('desc');
+  const [collapsedDates, setCollapsedDates] = useState(new Set());
 
   // Coming from the "Search in Tracking Center" cross-link button on a
   // Quarantine message (QuarantineDetailPage.jsx) - apply its preset
@@ -155,6 +167,21 @@ export default function TrackingListPage() {
       setSortDir('asc');
     }
   }
+
+  function toggleDateCollapse(dateKey) {
+    setCollapsedDates((prev) => {
+      const next = new Set(prev);
+      next.has(dateKey) ? next.delete(dateKey) : next.add(dateKey);
+      return next;
+    });
+  }
+
+  // Date grouping only makes visual sense sorted by time - grouping while
+  // sorted by another column would scatter same-date rows apart.
+  const groups = useMemo(
+    () => (sortKey === 'time' ? groupByDate(filtered, (m) => m.time) : null),
+    [filtered, sortKey],
+  );
 
   return (
     <AppShell>
@@ -246,62 +273,120 @@ export default function TrackingListPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((m) => (
-                      <tr
-                        key={m.id}
-                        onClick={() =>
-                          navigate(`/tracking/${encodeURIComponent(m.id)}`, {
-                            state: { backgroundLocation: location },
-                          })
-                        }
-                        className="cursor-pointer border-b border-zinc-100 odd:bg-white even:bg-zinc-50 hover:bg-blue-50 dark:border-zinc-900 dark:odd:bg-zinc-950 dark:even:bg-zinc-900/40 dark:hover:bg-zinc-800"
-                      >
-                        <td className="max-w-[16rem] truncate py-2 pr-3 font-mono text-xs text-zinc-900 dark:text-zinc-100">
-                          {m.from}
-                        </td>
-                        <td className="max-w-[16rem] truncate py-2 pr-3 font-mono text-xs text-zinc-900 dark:text-zinc-100">
-                          {m.to}
-                        </td>
-                        <td className="whitespace-nowrap py-2 pr-3 text-xs text-zinc-500 dark:text-zinc-500">
-                          {formatTime(m.time)}
-                        </td>
-                        <td className="max-w-[10rem] truncate py-2 pr-3 text-xs text-zinc-500 dark:text-zinc-500">
-                          {m.relay || '—'}
-                        </td>
-                        <td className="whitespace-nowrap py-2 pr-3 text-xs text-zinc-500 dark:text-zinc-500">
-                          {formatKB(m.size)}
-                        </td>
-                        <td className="py-2 pr-3">
-                          <TrackingStatusBadge status={m.rstatus || m.dstatus} />
-                        </td>
-                      </tr>
-                    ))}
+                    {(() => {
+                      const renderRow = (m) => (
+                        <tr
+                          key={m.id}
+                          onClick={() =>
+                            navigate(`/tracking/${encodeURIComponent(m.id)}`, {
+                              state: { backgroundLocation: location },
+                            })
+                          }
+                          className="cursor-pointer border-b border-zinc-100 odd:bg-white even:bg-zinc-50 hover:bg-blue-50 dark:border-zinc-900 dark:odd:bg-zinc-950 dark:even:bg-zinc-900/40 dark:hover:bg-zinc-800"
+                        >
+                          <td className="max-w-[16rem] truncate py-2 pr-3 font-mono text-xs text-zinc-900 dark:text-zinc-100">
+                            {m.from}
+                          </td>
+                          <td className="max-w-[16rem] truncate py-2 pr-3 font-mono text-xs text-zinc-900 dark:text-zinc-100">
+                            {m.to}
+                          </td>
+                          <td className="whitespace-nowrap py-2 pr-3 text-xs text-zinc-500 dark:text-zinc-500">
+                            {formatTime(m.time)}
+                          </td>
+                          <td className="max-w-[10rem] truncate py-2 pr-3 text-xs text-zinc-500 dark:text-zinc-500">
+                            {m.relay || '—'}
+                          </td>
+                          <td className="whitespace-nowrap py-2 pr-3 text-xs text-zinc-500 dark:text-zinc-500">
+                            {formatKB(m.size)}
+                          </td>
+                          <td className="py-2 pr-3">
+                            <TrackingStatusBadge status={m.rstatus || m.dstatus} />
+                          </td>
+                        </tr>
+                      );
+
+                      if (!groups) return filtered.map(renderRow);
+
+                      return groups.map((group) => {
+                        const collapsed = collapsedDates.has(group.dateKey);
+                        return (
+                          <Fragment key={group.dateKey}>
+                            <tr className="border-b border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900/60">
+                              <td colSpan={6} className="py-1.5 pr-3">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleDateCollapse(group.dateKey)}
+                                  className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400"
+                                >
+                                  {collapsed ? (
+                                    <ChevronRight className="size-4" />
+                                  ) : (
+                                    <ChevronDown className="size-4" />
+                                  )}
+                                  Date: {group.dateLabel} ({group.items.length})
+                                </button>
+                              </td>
+                            </tr>
+                            {!collapsed && group.items.map(renderRow)}
+                          </Fragment>
+                        );
+                      });
+                    })()}
                   </tbody>
                 </table>
               </div>
 
-              <div className="flex flex-col gap-2 py-3 lg:hidden">
-                {filtered.map((m) => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => navigate(`/tracking/${encodeURIComponent(m.id)}`)}
-                    className="flex flex-col gap-1.5 rounded-lg border border-zinc-200 p-3 text-left dark:border-zinc-800"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="min-w-0 flex-1 truncate font-mono text-xs text-zinc-900 dark:text-zinc-100">
-                        {m.from}
-                      </p>
-                      <TrackingStatusBadge status={m.rstatus || m.dstatus} />
-                    </div>
-                    <p className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-500">→ {m.to}</p>
-                    <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
-                      <span>{formatTime(m.time)}</span>
-                      <span>·</span>
-                      <span>{formatKB(m.size)}</span>
-                    </div>
-                  </button>
-                ))}
+              <div className="flex flex-col gap-3 py-3 lg:hidden">
+                {(() => {
+                  const renderCard = (m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => navigate(`/tracking/${encodeURIComponent(m.id)}`)}
+                      className="flex flex-col gap-1.5 rounded-lg border border-zinc-200 p-3 text-left dark:border-zinc-800"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="min-w-0 flex-1 truncate font-mono text-xs text-zinc-900 dark:text-zinc-100">
+                          {m.from}
+                        </p>
+                        <TrackingStatusBadge status={m.rstatus || m.dstatus} />
+                      </div>
+                      <p className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-500">→ {m.to}</p>
+                      <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-500">
+                        <span>{formatTime(m.time)}</span>
+                        <span>·</span>
+                        <span>{formatKB(m.size)}</span>
+                      </div>
+                    </button>
+                  );
+
+                  if (!groups) return filtered.map(renderCard);
+
+                  return groups.map((group) => {
+                    const collapsed = collapsedDates.has(group.dateKey);
+                    return (
+                      <div key={group.dateKey} className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2 px-1">
+                          <button
+                            type="button"
+                            onClick={() => toggleDateCollapse(group.dateKey)}
+                            className="text-zinc-500 dark:text-zinc-400"
+                          >
+                            {collapsed ? (
+                              <ChevronRight className="size-4" />
+                            ) : (
+                              <ChevronDown className="size-4" />
+                            )}
+                          </button>
+                          <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                            Date: {group.dateLabel} ({group.items.length})
+                          </span>
+                        </div>
+                        {!collapsed && group.items.map(renderCard)}
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             </>
           )}
