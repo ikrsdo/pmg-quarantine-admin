@@ -170,22 +170,20 @@ export default function QuarantineTable({
     return (
       <tr
         key={`${group.dateKey}-header`}
-        className="border-b border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900/60"
+        onClick={() => onToggleDateCollapse(group.dateKey)}
+        className="cursor-pointer border-b border-zinc-200 bg-zinc-100 hover:bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:bg-zinc-800"
       >
-        <td colSpan={columnCount} className="px-3 py-1.5">
+        <td colSpan={columnCount} className="px-3 py-3">
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => onToggleDateCollapse(group.dateKey)}
-              className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
-            >
+            <span className="text-zinc-500 dark:text-zinc-400">
               {collapsed ? <ChevronRight className="size-4" /> : <ChevronDown className="size-4" />}
-            </button>
+            </span>
             {selectionMode && (
               <input
                 type="checkbox"
                 checked={groupAllSelected}
                 onChange={() => onToggleSelectGroup(groupIds)}
+                onClick={(e) => e.stopPropagation()}
                 className="size-4 accent-blue-600"
               />
             )}

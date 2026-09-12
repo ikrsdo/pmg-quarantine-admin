@@ -7,6 +7,14 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.13.1] - 2026-09-12
+
+### Changed
+
+- Date section headers are taller and the entire header row (not just the
+  chevron icon) now toggles the group open/closed, on both Quarantine and
+  Tracking Center, desktop and mobile.
+
 ## [0.13.0] - 2026-09-12
 
 ### Added

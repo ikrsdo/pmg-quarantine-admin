@@ -8,6 +8,14 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.13.1] - 2026-09-12
+
+### Değişti
+
+- Tarih bölüm başlıkları dikeyde daha geniş; artık sadece ok ikonu değil,
+  başlık satırının tamamı gruba tıklayınca açılıp kapanıyor (Karantina ve
+  Tracking Center'da, hem masaüstü hem mobilde).
+
 ## [0.13.0] - 2026-09-12
 
 ### Eklendi

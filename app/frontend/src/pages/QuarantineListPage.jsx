@@ -425,23 +425,23 @@ export default function QuarantineListPage() {
                       const collapsed = collapsedDates.has(group.dateKey);
                       return (
                         <div key={group.dateKey} className="flex flex-col gap-2">
-                          <div className="flex items-center gap-2 px-1">
-                            <button
-                              type="button"
-                              onClick={() => toggleDateCollapse(group.dateKey)}
-                              className="text-zinc-500 dark:text-zinc-400"
-                            >
+                          <div
+                            onClick={() => toggleDateCollapse(group.dateKey)}
+                            className="flex cursor-pointer items-center gap-2 rounded-md bg-zinc-100 px-2 py-3 dark:bg-zinc-900/60"
+                          >
+                            <span className="text-zinc-500 dark:text-zinc-400">
                               {collapsed ? (
                                 <ChevronRight className="size-4" />
                               ) : (
                                 <ChevronDown className="size-4" />
                               )}
-                            </button>
+                            </span>
                             {selectionMode && (
                               <input
                                 type="checkbox"
                                 checked={groupAllSelected}
                                 onChange={() => toggleSelectGroup(groupIds)}
+                                onClick={(e) => e.stopPropagation()}
                                 className="size-4 accent-blue-600"
                               />
                             )}

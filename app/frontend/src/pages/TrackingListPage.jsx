@@ -311,20 +311,19 @@ export default function TrackingListPage() {
                         const collapsed = collapsedDates.has(group.dateKey);
                         return (
                           <Fragment key={group.dateKey}>
-                            <tr className="border-b border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900/60">
-                              <td colSpan={6} className="py-1.5 pr-3">
-                                <button
-                                  type="button"
-                                  onClick={() => toggleDateCollapse(group.dateKey)}
-                                  className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400"
-                                >
+                            <tr
+                              onClick={() => toggleDateCollapse(group.dateKey)}
+                              className="cursor-pointer border-b border-zinc-200 bg-zinc-100 hover:bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:bg-zinc-800"
+                            >
+                              <td colSpan={6} className="py-3 pr-3">
+                                <div className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
                                   {collapsed ? (
                                     <ChevronRight className="size-4" />
                                   ) : (
                                     <ChevronDown className="size-4" />
                                   )}
                                   Date: {group.dateLabel} ({group.items.length})
-                                </button>
+                                </div>
                               </td>
                             </tr>
                             {!collapsed && group.items.map(renderRow)}
@@ -366,18 +365,17 @@ export default function TrackingListPage() {
                     const collapsed = collapsedDates.has(group.dateKey);
                     return (
                       <div key={group.dateKey} className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2 px-1">
-                          <button
-                            type="button"
-                            onClick={() => toggleDateCollapse(group.dateKey)}
-                            className="text-zinc-500 dark:text-zinc-400"
-                          >
+                        <div
+                          onClick={() => toggleDateCollapse(group.dateKey)}
+                          className="flex cursor-pointer items-center gap-2 rounded-md bg-zinc-100 px-2 py-3 dark:bg-zinc-900/60"
+                        >
+                          <span className="text-zinc-500 dark:text-zinc-400">
                             {collapsed ? (
                               <ChevronRight className="size-4" />
                             ) : (
                               <ChevronDown className="size-4" />
                             )}
-                          </button>
+                          </span>
                           <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                             Date: {group.dateLabel} ({group.items.length})
                           </span>
