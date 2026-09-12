@@ -7,6 +7,17 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.12.0] - 2026-09-12
+
+### Added
+
+- The app now actively re-checks with PMG whether its ticket is still
+  valid, both on load and every time the app regains visibility (e.g.
+  a backgrounded mobile PWA being reopened) - previously an expired
+  ticket was only discovered whenever some page's data happened to
+  refetch next, which could take a long time to surface on mobile.
+  An expired ticket now redirects to the login screen immediately.
+
 ## [0.11.0] - 2026-09-05
 
 ### Added

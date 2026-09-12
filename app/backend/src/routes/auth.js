@@ -5,7 +5,26 @@ const config = require('../config');
 
 const router = express.Router();
 
-router.get('/me', requireAuth, (req, res) => {
+router.get('/me', requireAuth, async (req, res) => {
+  // requireAuth only proves our own session (4h) hasn't expired - actually
+  // ask PMG whether its own ~2h ticket is still valid, so a stale PWA
+  // resuming from the background finds out immediately instead of only
+  // discovering it whenever some page's data query happens to run next
+  // (see CLAUDE.md's "Forced PWA update" note for the related staleness
+  // problem this pairs with).
+  try {
+    await pmgClient.checkTicket(req.session);
+  } catch (err) {
+    if (err instanceof pmgClient.PmgApiError && err.status === 401) {
+      return req.session.destroy(() => {
+        res.clearCookie('connect.sid');
+        res.status(401).json({ error: 'not_authenticated' });
+      });
+    }
+    // eslint-disable-next-line no-console
+    console.error('[auth] PMG ticket check failed:', err.message);
+    return res.status(502).json({ error: 'pmg_unreachable' });
+  }
   res.json({ username: req.session.pmgUsername, demoMode: config.demoMode });
 });
 

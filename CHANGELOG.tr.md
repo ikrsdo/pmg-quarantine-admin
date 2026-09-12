@@ -8,6 +8,17 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.12.0] - 2026-09-12
+
+### Eklendi
+
+- Uygulama artık PMG ticket'ının hâlâ geçerli olup olmadığını hem açılışta
+  hem de uygulama her görünür hale geldiğinde (örn. arka plandaki bir
+  mobil PWA yeniden açıldığında) aktif olarak kontrol ediyor - önceden
+  süresi dolmuş bir ticket ancak bir sayfanın verisi tesadüfen yeniden
+  çekildiğinde ortaya çıkıyordu, bu da mobilde uzun sürebiliyordu. Artık
+  süresi dolmuş bir ticket anında login ekranına yönlendiriyor.
+
 ## [0.11.0] - 2026-09-05
 
 ### Eklendi

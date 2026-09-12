@@ -72,6 +72,18 @@ async function login(username, password) {
   };
 }
 
+// A ticket presence check (see requireAuth.js) only proves the app's own
+// session hasn't expired (4h) - it says nothing about PMG's own ~2h ticket
+// life. GET /version is PMG's lightest authenticated endpoint (see CLAUDE.md
+// "PMG API Notes"), used purely to ask "does PMG still consider this ticket
+// valid right now".
+async function checkTicket(session) {
+  const res = await client.get('/version', { headers: authHeaders(session) });
+  if (res.status !== 200) {
+    throw new PmgApiError(res.status, res.data);
+  }
+}
+
 const VALID_QUARANTINE_TYPES = new Set(['spam', 'virus', 'attachment']);
 
 async function getQuarantineList(session, { type = 'spam', starttime, endtime, pmail } = {}) {
@@ -236,6 +248,7 @@ const realClient = {
   VALID_ACTIONS,
   VALID_QUARANTINE_TYPES,
   login,
+  checkTicket,
   getQuarantineList,
   getQuarantineAttachments,
   getQuarantineContent,

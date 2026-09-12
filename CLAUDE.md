@@ -418,6 +418,25 @@ worth remembering that aren't spelled out in the changelog:
   list (via the new `listattachments` endpoint, see "PMG API Notes"),
   or the existing spam-score badge. The Dashboard is unaffected and
   stays spam-only by design.
+- **Active PMG ticket check on `/api/auth/me`:** `requireAuth`
+  (`middleware/requireAuth.js`) only proves the app's own Express session
+  (4h `maxAge`) hasn't expired - it never checked whether PMG's own
+  shorter-lived (~2h) ticket was still accepted. Previously that gap was
+  only discovered incidentally, whenever some page's real PMG-backed
+  data query happened to run and got a 401 - which a backgrounded mobile
+  PWA resuming from suspend (not remounting, so no query reruns on its
+  own) combined with `refetchOnWindowFocus: false` (global,
+  `main.jsx`) and `refetchOnMount: false` (Quarantine list) could delay
+  arbitrarily. `GET /api/auth/me` now calls `pmgClient.checkTicket()`
+  (a `GET /version` round-trip - PMG's lightest authenticated endpoint,
+  see "PMG API Notes") after the session-presence check; a 401 from PMG
+  destroys the session server-side and responds 401, same as
+  `requireAuth`'s own 401 shape. `useAuth.jsx`'s `AuthProvider` now also
+  re-runs this check on every `visibilitychange` to `visible`, not just
+  on mount, so reopening a backgrounded/suspended PWA discovers an
+  expired ticket immediately and redirects to `/login` instead of
+  waiting for incidental page traffic. `mockPmgClient.js`'s
+  `checkTicket()` is a no-op (demo tickets never expire).
 - **Forced PWA update (service worker):** `app/frontend/public/sw.js`,
   registered from `main.jsx`. Installed home-screen PWAs (iOS Safari in
   particular) can hold onto a stale `index.html` indefinitely, still

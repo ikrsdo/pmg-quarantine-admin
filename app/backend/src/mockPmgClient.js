@@ -299,6 +299,10 @@ async function login(username, password) {
   };
 }
 
+async function checkTicket() {
+  // Demo mode's ticket never expires - nothing to check.
+}
+
 async function getQuarantineList(_session, { type = 'spam', starttime, endtime, pmail } = {}) {
   if (!VALID_QUARANTINE_TYPES.has(type)) {
     const err = new Error(`Invalid quarantine type: ${type}`);
@@ -382,6 +386,7 @@ module.exports = {
   VALID_ACTIONS,
   VALID_QUARANTINE_TYPES,
   login,
+  checkTicket,
   getQuarantineList,
   getQuarantineAttachments,
   getQuarantineContent,
