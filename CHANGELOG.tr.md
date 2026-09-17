@@ -8,6 +8,13 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.14.1] - 2026-09-17
+
+### Değişti
+
+- Detay sayfasındaki Actions menüsünün sırası değiştirildi: Download artık
+  Deliver'ın üstünde değil, Block'un altında yer alıyor.
+
 ## [0.14.0] - 2026-09-17
 
 ### Eklendi

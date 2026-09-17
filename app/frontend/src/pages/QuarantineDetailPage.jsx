@@ -349,10 +349,10 @@ export default function QuarantineDetailPage({ overlay = false }) {
   }
 
   const ACTIONS_MENU_ITEMS = [
-    { action: 'download', label: 'Download', icon: Download, className: 'text-zinc-600 dark:text-zinc-400' },
     { action: 'deliver', label: 'Deliver', icon: Send, className: 'text-emerald-600 dark:text-emerald-400' },
     { action: 'whitelist', label: 'Whitelist', icon: ShieldCheck, className: 'text-blue-600 dark:text-blue-400' },
     { action: 'blocklist', label: 'Block', icon: Ban, className: 'text-red-600 dark:text-red-400' },
+    { action: 'download', label: 'Download', icon: Download, className: 'text-zinc-600 dark:text-zinc-400' },
     {
       action: 'mark-unseen',
       label: 'Mark unseen',
