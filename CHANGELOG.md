@@ -7,6 +7,16 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.14.0] - 2026-09-17
+
+### Added
+
+- A "Download" action for quarantined messages, saving the raw `.eml`
+  source (PMG's `/quarantine/download` endpoint, distinct from the
+  headers/body view already used for the Headers tab). Available on the
+  desktop table, the mobile card (as a tap-only icon), and the detail
+  page's Actions menu.
+
 ## [0.13.1] - 2026-09-12
 
 ### Changed

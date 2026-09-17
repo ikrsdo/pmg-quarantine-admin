@@ -159,6 +159,7 @@ Base: `https://<pmg-host>:8006/api2/json`
 | Version/health | `GET /version` |
 | Quarantine list | `GET /quarantine/spam\|virus\|attachment` (`starttime`/`endtime` unix timestamp, `pmail` optional) |
 | Quarantine content | `GET /quarantine/content?id=&raw=1` |
+| Quarantine download | `GET /quarantine/download?id=` (raw filehandle - the `.eml` source, not a JSON envelope) |
 | Quarantine action | `POST /quarantine/content` (`id`, `action`) |
 | Quarantine attachments | `GET /quarantine/listattachments?id=` (Attachment Quarantine detail; returns `[{id, size, name, content-type}]`) |
 | Tracking center | `GET /nodes/{node}/tracker` (`starttime`/`endtime`, `xfilter`, `from`, `target`, `ndr`, `greylist`, `limit` optional) |

@@ -2,7 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Search, SlidersHorizontal, CheckSquare, RefreshCw, Download, ChevronDown, ChevronRight } from 'lucide-react';
-import { fetchQuarantineDetail, fetchQuarantineList, performQuarantineAction } from '../api/quarantine';
+import {
+  fetchQuarantineDetail,
+  fetchQuarantineList,
+  performQuarantineAction,
+  downloadQuarantineMail,
+} from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import { quarantineActionToast } from '../utils/quarantineActionToast';
@@ -410,6 +415,7 @@ export default function QuarantineListPage() {
                   onDeliverRequest={(id) => setPendingAction({ type: 'deliver', target: id })}
                   onBlockRequest={(id) => setPendingAction({ type: 'blocklist', target: id })}
                   onToggleSeenRequest={toggleSeen}
+                  onDownloadRequest={downloadQuarantineMail}
                   sortKey={sortKey}
                   sortDir={sortDir}
                   onSort={toggleSort}
@@ -461,6 +467,7 @@ export default function QuarantineListPage() {
                                 onDeliver={() => setPendingAction({ type: 'deliver', target: mail.id })}
                                 onBlock={() => setPendingAction({ type: 'blocklist', target: mail.id })}
                                 onToggleSeen={toggleSeen}
+                                onDownload={downloadQuarantineMail}
                               />
                             ))}
                         </div>
@@ -477,6 +484,7 @@ export default function QuarantineListPage() {
                         onDeliver={() => setPendingAction({ type: 'deliver', target: mail.id })}
                         onBlock={() => setPendingAction({ type: 'blocklist', target: mail.id })}
                         onToggleSeen={toggleSeen}
+                        onDownload={downloadQuarantineMail}
                       />
                     ))}
               </div>

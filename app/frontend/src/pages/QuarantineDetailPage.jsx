@@ -1,12 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRightLeft, ListChecks, Send, ShieldCheck, Ban, Eye, EyeOff, X, Paperclip } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRightLeft,
+  ListChecks,
+  Send,
+  ShieldCheck,
+  Ban,
+  Eye,
+  EyeOff,
+  X,
+  Paperclip,
+  Download,
+} from 'lucide-react';
 import {
   fetchQuarantineAttachments,
   fetchQuarantineDetail,
   fetchQuarantinePreviewHtml,
   performQuarantineAction,
+  downloadQuarantineMail,
 } from '../api/quarantine';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -328,12 +341,15 @@ export default function QuarantineDetailPage({ overlay = false }) {
   function handleActionsMenuSelect(action) {
     if (action === 'mark-unseen' || action === 'mark-seen') {
       seenMutation.mutate({ action });
+    } else if (action === 'download') {
+      downloadQuarantineMail(id);
     } else {
       requestAction(action);
     }
   }
 
   const ACTIONS_MENU_ITEMS = [
+    { action: 'download', label: 'Download', icon: Download, className: 'text-zinc-600 dark:text-zinc-400' },
     { action: 'deliver', label: 'Deliver', icon: Send, className: 'text-emerald-600 dark:text-emerald-400' },
     { action: 'whitelist', label: 'Whitelist', icon: ShieldCheck, className: 'text-blue-600 dark:text-blue-400' },
     { action: 'blocklist', label: 'Block', icon: Ban, className: 'text-red-600 dark:text-red-400' },

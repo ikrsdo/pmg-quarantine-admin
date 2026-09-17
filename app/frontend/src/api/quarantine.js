@@ -35,6 +35,18 @@ export async function fetchQuarantinePreviewHtml(id) {
   return res.text();
 }
 
+// Triggers a same-origin authenticated navigation to the download route
+// (cookie-based session auth), rather than fetch()+blob - the browser
+// handles the download natively via the response's Content-Disposition.
+export function downloadQuarantineMail(id) {
+  const link = document.createElement('a');
+  link.href = `/api/quarantine/${encodeURIComponent(id)}/download`;
+  link.download = '';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 // ids: single id string, or an array of ids (joined with ';' - PMG's own
 // multi-id convention, see CLAUDE.md > "PMG API Notlari").
 export function performQuarantineAction(ids, action) {

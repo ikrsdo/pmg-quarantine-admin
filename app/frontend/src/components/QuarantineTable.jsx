@@ -10,6 +10,7 @@ import {
   Ban,
   Eye,
   EyeOff,
+  Download,
 } from 'lucide-react';
 import SpamScoreBadge from './SpamScoreBadge';
 
@@ -70,6 +71,7 @@ export default function QuarantineTable({
   onDeliverRequest,
   onBlockRequest,
   onToggleSeenRequest,
+  onDownloadRequest,
   sortKey,
   sortDir,
   onSort,
@@ -140,6 +142,14 @@ export default function QuarantineTable({
               }`}
             >
               {mail.seen === true ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => onDownloadRequest(mail.id)}
+              title="Download"
+              className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-500/10 dark:text-zinc-400"
+            >
+              <Download className="size-3.5" />
             </button>
             <button
               type="button"

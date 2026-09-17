@@ -63,6 +63,17 @@ router.get('/:id/preview', async (req, res) => {
   }
 });
 
+router.get('/:id/download', async (req, res) => {
+  try {
+    const bytes = await pmgClient.getQuarantineDownload(req.session, req.params.id);
+    res.set('Content-Type', 'message/rfc822');
+    res.set('Content-Disposition', `attachment; filename="${encodeURIComponent(req.params.id)}.eml"`);
+    res.send(bytes);
+  } catch (err) {
+    handlePmgError(err, res);
+  }
+});
+
 router.post('/:id/action', async (req, res) => {
   try {
     const { action } = req.body || {};

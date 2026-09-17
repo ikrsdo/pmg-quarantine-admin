@@ -129,6 +129,26 @@ describe('quarantine routes', () => {
     expect(res.body.data.subject).toBe('Test mail');
   });
 
+  test('GET /api/quarantine/:id/download proxies the raw .eml bytes', async () => {
+    const app = createApp();
+    const agent = await loginAgent(app);
+
+    nock(PMG_ORIGIN)
+      .get('/api2/json/quarantine/download')
+      .query({ id: 'C1R2T1700000000' })
+      .reply(200, Buffer.from('From: a@b.c\r\nSubject: Test\r\n\r\nBody'), {
+        'Content-Type': 'application/octet-stream',
+      });
+
+    const res = await agent.get('/api/quarantine/C1R2T1700000000/download');
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toBe('message/rfc822');
+    expect(res.headers['content-disposition']).toBe(
+      'attachment; filename="C1R2T1700000000.eml"',
+    );
+    expect(res.text).toBe('From: a@b.c\r\nSubject: Test\r\n\r\nBody');
+  });
+
   test('POST /api/quarantine/:id/action rejects invalid action', async () => {
     const app = createApp();
     const agent = await loginAgent(app);

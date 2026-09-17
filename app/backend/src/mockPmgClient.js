@@ -334,6 +334,17 @@ async function getQuarantineHtmlPreview(_session, id) {
   return `<div style="font-family:sans-serif;padding:1rem"><p><strong>${mail.subject}</strong></p><p>This is a demo-mode preview - no real message content is available.</p></div>`;
 }
 
+async function getQuarantineDownload(_session, id) {
+  const mail = allQuarantine().find((m) => m.id === id);
+  if (!mail) return null;
+  const body = [
+    mail.header,
+    '',
+    `(Demo mode - no real message body is available for ${mail.id}.)`,
+  ].join('\n');
+  return Buffer.from(body, 'utf-8');
+}
+
 let cachedNodeName = DEMO_NODE;
 async function getNodeName() {
   return cachedNodeName;
@@ -391,6 +402,7 @@ module.exports = {
   getQuarantineAttachments,
   getQuarantineContent,
   getQuarantineHtmlPreview,
+  getQuarantineDownload,
   quarantineAction,
   getTrackingList,
   getTrackingDetail,

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Download } from 'lucide-react';
 import SpamScoreBadge from './SpamScoreBadge';
 
 function VirusNameBadge({ name }) {
@@ -48,6 +48,7 @@ export default function QuarantineCard({
   onDeliver,
   onBlock,
   onToggleSeen,
+  onDownload,
 }) {
   const navigate = useNavigate();
   const [dragX, setDragX] = useState(0);
@@ -156,6 +157,17 @@ export default function QuarantineCard({
             <span>{formatTime(mail.time)}</span>
             <span>·</span>
             <span>{formatBytes(mail.bytes)}</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDownload(mail.id);
+              }}
+              title="Download"
+              className="ml-auto shrink-0 rounded p-0.5 text-zinc-400 hover:bg-zinc-200 dark:text-zinc-500 dark:hover:bg-zinc-800"
+            >
+              <Download className="size-3.5" />
+            </button>
             <button
               type="button"
               onClick={(e) => {

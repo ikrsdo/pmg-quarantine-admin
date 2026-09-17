@@ -63,6 +63,7 @@ curl -i -b jar.txt -X POST http://localhost:3000/api/logout
 | GET | `/api/quarantine` | ✓ | Query: `starttime`, `endtime`, `pmail` (all optional) |
 | GET | `/api/quarantine/:id` | ✓ | Message content + headers |
 | GET | `/api/quarantine/:id/preview` | ✓ | Sanitized HTML rendering of the message (PMG's `/api2/htmlmail/...`), meant to be loaded into a sandboxed iframe |
+| GET | `/api/quarantine/:id/download` | ✓ | Raw `.eml` source of the message (PMG's `/quarantine/download`), served as `message/rfc822` with a `Content-Disposition: attachment` |
 | POST | `/api/quarantine/:id/action` | ✓ | `{action}` - `deliver`, `delete`, `whitelist`, `welcomelist`, `blocklist`, `blacklist`, `mark-seen`, `mark-unseen` |
 | GET | `/api/tracking` | ✓ | Query: `starttime`, `endtime`, `xfilter`, `from`, `target`, `ndr`, `greylist`, `limit` (all optional) |
 | GET | `/api/tracking/:id` | ✓ | That message's syslog trail (raw lines - see `trackingLogEvents.js` in the frontend for how they're categorized for display) |

@@ -8,6 +8,16 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.14.0] - 2026-09-17
+
+### Eklendi
+
+- Karantinadaki mesajlar için ham `.eml` kaynağını indiren bir "Download"
+  aksiyonu eklendi (PMG'nin `/quarantine/download` uç noktası - Headers
+  sekmesinde kullanılan başlık/gövde görünümünden farklı, ayrı bir uç
+  nokta). Masaüstü tabloda, mobil kartta (dokunmatik ikon olarak) ve
+  detay sayfasının Actions menüsünde kullanılabilir.
+
 ## [0.13.1] - 2026-09-12
 
 ### Değişti
