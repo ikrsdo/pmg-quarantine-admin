@@ -135,7 +135,7 @@ describe('quarantine routes', () => {
 
     nock(PMG_ORIGIN)
       .get('/api2/json/quarantine/download')
-      .query({ id: 'C1R2T1700000000' })
+      .query({ mailid: 'C1R2T1700000000' })
       .reply(200, Buffer.from('From: a@b.c\r\nSubject: Test\r\n\r\nBody'), {
         'Content-Type': 'application/octet-stream',
       });

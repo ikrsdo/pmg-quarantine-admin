@@ -8,6 +8,16 @@ sürümleme ise [Semantic Versioning](https://semver.org/)'i takip eder -
 proje `0.x` sürümündeyken, minor sürüm artışları da geriye dönük
 uyumsuz değişiklikler içerebilir.
 
+## [0.14.2] - 2026-09-17
+
+### Düzeltildi
+
+- Download aksiyonu gerçek PMG sunucularında 502 hatası veriyordu (demo
+  modda sorunsuzdu). PMG'nin `/quarantine/download` uç noktası id
+  parametresini diğer tüm karantina uç noktalarından farklı olarak
+  `id` değil `mailid` olarak bekliyor; `id` gönderildiğinde istek
+  doğrudan reddediliyordu. Resmi `pmg-api` kaynağına göre düzeltildi.
+
 ## [0.14.1] - 2026-09-17
 
 ### Değişti

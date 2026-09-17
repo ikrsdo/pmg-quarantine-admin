@@ -7,6 +7,16 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versioning follows [Semantic Versioning](https://semver.org/) - while the
 project is in `0.x`, minor bumps may still include breaking changes.
 
+## [0.14.2] - 2026-09-17
+
+### Fixed
+
+- Download action returned a 502 against real PMG servers (worked fine
+  in demo mode). PMG's `/quarantine/download` endpoint expects its id
+  parameter as `mailid`, not `id` like every other quarantine
+  endpoint; sending `id` was rejected outright. Corrected against the
+  official `pmg-api` source.
+
 ## [0.14.1] - 2026-09-17
 
 ### Changed

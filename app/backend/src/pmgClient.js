@@ -156,14 +156,16 @@ async function getQuarantineHtmlPreview(session, id) {
 }
 
 // /quarantine/download returns a raw filehandle (the .eml source), not a
-// JSON envelope like /quarantine/content - a separate PMG endpoint entirely,
-// confirmed against a Proxmox staff forum reply (see CLAUDE.md). Needs
-// arraybuffer responseType since the shared `client` instance defaults to
-// JSON parsing.
+// JSON envelope like /quarantine/content - a separate PMG endpoint entirely.
+// Confirmed against the official pmg-api source (src/PMG/API2/Quarantine.pm,
+// the 'download' register_method) - its id parameter is named `mailid`, not
+// `id` like every other quarantine endpoint; `additionalProperties => 0`
+// there means sending `id` instead gets rejected outright. Needs arraybuffer
+// responseType since the shared `client` instance defaults to JSON parsing.
 async function getQuarantineDownload(session, id) {
   const res = await client.get('/quarantine/download', {
     headers: authHeaders(session),
-    params: { id },
+    params: { mailid: id },
     responseType: 'arraybuffer',
   });
   if (res.status !== 200) {
