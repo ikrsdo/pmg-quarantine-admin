@@ -151,6 +151,9 @@ Uygulama 3000 portunda dinler (hızlı bir yerel kontrol için
 
 ## Demo modu
 
+**Canlı demo:** [pmg-quarantine-demo.mcs.net.tr](https://pmg-quarantine-demo.mcs.net.tr/)
+(`demo` / `demo` ile giriş yapabilirsiniz).
+
 Gerçek bir PMG sunucusu olmadan tüm ekranları (Quarantine spam/virus/
 attachment, Tracking Center, Dashboard) denemek mi istiyorsunuz? Depoyu
 ayrı bir klasöre klonlayın, o kopyanın kendi `.env` dosyasında

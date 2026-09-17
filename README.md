@@ -142,6 +142,9 @@ check). Sign in with your own PMG username/password on the login screen.
 
 ## Demo mode
 
+**Live demo:** [pmg-quarantine-demo.mcs.net.tr](https://pmg-quarantine-demo.mcs.net.tr/)
+(log in with `demo` / `demo`).
+
 Want to try every screen (Quarantine spam/virus/attachment, Tracking
 Center, Dashboard) without a real PMG server? Clone the repo into a
 separate directory, set `DEMO_MODE=true` in that copy's own `.env`, and
